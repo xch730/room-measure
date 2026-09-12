@@ -6,9 +6,7 @@
 <title>房屋丈量畫圖工具</title>
 
 <style>
-*{
-  box-sizing:border-box;
-}
+*{box-sizing:border-box}
 
 body{
   margin:0;
@@ -18,24 +16,47 @@ body{
 }
 
 header{
+  background:#fff;
   padding:14px 16px;
-  background:white;
   border-bottom:1px solid #ddd;
 }
 
 h1{
   font-size:18px;
-  margin:0 0 5px;
+  margin:0 0 8px;
 }
 
-.status{
+.case-row{
+  display:flex;
+  gap:8px;
+}
+
+.case-row input{
+  flex:1;
+  height:42px;
+  border:1px solid #ccc;
+  border-radius:9px;
+  padding:0 12px;
+  font-size:15px;
+}
+
+.case-row button{
+  border:0;
+  border-radius:9px;
+  padding:0 14px;
+  background:#111;
+  color:white;
+}
+
+.case-name{
   font-size:13px;
   color:#666;
+  margin-top:7px;
 }
 
 .canvas-wrap{
-  height:52vh;
-  min-height:360px;
+  height:50vh;
+  min-height:350px;
   background:white;
   margin:12px;
   border:1px solid #ddd;
@@ -51,7 +72,7 @@ svg{
 }
 
 .controls{
-  background:white;
+  background:#fff;
   padding:14px 14px 24px;
   border-top:1px solid #ddd;
 }
@@ -67,50 +88,35 @@ svg{
 .dir{
   height:48px;
   border:1px solid #ccc;
-  background:white;
+  background:#fff;
   border-radius:10px;
   font-size:22px;
 }
 
 .dir.active{
   background:#222;
-  color:white;
+  color:#fff;
 }
 
-.dir.up{
-  grid-column:2;
-}
-
-.dir.left{
-  grid-column:1;
-  grid-row:2;
-}
-
+.dir.up{grid-column:2}
+.dir.left{grid-column:1;grid-row:2}
 .dir.center{
   grid-column:2;
   grid-row:2;
   background:#f2f2f2;
   font-size:13px;
 }
-
-.dir.right{
-  grid-column:3;
-  grid-row:2;
-}
-
-.dir.down{
-  grid-column:2;
-  grid-row:3;
-}
+.dir.right{grid-column:3;grid-row:2}
+.dir.down{grid-column:2;grid-row:3}
 
 .input-row{
   display:flex;
   gap:8px;
   max-width:520px;
-  margin:0 auto;
+  margin:auto;
 }
 
-input{
+#length{
   flex:1;
   height:48px;
   border:1px solid #ccc;
@@ -119,7 +125,7 @@ input{
   font-size:18px;
 }
 
-button.primary{
+.primary{
   height:48px;
   padding:0 18px;
   border:0;
@@ -140,7 +146,7 @@ button.primary{
   flex:1;
   height:42px;
   border:1px solid #ccc;
-  background:white;
+  background:#fff;
   border-radius:10px;
 }
 
@@ -150,17 +156,94 @@ button.primary{
   font-size:13px;
   margin-top:10px;
 }
+
+.overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.45);
+  display:none;
+  align-items:flex-end;
+  z-index:100;
+}
+
+.panel{
+  width:100%;
+  background:white;
+  border-radius:18px 18px 0 0;
+  padding:20px;
+  max-height:70vh;
+  overflow:auto;
+}
+
+.panel h2{
+  margin:0 0 15px;
+  font-size:20px;
+}
+
+.case-list{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+
+.case-item{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:12px;
+  border:1px solid #ddd;
+  border-radius:10px;
+}
+
+.case-item button{
+  margin-left:auto;
+  border:0;
+  background:#eee;
+  border-radius:8px;
+  padding:8px 10px;
+}
+
+.close-btn{
+  width:100%;
+  height:44px;
+  margin-top:15px;
+  border:0;
+  border-radius:10px;
+  background:#111;
+  color:white;
+}
 </style>
 </head>
 
 <body>
 
 <header>
-  <h1>📐 房屋丈量畫圖工具</h1>
-  <div class="status" id="status">
-    目前方向：→　輸入尺寸後新增線段
-  </div>
+
+<h1>📐 房屋丈量畫圖工具</h1>
+
+<div class="case-row">
+
+<input
+  id="caseName"
+  type="text"
+  placeholder="輸入案件名稱，例如：王先生左營案">
+
+<button id="newCase">
+  新案件
+</button>
+
+<button id="openCases">
+  案件
+</button>
+
+</div>
+
+<div class="case-name" id="currentCase">
+  尚未建立案件
+</div>
+
 </header>
+
 
 <div class="canvas-wrap">
 
@@ -169,30 +252,36 @@ button.primary{
      preserveAspectRatio="xMidYMid meet">
 
 <defs>
-  <pattern id="grid"
-           width="100"
-           height="100"
-           patternUnits="userSpaceOnUse">
 
-    <path d="M 100 0 L 0 0 0 100"
-          fill="none"
-          stroke="#e9e9e9"
-          stroke-width="1"/>
+<pattern
+  id="grid"
+  width="100"
+  height="100"
+  patternUnits="userSpaceOnUse">
 
-  </pattern>
+<path
+  d="M 100 0 L 0 0 0 100"
+  fill="none"
+  stroke="#e9e9e9"
+  stroke-width="1"/>
+
+</pattern>
+
 </defs>
 
-<rect x="-10000"
-      y="-10000"
-      width="20000"
-      height="20000"
-      fill="url(#grid)"/>
+<rect
+  x="-10000"
+  y="-10000"
+  width="20000"
+  height="20000"
+  fill="url(#grid)"/>
 
 <g id="drawing"></g>
 
 </svg>
 
 </div>
+
 
 <div class="controls">
 
@@ -210,6 +299,7 @@ button.primary{
 
 </div>
 
+
 <div class="input-row">
 
 <input
@@ -217,64 +307,321 @@ button.primary{
   type="number"
   inputmode="numeric"
   min="1"
-  step="1"
   placeholder="輸入長度，例如 3200">
 
 <button class="primary" id="add">
-  新增線段
+新增線段
 </button>
 
 </div>
+
 
 <div class="action-row">
 
 <button id="undo">
-  ↩ 上一步
+↩ 上一步
 </button>
 
 <button id="clear">
-  🗑 清除全部
+🗑 清除
 </button>
 
 </div>
 
+
 <div class="hint">
-  單位：mm　例如：→ 3200 → ↓ 2400 → ← 1800
+單位：mm　每次新增後會自動儲存
 </div>
 
 </div>
+
+
+<!-- 案件清單 -->
+
+<div class="overlay" id="overlay">
+
+<div class="panel">
+
+<h2>📁 我的案件</h2>
+
+<div class="case-list" id="caseList"></div>
+
+<button class="close-btn" id="closeCases">
+關閉
+</button>
+
+</div>
+
+</div>
+
 
 <script>
 
-const svg = document.getElementById('plan');
-const drawing = document.getElementById('drawing');
-const lengthInput = document.getElementById('length');
-const status = document.getElementById('status');
-const currentDirBtn = document.getElementById('currentDir');
+const svg=document.getElementById("plan");
+const drawing=document.getElementById("drawing");
 
-let direction = 'right';
+const lengthInput=document.getElementById("length");
 
-let points = [
-  {x:0,y:0}
-];
+const caseNameInput=document.getElementById("caseName");
 
-let segments = [];
+const currentCase=document.getElementById("currentCase");
 
-const dirNames = {
-  up:'↑ 上',
-  down:'↓ 下',
-  left:'← 左',
-  right:'→ 右'
+const currentDirBtn=document.getElementById("currentDir");
+
+const overlay=document.getElementById("overlay");
+
+const caseList=document.getElementById("caseList");
+
+
+let direction="right";
+
+let points=[{x:0,y:0}];
+
+let segments=[];
+
+let currentCaseId=null;
+
+
+const dirNames={
+  up:"↑ 上",
+  down:"↓ 下",
+  left:"← 左",
+  right:"→ 右"
 };
 
 
-/* 方向按鈕 */
+/* =========================
+   案件儲存
+========================= */
 
-document.querySelectorAll('.dir[data-dir]').forEach(btn => {
+function getCases(){
 
-  btn.addEventListener('click', () => {
+  return JSON.parse(
+    localStorage.getItem("measureCases") || "{}"
+  );
 
-    direction = btn.dataset.dir;
+}
+
+
+function saveCase(){
+
+  if(!currentCaseId){
+    return;
+  }
+
+  const cases=getCases();
+
+  cases[currentCaseId]={
+
+    name:caseNameInput.value || "未命名案件",
+
+    points:points,
+
+    segments:segments,
+
+    updatedAt:Date.now()
+
+  };
+
+  localStorage.setItem(
+    "measureCases",
+    JSON.stringify(cases)
+  );
+
+}
+
+
+function createNewCase(){
+
+  const name=caseNameInput.value.trim();
+
+  if(!name){
+
+    alert("請先輸入案件名稱");
+
+    caseNameInput.focus();
+
+    return;
+  }
+
+
+  currentCaseId=
+    Date.now().toString();
+
+
+  points=[{x:0,y:0}];
+
+  segments=[];
+
+  currentCase.textContent=
+    "目前案件："+name;
+
+  render();
+
+  saveCase();
+
+}
+
+
+function loadCase(id){
+
+  const cases=getCases();
+
+  const data=cases[id];
+
+  if(!data){
+    return;
+  }
+
+
+  currentCaseId=id;
+
+  caseNameInput.value=data.name;
+
+  currentCase.textContent=
+    "目前案件："+data.name;
+
+
+  points=data.points || [{x:0,y:0}];
+
+  segments=data.segments || [];
+
+
+  overlay.style.display="none";
+
+  render();
+
+}
+
+
+function deleteCase(id){
+
+  const cases=getCases();
+
+  if(!cases[id]){
+    return;
+  }
+
+
+  if(!confirm("確定要刪除這個案件嗎？")){
+    return;
+  }
+
+
+  delete cases[id];
+
+  localStorage.setItem(
+    "measureCases",
+    JSON.stringify(cases)
+  );
+
+
+  if(currentCaseId===id){
+
+    currentCaseId=null;
+
+    caseNameInput.value="";
+
+    currentCase.textContent=
+      "尚未建立案件";
+
+    points=[{x:0,y:0}];
+
+    segments=[];
+
+    render();
+
+  }
+
+
+  showCases();
+
+}
+
+
+function showCases(){
+
+  const cases=getCases();
+
+  caseList.innerHTML="";
+
+
+  const ids=Object.keys(cases)
+    .sort((a,b)=>
+      cases[b].updatedAt-cases[a].updatedAt
+    );
+
+
+  if(ids.length===0){
+
+    caseList.innerHTML=
+      "<div style='color:#777'>目前沒有案件</div>";
+
+  }
+
+
+  ids.forEach(id=>{
+
+    const item=
+      document.createElement("div");
+
+    item.className="case-item";
+
+
+    const title=
+      document.createElement("span");
+
+    title.textContent=
+      cases[id].name;
+
+
+    const open=
+      document.createElement("button");
+
+    open.textContent="開啟";
+
+    open.onclick=()=>{
+      loadCase(id);
+    };
+
+
+    const del=
+      document.createElement("button");
+
+    del.textContent="刪除";
+
+    del.onclick=()=>{
+      deleteCase(id);
+    };
+
+
+    item.appendChild(title);
+
+    item.appendChild(open);
+
+    item.appendChild(del);
+
+    caseList.appendChild(item);
+
+  });
+
+
+  overlay.style.display="flex";
+
+}
+
+
+/* =========================
+   方向
+========================= */
+
+document
+.querySelectorAll(".dir[data-dir]")
+.forEach(btn=>{
+
+  btn.addEventListener("click",()=>{
+
+    direction=btn.dataset.dir;
 
     updateDirectionUI();
 
@@ -283,58 +630,73 @@ document.querySelectorAll('.dir[data-dir]').forEach(btn => {
 });
 
 
-/* 更新方向 */
-
 function updateDirectionUI(){
 
-  document.querySelectorAll('.dir[data-dir]')
-    .forEach(b => {
+  document
+  .querySelectorAll(".dir[data-dir]")
+  .forEach(btn=>{
 
-      b.classList.toggle(
-        'active',
-        b.dataset.dir === direction
-      );
+    btn.classList.toggle(
+      "active",
+      btn.dataset.dir===direction
+    );
 
-    });
+  });
 
-  currentDirBtn.textContent =
-    dirNames[direction].split(' ')[0];
 
-  status.textContent =
-    `目前方向：${dirNames[direction]}　輸入尺寸後新增線段`;
+  currentDirBtn.textContent=
+    dirNames[direction].split(" ")[0];
+
 }
 
 
-/* 新增線段 */
+/* =========================
+   新增線段
+========================= */
 
 function addSegment(){
 
-  const len = Number(lengthInput.value);
+  if(!currentCaseId){
 
-  if(!len || len <= 0){
-
-    alert('請輸入正確的尺寸（mm）');
+    alert("請先建立案件");
 
     return;
+
   }
 
-  const start =
-    points[points.length - 1];
 
-  let end = {...start};
+  const len=Number(
+    lengthInput.value
+  );
 
 
-  if(direction === 'right')
-    end.x += len;
+  if(!len || len<=0){
 
-  if(direction === 'left')
-    end.x -= len;
+    alert("請輸入正確尺寸");
 
-  if(direction === 'down')
-    end.y += len;
+    return;
 
-  if(direction === 'up')
-    end.y -= len;
+  }
+
+
+  const start=
+    points[points.length-1];
+
+
+  let end={...start};
+
+
+  if(direction==="right")
+    end.x+=len;
+
+  if(direction==="left")
+    end.x-=len;
+
+  if(direction==="down")
+    end.y+=len;
+
+  if(direction==="up")
+    end.y-=len;
 
 
   segments.push({
@@ -352,108 +714,152 @@ function addSegment(){
 
   points.push(end);
 
-  lengthInput.value = '';
+
+  lengthInput.value="";
+
 
   render();
+
+  saveCase();
 
   lengthInput.focus();
 
 }
 
 
-/* 新增 */
+/* =========================
+   上一步
+========================= */
 
-document.getElementById('add')
-  .addEventListener('click', addSegment);
+document
+.getElementById("undo")
+.addEventListener("click",()=>{
+
+  if(!segments.length)
+    return;
 
 
-/* Enter也可以新增 */
+  segments.pop();
 
-lengthInput.addEventListener('keydown', e => {
+  points.pop();
 
-  if(e.key === 'Enter')
-    addSegment();
+
+  render();
+
+  saveCase();
 
 });
 
 
-/* 上一步 */
+/* =========================
+   清除
+========================= */
 
-document.getElementById('undo')
-  .addEventListener('click', () => {
+document
+.getElementById("clear")
+.addEventListener("click",()=>{
 
-    if(!segments.length)
-      return;
+  if(!segments.length)
+    return;
 
-    segments.pop();
 
-    points.pop();
+  if(confirm("確定清除目前案件的全部線段嗎？")){
+
+    points=[{x:0,y:0}];
+
+    segments=[];
 
     render();
 
-  });
+    saveCase();
+
+  }
+
+});
 
 
-/* 清除 */
+/* =========================
+   按鈕
+========================= */
 
-document.getElementById('clear')
-  .addEventListener('click', () => {
+document
+.getElementById("newCase")
+.addEventListener(
+  "click",
+  createNewCase
+);
 
-    if(!segments.length)
-      return;
 
-    if(confirm('確定要清除全部線段嗎？')){
+document
+.getElementById("openCases")
+.addEventListener(
+  "click",
+  showCases
+);
 
-      segments = [];
 
-      points = [
-        {x:0,y:0}
-      ];
+document
+.getElementById("closeCases")
+.addEventListener(
+  "click",
+  ()=>{
+    overlay.style.display="none";
+  }
+);
 
-      render();
 
+document
+.getElementById("add")
+.addEventListener(
+  "click",
+  addSegment
+);
+
+
+lengthInput.addEventListener(
+  "keydown",
+  e=>{
+
+    if(e.key==="Enter"){
+      addSegment();
     }
 
-  });
+  }
+);
 
 
-/* SVG元素 */
+/* =========================
+   SVG
+========================= */
 
-function el(name, attrs = {}){
+function el(name,attrs={}){
 
-  const n =
+  const n=
     document.createElementNS(
-      'http://www.w3.org/2000/svg',
+      "http://www.w3.org/2000/svg",
       name
     );
 
-  Object.entries(attrs).forEach(
-    ([k,v]) => n.setAttribute(k,v)
-  );
+
+  Object.entries(attrs)
+  .forEach(([k,v])=>{
+    n.setAttribute(k,v);
+  });
+
 
   return n;
+
 }
 
 
-/* 畫圖 */
-
 function render(){
 
-  drawing.innerHTML = '';
-
-  if(!segments.length){
-
-    fitView();
-
-    return;
-  }
+  drawing.innerHTML="";
 
 
-  segments.forEach((s,i) => {
+  segments.forEach(s=>{
 
-    /* 線 */
-
-    const line = el('line',{
+    const line=el("line",{
 
       x1:s.start.x,
 
@@ -463,71 +869,69 @@ function render(){
 
       y2:s.end.y,
 
-      stroke:'#111',
+      stroke:"#111",
 
-      'stroke-width':8,
+      "stroke-width":8,
 
-      'stroke-linecap':'round'
+      "stroke-linecap":"round"
 
     });
+
 
     drawing.appendChild(line);
 
 
-    /* 尺寸文字 */
+    const mx=
+      (s.start.x+s.end.x)/2;
 
-    const mx =
-      (s.start.x + s.end.x) / 2;
-
-    const my =
-      (s.start.y + s.end.y) / 2;
+    const my=
+      (s.start.y+s.end.y)/2;
 
 
-    const text = el('text',{
+    const text=el("text",{
 
       x:mx,
 
       y:my,
 
-      'font-size':Math.max(
-        45,
-        Math.min(90,s.length/15)
-      ),
+      "font-size":
+        Math.max(
+          45,
+          Math.min(90,s.length/15)
+        ),
 
-      'text-anchor':'middle',
+      "text-anchor":"middle",
 
-      'dominant-baseline':'middle',
+      "dominant-baseline":"middle",
 
-      fill:'#111',
+      fill:"#111",
 
-      'font-weight':'600'
+      "font-weight":"600"
 
     });
 
 
     if(
-      s.direction === 'up' ||
-      s.direction === 'down'
+      s.direction==="up" ||
+      s.direction==="down"
     ){
 
       text.setAttribute(
-        'transform',
+        "transform",
         `rotate(-90 ${mx} ${my})`
       );
 
     }
 
 
-    text.textContent =
+    text.textContent=
       `${s.length} mm`;
 
 
     drawing.appendChild(text);
 
 
-    /* 端點 */
-
-    const point = el('circle',{
+    const point=el("circle",{
 
       cx:s.end.x,
 
@@ -535,9 +939,10 @@ function render(){
 
       r:12,
 
-      fill:'#111'
+      fill:"#111"
 
     });
+
 
     drawing.appendChild(point);
 
@@ -549,48 +954,49 @@ function render(){
 }
 
 
-/* 自動調整畫面 */
-
 function fitView(){
 
-  const pad = 500;
-
-  const xs =
-    points.map(p => p.x);
-
-  const ys =
-    points.map(p => p.y);
+  const pad=500;
 
 
-  const minX =
-    Math.min(...xs) - pad;
+  const xs=
+    points.map(p=>p.x);
 
-  const maxX =
-    Math.max(...xs) + pad;
-
-  const minY =
-    Math.min(...ys) - pad;
-
-  const maxY =
-    Math.max(...ys) + pad;
+  const ys=
+    points.map(p=>p.y);
 
 
-  const w =
-    Math.max(maxX - minX,1000);
+  const minX=
+    Math.min(...xs)-pad;
 
-  const h =
-    Math.max(maxY - minY,800);
+  const maxX=
+    Math.max(...xs)+pad;
+
+  const minY=
+    Math.min(...ys)-pad;
+
+  const maxY=
+    Math.max(...ys)+pad;
+
+
+  const w=
+    Math.max(maxX-minX,1000);
+
+  const h=
+    Math.max(maxY-minY,800);
 
 
   svg.setAttribute(
-    'viewBox',
+    "viewBox",
     `${minX} ${minY} ${w} ${h}`
   );
 
 }
 
 
-/* 啟動 */
+/* =========================
+   啟動
+========================= */
 
 updateDirectionUI();
 
