@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>房屋丈量畫圖工具</title>
+
+<style>
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC",sans-serif;
+  background:#f5f5f5;
+  color:#222;
+}
+
+header{
+  padding:14px 16px;
+  background:white;
+  border-bottom:1px solid #ddd;
+}
+
+h1{
+  font-size:18px;
+  margin:0 0 5px;
+}
+
+.status{
+  font-size:13px;
+  color:#666;
+}
+
+.canvas-wrap{
+  height:52vh;
+  min-height:360px;
+  background:white;
+  margin:12px;
+  border:1px solid #ddd;
+  border-radius:12px;
+  overflow:hidden;
+}
+
+svg{
+  width:100%;
+  height:100%;
+  display:block;
+  background:#fafafa;
+}
+
+.controls{
+  background:white;
+  padding:14px 14px 24px;
+  border-top:1px solid #ddd;
+}
+
+.direction-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:8px;
+  max-width:320px;
+  margin:0 auto 14px;
+}
+
+.dir{
+  height:48px;
+  border:1px solid #ccc;
+  background:white;
+  border-radius:10px;
+  font-size:22px;
+}
+
+.dir.active{
+  background:#222;
+  color:white;
+}
+
+.dir.up{
+  grid-column:2;
+}
+
+.dir.left{
+  grid-column:1;
+  grid-row:2;
+}
+
+.dir.center{
+  grid-column:2;
+  grid-row:2;
+  background:#f2f2f2;
+  font-size:13px;
+}
+
+.dir.right{
+  grid-column:3;
+  grid-row:2;
+}
+
+.dir.down{
+  grid-column:2;
+  grid-row:3;
+}
+
+.input-row{
+  display:flex;
+  gap:8px;
+  max-width:520px;
+  margin:0 auto;
+}
+
+input{
+  flex:1;
+  height:48px;
+  border:1px solid #ccc;
+  border-radius:10px;
+  padding:0 14px;
+  font-size:18px;
+}
+
+button.primary{
+  height:48px;
+  padding:0 18px;
+  border:0;
+  border-radius:10px;
+  background:#111;
+  color:white;
+  font-size:16px;
+}
+
+.action-row{
+  display:flex;
+  gap:8px;
+  max-width:520px;
+  margin:10px auto 0;
+}
+
+.action-row button{
+  flex:1;
+  height:42px;
+  border:1px solid #ccc;
+  background:white;
+  border-radius:10px;
+}
+
+.hint{
+  text-align:center;
+  color:#777;
+  font-size:13px;
+  margin-top:10px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>📐 房屋丈量畫圖工具</h1>
+  <div class="status" id="status">
+    目前方向：→　輸入尺寸後新增線段
+  </div>
+</header>
+
+<div class="canvas-wrap">
+
+<svg id="plan"
+     viewBox="-500 -500 1000 1000"
+     preserveAspectRatio="xMidYMid meet">
+
+<defs>
+  <pattern id="grid"
+           width="100"
+           height="100"
+           patternUnits="userSpaceOnUse">
+
+    <path d="M 100 0 L 0 0 0 100"
+          fill="none"
+          stroke="#e9e9e9"
+          stroke-width="1"/>
+
+  </pattern>
+</defs>
+
+<rect x="-10000"
+      y="-10000"
+      width="20000"
+      height="20000"
+      fill="url(#grid)"/>
+
+<g id="drawing"></g>
+
+</svg>
+
+</div>
+
+<div class="controls">
+
+<div class="direction-grid">
+
+<button class="dir up" data-dir="up">↑</button>
+
+<button class="dir left" data-dir="left">←</button>
+
+<button class="dir center" id="currentDir">→</button>
+
+<button class="dir right" data-dir="right">→</button>
+
+<button class="dir down" data-dir="down">↓</button>
+
+</div>
+
+<div class="input-row">
+
+<input
+  id="length"
+  type="number"
+  inputmode="numeric"
+  min="1"
+  step="1"
+  placeholder="輸入長度，例如 3200">
+
+<button class="primary" id="add">
+  新增線段
+</button>
+
+</div>
+
+<div class="action-row">
+
+<button id="undo">
+  ↩ 上一步
+</button>
+
+<button id="clear">
+  🗑 清除全部
+</button>
+
+</div>
+
+<div class="hint">
+  單位：mm　例如：→ 3200 → ↓ 2400 → ← 1800
+</div>
+
+</div>
+
+<script>
+
+const svg = document.getElementById('plan');
+const drawing = document.getElementById('drawing');
+const lengthInput = document.getElementById('length');
+const status = document.getElementById('status');
+const currentDirBtn = document.getElementById('currentDir');
+
+let direction = 'right';
+
+let points = [
+  {x:0,y:0}
+];
+
+let segments = [];
+
+const dirNames = {
+  up:'↑ 上',
+  down:'↓ 下',
+  left:'← 左',
+  right:'→ 右'
+};
+
+
+/* 方向按鈕 */
+
+document.querySelectorAll('.dir[data-dir]').forEach(btn => {
+
+  btn.addEventListener('click', () => {
+
+    direction = btn.dataset.dir;
+
+    updateDirectionUI();
+
+  });
+
+});
+
+
+/* 更新方向 */
+
+function updateDirectionUI(){
+
+  document.querySelectorAll('.dir[data-dir]')
+    .forEach(b => {
+
+      b.classList.toggle(
+        'active',
+        b.dataset.dir === direction
+      );
+
+    });
+
+  currentDirBtn.textContent =
+    dirNames[direction].split(' ')[0];
+
+  status.textContent =
+    `目前方向：${dirNames[direction]}　輸入尺寸後新增線段`;
+}
+
+
+/* 新增線段 */
+
+function addSegment(){
+
+  const len = Number(lengthInput.value);
+
+  if(!len || len <= 0){
+
+    alert('請輸入正確的尺寸（mm）');
+
+    return;
+  }
+
+  const start =
+    points[points.length - 1];
+
+  let end = {...start};
+
+
+  if(direction === 'right')
+    end.x += len;
+
+  if(direction === 'left')
+    end.x -= len;
+
+  if(direction === 'down')
+    end.y += len;
+
+  if(direction === 'up')
+    end.y -= len;
+
+
+  segments.push({
+
+    start:{...start},
+
+    end:{...end},
+
+    length:len,
+
+    direction:direction
+
+  });
+
+
+  points.push(end);
+
+  lengthInput.value = '';
+
+  render();
+
+  lengthInput.focus();
+
+}
+
+
+/* 新增 */
+
+document.getElementById('add')
+  .addEventListener('click', addSegment);
+
+
+/* Enter也可以新增 */
+
+lengthInput.addEventListener('keydown', e => {
+
+  if(e.key === 'Enter')
+    addSegment();
+
+});
+
+
+/* 上一步 */
+
+document.getElementById('undo')
+  .addEventListener('click', () => {
+
+    if(!segments.length)
+      return;
+
+    segments.pop();
+
+    points.pop();
+
+    render();
+
+  });
+
+
+/* 清除 */
+
+document.getElementById('clear')
+  .addEventListener('click', () => {
+
+    if(!segments.length)
+      return;
+
+    if(confirm('確定要清除全部線段嗎？')){
+
+      segments = [];
+
+      points = [
+        {x:0,y:0}
+      ];
+
+      render();
+
+    }
+
+  });
+
+
+/* SVG元素 */
+
+function el(name, attrs = {}){
+
+  const n =
+    document.createElementNS(
+      'http://www.w3.org/2000/svg',
+      name
+    );
+
+  Object.entries(attrs).forEach(
+    ([k,v]) => n.setAttribute(k,v)
+  );
+
+  return n;
+}
+
+
+/* 畫圖 */
+
+function render(){
+
+  drawing.innerHTML = '';
+
+  if(!segments.length){
+
+    fitView();
+
+    return;
+  }
+
+
+  segments.forEach((s,i) => {
+
+    /* 線 */
+
+    const line = el('line',{
+
+      x1:s.start.x,
+
+      y1:s.start.y,
+
+      x2:s.end.x,
+
+      y2:s.end.y,
+
+      stroke:'#111',
+
+      'stroke-width':8,
+
+      'stroke-linecap':'round'
+
+    });
+
+    drawing.appendChild(line);
+
+
+    /* 尺寸文字 */
+
+    const mx =
+      (s.start.x + s.end.x) / 2;
+
+    const my =
+      (s.start.y + s.end.y) / 2;
+
+
+    const text = el('text',{
+
+      x:mx,
+
+      y:my,
+
+      'font-size':Math.max(
+        45,
+        Math.min(90,s.length/15)
+      ),
+
+      'text-anchor':'middle',
+
+      'dominant-baseline':'middle',
+
+      fill:'#111',
+
+      'font-weight':'600'
+
+    });
+
+
+    if(
+      s.direction === 'up' ||
+      s.direction === 'down'
+    ){
+
+      text.setAttribute(
+        'transform',
+        `rotate(-90 ${mx} ${my})`
+      );
+
+    }
+
+
+    text.textContent =
+      `${s.length} mm`;
+
+
+    drawing.appendChild(text);
+
+
+    /* 端點 */
+
+    const point = el('circle',{
+
+      cx:s.end.x,
+
+      cy:s.end.y,
+
+      r:12,
+
+      fill:'#111'
+
+    });
+
+    drawing.appendChild(point);
+
+  });
+
+
+  fitView();
+
+}
+
+
+/* 自動調整畫面 */
+
+function fitView(){
+
+  const pad = 500;
+
+  const xs =
+    points.map(p => p.x);
+
+  const ys =
+    points.map(p => p.y);
+
+
+  const minX =
+    Math.min(...xs) - pad;
+
+  const maxX =
+    Math.max(...xs) + pad;
+
+  const minY =
+    Math.min(...ys) - pad;
+
+  const maxY =
+    Math.max(...ys) + pad;
+
+
+  const w =
+    Math.max(maxX - minX,1000);
+
+  const h =
+    Math.max(maxY - minY,800);
+
+
+  svg.setAttribute(
+    'viewBox',
+    `${minX} ${minY} ${w} ${h}`
+  );
+
+}
+
+
+/* 啟動 */
+
+updateDirectionUI();
+
+render();
+
+</script>
+
+</body>
+</html>
