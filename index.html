@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
+
 <meta charset="UTF-8">
+
 <meta name="viewport"
-      content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 
 <title>房屋丈量畫圖工具</title>
 
@@ -16,10 +18,10 @@
 
 body{
   margin:0;
-  font-family:-apple-system,BlinkMacSystemFont,"PingFang TC",
-              "Noto Sans TC",Arial,sans-serif;
   background:#f5f5f5;
   color:#222;
+  font-family:-apple-system,BlinkMacSystemFont,
+  "PingFang TC","Noto Sans TC",Arial,sans-serif;
 }
 
 header{
@@ -35,7 +37,6 @@ header{
   display:flex;
   align-items:center;
   justify-content:space-between;
-  gap:8px;
 }
 
 .header-title{
@@ -47,6 +48,25 @@ header{
   font-size:13px;
   opacity:.8;
   margin-top:4px;
+}
+
+.container{
+  max-width:900px;
+  margin:auto;
+  padding:12px;
+}
+
+.panel{
+  background:white;
+  border-radius:14px;
+  padding:12px;
+  margin-bottom:12px;
+  box-shadow:0 1px 5px rgba(0,0,0,.08);
+}
+
+.panel-title{
+  font-weight:700;
+  margin-bottom:10px;
 }
 
 button{
@@ -64,23 +84,15 @@ button:active{
   transform:scale(.97);
 }
 
-.container{
-  padding:12px;
-  max-width:900px;
-  margin:auto;
-}
-
-.panel{
+input,
+select{
+  width:100%;
+  height:46px;
+  border:1px solid #ccc;
+  border-radius:10px;
+  padding:0 12px;
+  font-size:18px;
   background:white;
-  border-radius:14px;
-  padding:12px;
-  margin-bottom:12px;
-  box-shadow:0 1px 5px rgba(0,0,0,.08);
-}
-
-.panel-title{
-  font-weight:700;
-  margin-bottom:10px;
 }
 
 .tool-row{
@@ -97,17 +109,6 @@ button:active{
   color:white;
 }
 
-input,
-select{
-  width:100%;
-  height:46px;
-  border:1px solid #ccc;
-  border-radius:10px;
-  padding:0 12px;
-  font-size:18px;
-  background:white;
-}
-
 .input-row{
   display:flex;
   gap:8px;
@@ -115,10 +116,6 @@ select{
 
 .input-row input{
   flex:1;
-}
-
-.input-row button{
-  white-space:nowrap;
 }
 
 .direction-grid{
@@ -140,28 +137,6 @@ select{
 .direction-active{
   background:#222;
   color:white;
-}
-
-.wall-panel{
-  display:block;
-}
-
-.placement-panel{
-  display:none;
-}
-
-.info{
-  background:#f1f1f1;
-  border-radius:10px;
-  padding:10px;
-  font-size:14px;
-  line-height:1.6;
-  margin-bottom:10px;
-}
-
-.selected-info{
-  background:#eee7ff;
-  color:#5d35a8;
 }
 
 .primary{
@@ -188,10 +163,31 @@ select{
   background:#e9e9e9;
 }
 
+.wall-panel{
+  display:block;
+}
+
+.placement-panel{
+  display:none;
+}
+
+.info{
+  background:#f1f1f1;
+  border-radius:10px;
+  padding:10px;
+  font-size:14px;
+  line-height:1.6;
+  margin-bottom:10px;
+}
+
+.selected-info{
+  background:#eee7ff;
+  color:#5d35a8;
+}
+
 .action-row{
   display:flex;
   gap:8px;
-  margin-top:10px;
 }
 
 .action-row button{
@@ -222,7 +218,7 @@ svg{
 
 .wall-hit{
   stroke:transparent;
-  stroke-width:35;
+  stroke-width:40;
   pointer-events:stroke;
 }
 
@@ -233,7 +229,7 @@ svg{
 
 .door-line{
   stroke:#e67e22;
-  stroke-width:6;
+  stroke-width:5;
 }
 
 .door-leaf{
@@ -254,39 +250,58 @@ svg{
 }
 
 .dimension-text{
-  fill:#333;
+  fill:#222;
   font-size:42px;
-  font-weight:600;
+  font-weight:700;
   text-anchor:middle;
   dominant-baseline:middle;
+  paint-order:stroke;
+  stroke:white;
+  stroke-width:8;
 }
 
 .window-text{
   fill:#1976d2;
   font-size:34px;
-  font-weight:600;
+  font-weight:700;
   text-anchor:middle;
   dominant-baseline:middle;
-}
-
-.offset-text{
-  fill:#6a35a8;
-  font-size:30px;
-  font-weight:600;
-  text-anchor:middle;
-  dominant-baseline:middle;
+  paint-order:stroke;
+  stroke:white;
+  stroke-width:8;
 }
 
 .door-text{
   fill:#e67e22;
   font-size:34px;
-  font-weight:600;
+  font-weight:700;
   text-anchor:middle;
   dominant-baseline:middle;
+  paint-order:stroke;
+  stroke:white;
+  stroke-width:8;
+}
+
+.offset-text{
+  fill:#6a35a8;
+  font-size:30px;
+  font-weight:700;
+  text-anchor:middle;
+  dominant-baseline:middle;
+  paint-order:stroke;
+  stroke:white;
+  stroke-width:8;
 }
 
 .point{
   fill:#111;
+}
+
+.tip{
+  color:#666;
+  font-size:13px;
+  line-height:1.5;
+  margin-top:7px;
 }
 
 .legend{
@@ -294,7 +309,7 @@ svg{
   gap:14px;
   flex-wrap:wrap;
   font-size:13px;
-  padding:10px 4px 0;
+  padding:10px 4px;
 }
 
 .legend-item{
@@ -308,21 +323,10 @@ svg{
   height:4px;
 }
 
-.black{
-  background:#111;
-}
-
-.blue{
-  background:#1976d2;
-}
-
-.orange{
-  background:#e67e22;
-}
-
-.purple{
-  background:#6a35a8;
-}
+.black{background:#111}
+.blue{background:#1976d2}
+.orange{background:#e67e22}
+.purple{background:#6a35a8}
 
 .overlay{
   position:fixed;
@@ -382,13 +386,6 @@ svg{
   margin-top:8px;
 }
 
-.tip{
-  color:#666;
-  font-size:13px;
-  line-height:1.5;
-  margin-top:7px;
-}
-
 </style>
 </head>
 
@@ -396,304 +393,369 @@ svg{
 
 <header>
 
-  <div class="header-row">
+<div class="header-row">
 
-    <div>
-      <div class="header-title">房屋丈量畫圖工具</div>
-      <div class="case-name" id="currentCaseName">尚未建立案件</div>
-    </div>
+<div>
 
-    <div style="display:flex;gap:6px;">
-      <button onclick="newCase()">＋案件</button>
-      <button onclick="openCases()">📁</button>
-    </div>
+<div class="header-title">
+房屋丈量畫圖工具
+</div>
 
-  </div>
+<div class="case-name"
+id="currentCaseName">
+尚未建立案件
+</div>
+
+</div>
+
+<div style="display:flex;gap:6px;">
+
+<button onclick="newCase()">
+＋案件
+</button>
+
+<button onclick="openCases()">
+📁
+</button>
+
+</div>
+
+</div>
 
 </header>
 
 
 <div class="container">
 
-  <!-- 工具 -->
-  <div class="panel">
 
-    <div class="panel-title">目前工具</div>
+<!-- 工具 -->
 
-    <div class="tool-row">
+<div class="panel">
 
-      <button id="toolWall"
-              class="tool-active"
-              onclick="selectTool('wall')">
-        🧱 牆線
-      </button>
+<div class="panel-title">
+目前工具
+</div>
 
-      <button id="toolWindow"
-              onclick="selectTool('window')">
-        🪟 窗戶
-      </button>
-
-      <button id="toolDoor"
-              onclick="selectTool('door')">
-        🚪 門
-      </button>
-
-    </div>
-
-  </div>
-
-
-  <!-- 畫牆 -->
-  <div class="panel wall-panel" id="wallPanel">
-
-    <div class="panel-title">畫牆面</div>
-
-    <input
-      id="wallLength"
-      type="number"
-      inputmode="numeric"
-      placeholder="輸入牆長，例如 3000"
-      autocomplete="off"
-    >
-
-    <div class="direction-grid">
-
-      <button class="direction-empty">　</button>
-
-      <button id="upBtn"
-              onclick="setDirection('up')">
-        ↑
-      </button>
-
-      <button class="direction-empty">　</button>
-
-      <button id="leftBtn"
-              onclick="setDirection('left')">
-        ←
-      </button>
-
-      <button id="downBtn"
-              onclick="setDirection('down')">
-        ↓
-      </button>
-
-      <button id="rightBtn"
-              class="direction-active"
-              onclick="setDirection('right')">
-        →
-      </button>
-
-    </div>
-
-    <button
-      class="primary"
-      style="width:100%;margin-top:10px;"
-      onclick="addWall()">
-      ＋新增牆面
-    </button>
-
-    <div class="tip">
-      輸入牆長 → 選擇方向 → 新增牆面。<br>
-      可以連續輸入，不需要一直重新點輸入框。
-    </div>
-
-  </div>
-
-
-  <!-- 門窗 -->
-  <div class="panel placement-panel" id="placementPanel">
-
-    <div class="panel-title" id="placementTitle">
-      放置門窗
-    </div>
+<div class="tool-row">
 
-    <div class="info" id="selectedWallInfo">
-      請先在下方圖面上點擊要放置門窗的牆面。
-    </div>
+<button id="toolWall"
+class="tool-active"
+onclick="selectTool('wall')">
+🧱 牆線
+</button>
 
-    <div id="openingForm" style="display:none;">
+<button id="toolWindow"
+onclick="selectTool('window')">
+🪟 窗戶
+</button>
 
-      <div style="margin-bottom:8px;">
-        <label>寬度 mm</label>
-        <input
-          id="openingWidth"
-          type="number"
-          inputmode="numeric"
-          placeholder="例如 900"
-        >
-      </div>
-
-      <div style="margin-bottom:8px;">
-        <label>高度 mm</label>
-        <input
-          id="openingHeight"
-          type="number"
-          inputmode="numeric"
-          placeholder="例如 2100"
-        >
-      </div>
-
-      <div style="margin-bottom:8px;">
-        <label>離地高度 / 窗台高度 mm</label>
-        <input
-          id="openingSill"
-          type="number"
-          inputmode="numeric"
-          value="0"
-        >
-      </div>
+<button id="toolDoor"
+onclick="selectTool('door')">
+🚪 門
+</button>
 
-      <div style="margin-bottom:8px;">
-        <label>距離牆端 mm</label>
-        <input
-          id="openingOffset"
-          type="number"
-          inputmode="numeric"
-          placeholder="例如 500"
-        >
-      </div>
+</div>
 
-      <div id="doorSwingBox" style="display:none;margin-bottom:8px;">
+</div>
 
-        <label>開門方向</label>
-
-        <select id="doorSwing">
-          <option value="left">左開</option>
-          <option value="right">右開</option>
-        </select>
-
-      </div>
 
-      <button
-        id="addOpeningBtn"
-        class="primary"
-        style="width:100%;"
-        onclick="addOpening()">
-        新增
-      </button>
+<!-- 畫牆 -->
 
-      <button
-        class="secondary"
-        style="width:100%;margin-top:8px;"
-        onclick="cancelWallSelection()">
-        取消選擇
-      </button>
+<div class="panel wall-panel"
+id="wallPanel">
 
-    </div>
+<div class="panel-title">
+畫牆面
+</div>
 
-  </div>
+<input
+id="wallLength"
+type="number"
+inputmode="numeric"
+placeholder="輸入牆長，例如 3000"
+autocomplete="off"
+>
 
+<div class="direction-grid">
 
-  <!-- 操作 -->
-  <div class="panel">
+<button class="direction-empty">
+　
+</button>
 
-    <div class="action-row">
+<button
+id="upBtn"
+onclick="setDirection('up')">
+↑
+</button>
 
-      <button onclick="undo()">
-        ↩ 復原
-      </button>
+<button class="direction-empty">
+　
+</button>
 
-      <button onclick="fitView()">
-        🔍 自動縮放
-      </button>
+<button
+id="leftBtn"
+onclick="setDirection('left')">
+←
+</button>
 
-      <button class="danger"
-              onclick="clearAll()">
-        🗑 清除
-      </button>
+<button
+id="downBtn"
+onclick="setDirection('down')">
+↓
+</button>
 
-    </div>
+<button
+id="rightBtn"
+class="direction-active"
+onclick="setDirection('right')">
+→
+</button>
 
-  </div>
+</div>
 
+<button
+class="primary"
+style="width:100%;margin-top:10px;"
+onclick="addWall()">
+＋新增牆面
+</button>
 
-  <!-- 圖面 -->
-  <div id="drawingWrap">
+<div class="tip">
+輸入尺寸 → 選方向 → 新增牆面。
+<br>
+可以連續輸入，不需要一直重新點輸入框。
+</div>
 
-    <svg id="drawing"
-         viewBox="-1000 -1000 2000 2000">
+</div>
 
-      <defs>
 
-        <marker
-          id="arrow"
-          markerWidth="10"
-          markerHeight="10"
-          refX="5"
-          refY="5"
-          orient="auto"
-          markerUnits="strokeWidth">
+<!-- 門窗 -->
 
-          <path
-            d="M 0 0 L 10 5 L 0 10 z"
-            fill="#555">
-          </path>
+<div
+class="panel placement-panel"
+id="placementPanel">
 
-        </marker>
+<div
+class="panel-title"
+id="placementTitle">
+放置門窗
+</div>
 
-      </defs>
+<div
+class="info"
+id="selectedWallInfo">
+請先在下方圖面上點擊要放置門窗的牆面。
+</div>
 
-      <g id="drawingGroup"></g>
+<div
+id="openingForm"
+style="display:none;">
 
-    </svg>
+<label>寬度 mm</label>
 
-  </div>
+<input
+id="openingWidth"
+type="number"
+inputmode="numeric"
+placeholder="例如 900"
+>
 
+<br><br>
 
-  <div class="legend">
+<label>高度 mm</label>
 
-    <div class="legend-item">
-      <div class="legend-line black"></div>
-      牆面
-    </div>
+<input
+id="openingHeight"
+type="number"
+inputmode="numeric"
+placeholder="例如 2100"
+>
 
-    <div class="legend-item">
-      <div class="legend-line blue"></div>
-      窗戶
-    </div>
+<br><br>
 
-    <div class="legend-item">
-      <div class="legend-line orange"></div>
-      門
-    </div>
+<label>離地高度 / 窗台高度 mm</label>
 
-    <div class="legend-item">
-      <div class="legend-line purple"></div>
-      定位尺寸
-    </div>
+<input
+id="openingSill"
+type="number"
+inputmode="numeric"
+value="0"
+>
 
-  </div>
+<br><br>
+
+<label>距離牆端 mm</label>
+
+<input
+id="openingOffset"
+type="number"
+inputmode="numeric"
+placeholder="例如 500"
+>
+
+<br><br>
+
+<div
+id="doorSwingBox"
+style="display:none;">
+
+<label>開門方向</label>
+
+<select id="doorSwing">
+
+<option value="left">
+左開
+</option>
+
+<option value="right">
+右開
+</option>
+
+</select>
+
+<br><br>
+
+</div>
+
+<button
+id="addOpeningBtn"
+class="primary"
+style="width:100%;"
+onclick="addOpening()">
+新增
+</button>
+
+<br><br>
+
+<button
+class="secondary"
+style="width:100%;"
+onclick="cancelWallSelection()">
+取消選擇
+</button>
+
+</div>
+
+</div>
+
+
+<!-- 操作 -->
+
+<div class="panel">
+
+<div class="action-row">
+
+<button onclick="undo()">
+↩ 復原
+</button>
+
+<button onclick="fitView()">
+🔍 自動縮放
+</button>
+
+<button
+class="danger"
+onclick="clearAll()">
+🗑 清除
+</button>
+
+</div>
+
+</div>
+
+
+<!-- 圖面 -->
+
+<div id="drawingWrap">
+
+<svg
+id="drawing"
+viewBox="-1000 -1000 2000 2000">
+
+<defs>
+
+<marker
+id="arrow"
+markerWidth="10"
+markerHeight="10"
+refX="5"
+refY="5"
+orient="auto"
+markerUnits="strokeWidth">
+
+<path
+d="M 0 0 L 10 5 L 0 10 z"
+fill="#555">
+</path>
+
+</marker>
+
+</defs>
+
+<g id="drawingGroup"></g>
+
+</svg>
+
+</div>
+
+
+<div class="legend">
+
+<div class="legend-item">
+<div class="legend-line black"></div>
+牆面
+</div>
+
+<div class="legend-item">
+<div class="legend-line blue"></div>
+窗戶
+</div>
+
+<div class="legend-item">
+<div class="legend-line orange"></div>
+門
+</div>
+
+<div class="legend-item">
+<div class="legend-line purple"></div>
+定位
+</div>
+
+</div>
 
 </div>
 
 
 <!-- 案件視窗 -->
 
-<div class="overlay" id="caseOverlay">
+<div
+class="overlay"
+id="caseOverlay">
 
-  <div class="sheet">
+<div class="sheet">
 
-    <div class="sheet-title">
-      已儲存案件
-    </div>
+<div class="sheet-title">
+已儲存案件
+</div>
 
-    <div id="caseList"></div>
+<div id="caseList"></div>
 
-    <button
-      class="secondary close-btn"
-      onclick="closeCases()">
-      關閉
-    </button>
+<button
+class="secondary close-btn"
+onclick="closeCases()">
+關閉
+</button>
 
-  </div>
+</div>
 
 </div>
 
 
 <script>
 
+
 /* =========================
-   基本資料
+   資料
 ========================= */
 
 let points = [{x:0,y:0}];
@@ -720,73 +782,97 @@ let history = [];
 
 
 /* =========================
-   工具切換
+   工具
 ========================= */
 
 function selectTool(tool){
 
-  currentTool = tool;
+currentTool = tool;
 
-  document.getElementById("toolWall")
-    .classList.toggle("tool-active",tool === "wall");
+document
+.getElementById("toolWall")
+.classList.toggle(
+"tool-active",
+tool === "wall"
+);
 
-  document.getElementById("toolWindow")
-    .classList.toggle("tool-active",tool === "window");
+document
+.getElementById("toolWindow")
+.classList.toggle(
+"tool-active",
+tool === "window"
+);
 
-  document.getElementById("toolDoor")
-    .classList.toggle("tool-active",tool === "door");
+document
+.getElementById("toolDoor")
+.classList.toggle(
+"tool-active",
+tool === "door"
+);
 
 
-  const wallPanel =
-    document.getElementById("wallPanel");
+if(tool === "wall"){
 
-  const placementPanel =
-    document.getElementById("placementPanel");
+document
+.getElementById("wallPanel")
+.style.display = "block";
+
+document
+.getElementById("placementPanel")
+.style.display = "none";
+
+}else{
+
+document
+.getElementById("wallPanel")
+.style.display = "none";
+
+document
+.getElementById("placementPanel")
+.style.display = "block";
 
 
-  if(tool === "wall"){
+if(tool === "window"){
 
-    wallPanel.style.display = "block";
-    placementPanel.style.display = "none";
+document
+.getElementById("placementTitle")
+.textContent = "🪟 放置窗戶";
 
-  }else{
+document
+.getElementById("addOpeningBtn")
+.textContent = "＋新增窗戶";
 
-    wallPanel.style.display = "none";
-    placementPanel.style.display = "block";
+document
+.getElementById("addOpeningBtn")
+.className = "window-btn";
 
-    if(tool === "window"){
+document
+.getElementById("doorSwingBox")
+.style.display = "none";
 
-      document.getElementById("placementTitle")
-        .textContent = "🪟 放置窗戶";
+}else{
 
-      document.getElementById("addOpeningBtn")
-        .textContent = "＋新增窗戶";
+document
+.getElementById("placementTitle")
+.textContent = "🚪 放置門";
 
-      document.getElementById("addOpeningBtn")
-        .className = "window-btn";
+document
+.getElementById("addOpeningBtn")
+.textContent = "＋新增門";
 
-      document.getElementById("doorSwingBox")
-        .style.display = "none";
+document
+.getElementById("addOpeningBtn")
+.className = "door-btn";
 
-    }else{
+document
+.getElementById("doorSwingBox")
+.style.display = "block";
 
-      document.getElementById("placementTitle")
-        .textContent = "🚪 放置門";
+}
 
-      document.getElementById("addOpeningBtn")
-        .textContent = "＋新增門";
+cancelWallSelection();
 
-      document.getElementById("addOpeningBtn")
-        .className = "door-btn";
-
-      document.getElementById("doorSwingBox")
-        .style.display = "block";
-
-    }
-
-    cancelWallSelection();
-
-  }
+}
 
 }
 
@@ -797,57 +883,51 @@ function selectTool(tool){
 
 function setDirection(direction){
 
-  currentDirection = direction;
-
-  document.getElementById("upBtn")
-    .classList.remove("direction-active");
-
-  document.getElementById("downBtn")
-    .classList.remove("direction-active");
-
-  document.getElementById("leftBtn")
-    .classList.remove("direction-active");
-
-  document.getElementById("rightBtn")
-    .classList.remove("direction-active");
+currentDirection = direction;
 
 
-  const map = {
-    up:"upBtn",
-    down:"downBtn",
-    left:"leftBtn",
-    right:"rightBtn"
-  };
+document
+.querySelectorAll(
+".direction-grid button"
+)
+.forEach(function(btn){
 
-  document.getElementById(map[direction])
-    .classList.add("direction-active");
+btn.classList.remove(
+"direction-active"
+);
+
+});
 
 
-  /*
-    非常重要：
+const map = {
 
-    iPhone Safari 點按鈕時 input 可能失去 focus，
-    所以重新 focus 回牆長輸入框。
-  */
+up:"upBtn",
 
-  const input =
-    document.getElementById("wallLength");
+down:"downBtn",
 
-  setTimeout(function(){
+left:"leftBtn",
 
-    input.focus();
+right:"rightBtn"
 
-    /*
-      讓游標保持在輸入框最後面
-    */
-    try{
-      input.setSelectionRange(
-        input.value.length,
-        input.value.length
-      );
-    }catch(e){}
+};
 
-  },50);
+
+document
+.getElementById(map[direction])
+.classList.add(
+"direction-active"
+);
+
+
+/*
+  這裡故意不 focus input。
+
+  iPhone Safari 如果在 button click 後
+  強制 focus，很容易讓鍵盤重新閃爍或收起。
+
+  使用者原本已經在輸入框打字時，
+  鍵盤會維持目前狀態。
+*/
 
 }
 
@@ -858,456 +938,468 @@ function setDirection(direction){
 
 function addWall(){
 
-  const input =
-    document.getElementById("wallLength");
+const input =
+document.getElementById("wallLength");
 
-  const length =
-    Number(input.value);
-
-
-  if(!length || length <= 0){
-
-    input.focus();
-
-    return;
-  }
+const length =
+Number(input.value);
 
 
-  const last =
-    points[points.length - 1];
+if(!length || length <= 0){
+
+input.focus();
+
+return;
+
+}
 
 
-  let dx = 0;
-  let dy = 0;
+const last =
+points[points.length - 1];
 
 
-  if(currentDirection === "right")
-    dx = length;
+let dx = 0;
 
-  if(currentDirection === "left")
-    dx = -length;
-
-  if(currentDirection === "down")
-    dy = length;
-
-  if(currentDirection === "up")
-    dy = -length;
+let dy = 0;
 
 
-  const end = {
+if(currentDirection === "right")
+dx = length;
 
-    x:last.x + dx,
+if(currentDirection === "left")
+dx = -length;
 
-    y:last.y + dy
+if(currentDirection === "down")
+dy = length;
 
-  };
-
-
-  saveHistory();
-
-
-  walls.push({
-
-    start:{...last},
-
-    end:{...end},
-
-    length:length
-
-  });
+if(currentDirection === "up")
+dy = -length;
 
 
-  points.push(end);
+const end = {
+
+x:last.x + dx,
+
+y:last.y + dy
+
+};
 
 
-  saveCase();
-
-  render();
+saveHistory();
 
 
-  /*
-    重新 focus。
+walls.push({
 
-    這樣：
-    1. 新增牆面
-    2. 鍵盤保持開啟
-    3. 可以直接輸入下一個尺寸
-  */
+start:{...last},
 
-  setTimeout(function(){
+end:{...end},
 
-    input.focus();
+length:length
 
-    try{
+});
 
-      input.setSelectionRange(
-        input.value.length,
-        input.value.length
-      );
 
-    }catch(e){}
+points.push(end);
 
-  },50);
+
+saveCase();
+
+render();
+
+
+/*
+  不清空輸入框。
+
+  不使用 setTimeout focus。
+
+  這樣 iPhone Safari 不會因為程式
+  強制 focus 而把鍵盤搞掉。
+*/
 
 }
 
 
 /* =========================
-   案件管理
+   案件
 ========================= */
 
 function newCase(){
 
-  const name =
-    prompt("請輸入案件名稱");
+const name =
+prompt("請輸入案件名稱");
 
-  if(!name)
-    return;
-
-
-  currentCaseId =
-    Date.now().toString();
-
-  currentCaseName =
-    name;
+if(!name)
+return;
 
 
-  points = [{x:0,y:0}];
+currentCaseId =
+Date.now().toString();
 
-  walls = [];
-
-  windows = [];
-
-  doors = [];
-
-  history = [];
-
-  selectedWallIndex = null;
-
-  selectedTapDistance = 0;
+currentCaseName =
+name;
 
 
-  updateCaseName();
+points = [{x:0,y:0}];
 
-  saveCase();
+walls = [];
 
-  render();
+windows = [];
+
+doors = [];
+
+history = [];
+
+
+selectedWallIndex = null;
+
+selectedTapDistance = 0;
+
+
+updateCaseName();
+
+saveCase();
+
+render();
 
 }
 
 
 function updateCaseName(){
 
-  document.getElementById("currentCaseName")
-    .textContent =
-      currentCaseName
-      ? currentCaseName
-      : "尚未建立案件";
+document
+.getElementById("currentCaseName")
+.textContent =
+currentCaseName ||
+"尚未建立案件";
 
 }
 
 
 function saveCase(){
 
-  if(!currentCaseId)
-    return;
+if(!currentCaseId)
+return;
 
 
-  const data =
-    JSON.parse(
-      localStorage.getItem("measureCases") || "[]"
-    );
+const data =
+JSON.parse(
+localStorage.getItem(
+"measureCases"
+) || "[]"
+);
 
 
-  const item = {
+const item = {
 
-    id:currentCaseId,
+id:currentCaseId,
 
-    name:currentCaseName,
+name:currentCaseName,
 
-    points:points,
+points:points,
 
-    walls:walls,
+walls:walls,
 
-    windows:windows,
+windows:windows,
 
-    doors:doors,
+doors:doors,
 
-    updatedAt:Date.now()
+updatedAt:Date.now()
 
-  };
-
-
-  const index =
-    data.findIndex(
-      x => x.id === currentCaseId
-    );
+};
 
 
-  if(index >= 0){
-
-    data[index] = item;
-
-  }else{
-
-    data.push(item);
-
-  }
+const index =
+data.findIndex(
+x => x.id === currentCaseId
+);
 
 
-  localStorage.setItem(
-    "measureCases",
-    JSON.stringify(data)
-  );
+if(index >= 0)
+data[index] = item;
+else
+data.push(item);
+
+
+localStorage.setItem(
+"measureCases",
+JSON.stringify(data)
+);
 
 }
 
 
 function openCases(){
 
-  const overlay =
-    document.getElementById("caseOverlay");
+const overlay =
+document.getElementById(
+"caseOverlay"
+);
 
-  const list =
-    document.getElementById("caseList");
-
-
-  const data =
-    JSON.parse(
-      localStorage.getItem("measureCases") || "[]"
-    );
+const list =
+document.getElementById(
+"caseList"
+);
 
 
-  list.innerHTML = "";
+const data =
+JSON.parse(
+localStorage.getItem(
+"measureCases"
+) || "[]"
+);
 
 
-  if(data.length === 0){
-
-    list.innerHTML =
-      `<div class="info">
-        目前沒有儲存的案件
-       </div>`;
-
-  }else{
-
-    data
-      .sort((a,b)=>b.updatedAt-a.updatedAt)
-      .forEach(item => {
-
-        const div =
-          document.createElement("div");
-
-        div.className =
-          "case-item";
+list.innerHTML = "";
 
 
-        const date =
-          new Date(item.updatedAt)
-            .toLocaleString();
+if(data.length === 0){
+
+list.innerHTML =
+`<div class="info">
+目前沒有儲存的案件
+</div>`;
+
+}else{
+
+data
+.sort(
+(a,b)=>b.updatedAt-a.updatedAt
+)
+.forEach(function(item){
+
+const div =
+document.createElement("div");
+
+div.className =
+"case-item";
 
 
-        div.innerHTML = `
-
-          <div class="case-item-row">
-
-            <div>
-
-              <div class="case-item-name">
-                ${escapeHtml(item.name)}
-              </div>
-
-              <div class="case-item-time">
-                ${date}
-              </div>
-
-            </div>
-
-            <div style="display:flex;gap:6px;">
-
-              <button
-                class="small-btn"
-                onclick="loadCase('${item.id}')">
-                開啟
-              </button>
-
-              <button
-                class="small-btn danger"
-                onclick="deleteCase('${item.id}')">
-                刪除
-              </button>
-
-            </div>
-
-          </div>
-
-        `;
+const date =
+new Date(
+item.updatedAt
+).toLocaleString();
 
 
-        list.appendChild(div);
+div.innerHTML = `
 
-      });
+<div class="case-item-row">
 
-  }
+<div>
+
+<div class="case-item-name">
+${escapeHtml(item.name)}
+</div>
+
+<div class="case-item-time">
+${date}
+</div>
+
+</div>
+
+<div style="display:flex;gap:6px;">
+
+<button
+class="small-btn"
+onclick="loadCase('${item.id}')">
+開啟
+</button>
+
+<button
+class="small-btn danger"
+onclick="deleteCase('${item.id}')">
+刪除
+</button>
+
+</div>
+
+</div>
+
+`;
 
 
-  overlay.style.display =
-    "flex";
+list.appendChild(div);
+
+});
+
+}
+
+
+overlay.style.display =
+"flex";
 
 }
 
 
 function closeCases(){
 
-  document.getElementById("caseOverlay")
-    .style.display = "none";
+document
+.getElementById("caseOverlay")
+.style.display = "none";
 
 }
 
 
 function loadCase(id){
 
-  const data =
-    JSON.parse(
-      localStorage.getItem("measureCases") || "[]"
-    );
+const data =
+JSON.parse(
+localStorage.getItem(
+"measureCases"
+) || "[]"
+);
 
 
-  const item =
-    data.find(x => x.id === id);
+const item =
+data.find(
+x => x.id === id
+);
 
 
-  if(!item)
-    return;
+if(!item)
+return;
 
 
-  currentCaseId =
-    item.id;
+currentCaseId =
+item.id;
 
-  currentCaseName =
-    item.name;
+currentCaseName =
+item.name;
 
+points =
+item.points || [{x:0,y:0}];
 
-  points =
-    item.points || [{x:0,y:0}];
+walls =
+item.walls || [];
 
-  walls =
-    item.walls || [];
+windows =
+item.windows || [];
 
-  windows =
-    item.windows || [];
+doors =
+item.doors || [];
 
-  doors =
-    item.doors || [];
+history = [];
 
+selectedWallIndex = null;
 
-  history = [];
-
-  selectedWallIndex = null;
-
-  selectedTapDistance = 0;
+selectedTapDistance = 0;
 
 
-  updateCaseName();
+updateCaseName();
 
-  closeCases();
+closeCases();
 
-  render();
+render();
 
 }
 
 
 function deleteCase(id){
 
-  if(!confirm("確定要刪除這個案件嗎？"))
-    return;
+if(!confirm(
+"確定要刪除這個案件嗎？"
+))
+return;
 
 
-  let data =
-    JSON.parse(
-      localStorage.getItem("measureCases") || "[]"
-    );
+let data =
+JSON.parse(
+localStorage.getItem(
+"measureCases"
+) || "[]"
+);
 
 
-  data =
-    data.filter(x => x.id !== id);
+data =
+data.filter(
+x => x.id !== id
+);
 
 
-  localStorage.setItem(
-    "measureCases",
-    JSON.stringify(data)
-  );
+localStorage.setItem(
+"measureCases",
+JSON.stringify(data)
+);
 
 
-  openCases();
+openCases();
 
 }
 
 
 function escapeHtml(text){
 
-  return String(text)
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;")
-    .replaceAll("'","&#039;");
+return String(text)
+.replaceAll("&","&amp;")
+.replaceAll("<","&lt;")
+.replaceAll(">","&gt;")
+.replaceAll('"',"&quot;")
+.replaceAll("'","&#039;");
 
 }
 
 
 /* =========================
-   復原
+   歷史
 ========================= */
 
 function saveHistory(){
 
-  history.push({
+history.push({
 
-    points:
-      JSON.parse(JSON.stringify(points)),
+points:
+JSON.parse(
+JSON.stringify(points)
+),
 
-    walls:
-      JSON.parse(JSON.stringify(walls)),
+walls:
+JSON.parse(
+JSON.stringify(walls)
+),
 
-    windows:
-      JSON.parse(JSON.stringify(windows)),
+windows:
+JSON.parse(
+JSON.stringify(windows)
+),
 
-    doors:
-      JSON.parse(JSON.stringify(doors))
+doors:
+JSON.parse(
+JSON.stringify(doors)
+)
 
-  });
+});
 
 }
 
 
 function undo(){
 
-  if(history.length === 0)
-    return;
+if(history.length === 0)
+return;
 
 
-  const state =
-    history.pop();
+const state =
+history.pop();
 
 
-  points =
-    state.points;
+points =
+state.points;
 
-  walls =
-    state.walls;
+walls =
+state.walls;
 
-  windows =
-    state.windows;
+windows =
+state.windows;
 
-  doors =
-    state.doors;
+doors =
+state.doors;
 
 
-  selectedWallIndex = null;
+selectedWallIndex = null;
 
-  saveCase();
 
-  render();
+saveCase();
+
+render();
 
 }
 
@@ -1318,30 +1410,32 @@ function undo(){
 
 function clearAll(){
 
-  if(!confirm("確定要清除目前圖面嗎？"))
-    return;
+if(!confirm(
+"確定要清除目前圖面嗎？"
+))
+return;
 
 
-  saveHistory();
+saveHistory();
 
 
-  points = [{x:0,y:0}];
+points = [{x:0,y:0}];
 
-  walls = [];
+walls = [];
 
-  windows = [];
+windows = [];
 
-  doors = [];
-
-
-  selectedWallIndex = null;
-
-  selectedTapDistance = 0;
+doors = [];
 
 
-  saveCase();
+selectedWallIndex = null;
 
-  render();
+selectedTapDistance = 0;
+
+
+saveCase();
+
+render();
 
 }
 
@@ -1352,101 +1446,103 @@ function clearAll(){
 
 function screenToSvg(evt){
 
-  const svg =
-    document.getElementById("drawing");
+const svg =
+document.getElementById(
+"drawing"
+);
 
 
-  const point =
-    svg.createSVGPoint();
+const point =
+svg.createSVGPoint();
 
 
-  point.x =
-    evt.clientX;
+point.x =
+evt.clientX;
 
-  point.y =
-    evt.clientY;
-
-
-  const matrix =
-    svg.getScreenCTM();
+point.y =
+evt.clientY;
 
 
-  return point.matrixTransform(
-    matrix.inverse()
-  );
+const matrix =
+svg.getScreenCTM();
+
+
+return point.matrixTransform(
+matrix.inverse()
+);
 
 }
 
 
 /* =========================
-   點到線段距離
+   點到線
 ========================= */
 
 function pointToSegment(
-  px,
-  py,
-  x1,
-  y1,
-  x2,
-  y2
+px,
+py,
+x1,
+y1,
+x2,
+y2
 ){
 
-  const dx =
-    x2 - x1;
+const dx =
+x2-x1;
 
-  const dy =
-    y2 - y1;
-
-
-  if(dx === 0 && dy === 0){
-
-    return {
-
-      distance:
-        Math.hypot(
-          px - x1,
-          py - y1
-        ),
-
-      t:0
-
-    };
-
-  }
+const dy =
+y2-y1;
 
 
-  const t =
-    Math.max(
-      0,
-      Math.min(
-        1,
-        (
-          (px - x1) * dx +
-          (py - y1) * dy
-        ) /
-        (dx * dx + dy * dy)
-      )
-    );
+if(dx === 0 && dy === 0){
+
+return {
+
+distance:
+Math.hypot(
+px-x1,
+py-y1
+),
+
+t:0
+
+};
+
+}
 
 
-  const x =
-    x1 + t * dx;
+const t =
+Math.max(
+0,
+Math.min(
+1,
+(
+(px-x1)*dx +
+(py-y1)*dy
+) /
+(dx*dx+dy*dy)
+)
+);
 
-  const y =
-    y1 + t * dy;
+
+const x =
+x1+t*dx;
+
+const y =
+y1+t*dy;
 
 
-  return {
+return {
 
-    distance:
-      Math.hypot(
-        px - x,
-        py - y
-      ),
+distance:
+Math.hypot(
+px-x,
+py-y
+),
 
-    t:t
+t:t
 
-  };
+};
 
 }
 
@@ -1457,138 +1553,144 @@ function pointToSegment(
 
 function selectWallByTap(evt){
 
-  if(
-    currentTool !== "window" &&
-    currentTool !== "door"
-  )
-    return;
+if(
+currentTool !== "window" &&
+currentTool !== "door"
+)
+return;
 
 
-  if(walls.length === 0){
+if(walls.length === 0){
 
-    alert("請先畫牆面。");
+alert("請先畫牆面。");
 
-    return;
-
-  }
-
-
-  const p =
-    screenToSvg(evt);
-
-
-  let bestIndex = null;
-
-  let bestDistance = Infinity;
-
-  let bestT = 0;
-
-
-  walls.forEach(function(wall,index){
-
-    const result =
-      pointToSegment(
-
-        p.x,
-        p.y,
-
-        wall.start.x,
-        wall.start.y,
-
-        wall.end.x,
-        wall.end.y
-
-      );
-
-
-    if(result.distance < bestDistance){
-
-      bestDistance =
-        result.distance;
-
-      bestIndex =
-        index;
-
-      bestT =
-        result.t;
-
-    }
-
-  });
-
-
-  /*
-    點擊距離牆面太遠就不選
-  */
-
-  if(bestDistance > 120){
-
-    return;
-
-  }
-
-
-  selectedWallIndex =
-    bestIndex;
-
-
-  selectedTapDistance =
-    Math.round(
-      walls[bestIndex].length * bestT
-    );
-
-
-  document.getElementById("openingForm")
-    .style.display = "block";
-
-
-  document.getElementById("openingOffset")
-    .value =
-      selectedTapDistance;
-
-
-  document.getElementById("selectedWallInfo")
-    .className =
-      "info selected-info";
-
-
-  document.getElementById("selectedWallInfo")
-    .textContent =
-      `已選擇第 ${bestIndex + 1} 面牆｜牆長 ${walls[bestIndex].length} mm｜點擊位置約 ${selectedTapDistance} mm`;
-
-
-  render();
+return;
 
 }
 
 
-/* =========================
-   取消選牆
-========================= */
+const p =
+screenToSvg(evt);
+
+
+let bestIndex = null;
+
+let bestDistance = Infinity;
+
+let bestT = 0;
+
+
+walls.forEach(
+function(wall,index){
+
+const result =
+pointToSegment(
+
+p.x,
+p.y,
+
+wall.start.x,
+wall.start.y,
+
+wall.end.x,
+wall.end.y
+
+);
+
+
+if(
+result.distance <
+bestDistance
+){
+
+bestDistance =
+result.distance;
+
+bestIndex =
+index;
+
+bestT =
+result.t;
+
+}
+
+});
+
+
+/*
+  SVG 是縮放的，
+  所以這裡使用比較寬鬆的
+  選取距離。
+*/
+
+if(bestDistance > 150)
+return;
+
+
+selectedWallIndex =
+bestIndex;
+
+
+selectedTapDistance =
+Math.round(
+walls[bestIndex].length *
+bestT
+);
+
+
+document
+.getElementById("openingForm")
+.style.display = "block";
+
+
+document
+.getElementById("openingOffset")
+.value =
+selectedTapDistance;
+
+
+document
+.getElementById("selectedWallInfo")
+.className =
+"info selected-info";
+
+
+document
+.getElementById("selectedWallInfo")
+.textContent =
+`已選擇第 ${bestIndex+1} 面牆｜牆長 ${walls[bestIndex].length} mm｜點擊位置約 ${selectedTapDistance} mm`;
+
+
+render();
+
+}
+
 
 function cancelWallSelection(){
 
-  selectedWallIndex = null;
+selectedWallIndex = null;
 
-  selectedTapDistance = 0;
-
-
-  document.getElementById("openingForm")
-    .style.display = "none";
+selectedTapDistance = 0;
 
 
-  const info =
-    document.getElementById("selectedWallInfo");
+document
+.getElementById("openingForm")
+.style.display = "none";
 
 
-  info.className = "info";
+const info =
+document.getElementById(
+"selectedWallInfo"
+);
 
 
-  info.textContent =
-    "請先在下方圖面上點擊要放置門窗的牆面。";
+info.className = "info";
+
+info.textContent =
+"請先在下方圖面上點擊要放置門窗的牆面。";
 
 
-  render();
+render();
 
 }
 
@@ -1599,653 +1701,642 @@ function cancelWallSelection(){
 
 function addOpening(){
 
-  if(selectedWallIndex === null){
+if(selectedWallIndex === null){
 
-    alert("請先點擊要放置門窗的牆面。");
+alert(
+"請先點擊要放置門窗的牆面。"
+);
 
-    return;
+return;
 
-  }
+}
 
 
-  const width =
-    Number(
-      document.getElementById("openingWidth").value
-    );
+const width =
+Number(
+document.getElementById(
+"openingWidth"
+).value
+);
 
 
-  const height =
-    Number(
-      document.getElementById("openingHeight").value
-    );
+const height =
+Number(
+document.getElementById(
+"openingHeight"
+).value
+);
 
 
-  const sill =
-    Number(
-      document.getElementById("openingSill").value
-    );
+const sill =
+Number(
+document.getElementById(
+"openingSill"
+).value
+);
 
 
-  const offset =
-    Number(
-      document.getElementById("openingOffset").value
-    );
+const offset =
+Number(
+document.getElementById(
+"openingOffset"
+).value
+);
 
 
-  if(!width || width <= 0){
+if(!width || width <= 0){
 
-    alert("請輸入門窗寬度。");
+alert("請輸入門窗寬度。");
 
-    return;
+return;
 
-  }
+}
 
 
-  if(!height || height <= 0){
+if(!height || height <= 0){
 
-    alert("請輸入門窗高度。");
+alert("請輸入門窗高度。");
 
-    return;
+return;
 
-  }
+}
 
 
-  if(offset < 0){
+if(offset < 0){
 
-    alert("距離牆端不能小於 0。");
+alert(
+"距離牆端不能小於 0。"
+);
 
-    return;
+return;
 
-  }
+}
 
 
-  const wall =
-    walls[selectedWallIndex];
+const wall =
+walls[selectedWallIndex];
 
 
-  if(offset + width > wall.length){
+if(offset + width > wall.length){
 
-    alert(
-      `門窗超出牆面長度。\n\n` +
-      `牆長：${wall.length} mm\n` +
-      `目前位置：${offset} mm\n` +
-      `門窗寬度：${width} mm`
-    );
+alert(
+`門窗超出牆面。\n\n`+
+`牆長：${wall.length} mm\n`+
+`位置：${offset} mm\n`+
+`寬度：${width} mm`
+);
 
-    return;
+return;
 
-  }
+}
 
 
-  /*
-    檢查是否與其他門窗重疊
-  */
+const existing = [
 
-  const existing = [
+...windows.map(
+x=>({
+wallIndex:x.wallIndex,
+offset:x.offset,
+width:x.width
+})
+),
 
-    ...windows.map(x => ({
-      offset:x.offset,
-      width:x.width
-    })),
+...doors.map(
+x=>({
+wallIndex:x.wallIndex,
+offset:x.offset,
+width:x.width
+})
+)
 
-    ...doors.map(x => ({
-      offset:x.offset,
-      width:x.width
-    }))
+];
 
-  ].filter(
-    x => x.wallIndex === selectedWallIndex
-  );
 
+const overlap =
+existing
+.filter(
+x=>x.wallIndex === selectedWallIndex
+)
+.some(
+x =>
+offset <
+x.offset+x.width &&
+offset+width >
+x.offset
+);
 
-  const overlap =
-    existing.some(function(x){
 
-      return (
-        offset < x.offset + x.width &&
-        offset + width > x.offset
-      );
+if(overlap){
 
-    });
+alert(
+"這個位置和原本的門窗重疊了。"
+);
 
+return;
 
-  if(overlap){
+}
 
-    alert("這個位置和原本的門窗重疊了。");
 
-    return;
+saveHistory();
 
-  }
 
+if(currentTool === "window"){
 
-  saveHistory();
+windows.push({
 
+wallIndex:selectedWallIndex,
 
-  if(currentTool === "window"){
+offset:offset,
 
-    windows.push({
+width:width,
 
-      wallIndex:selectedWallIndex,
+height:height,
 
-      offset:offset,
+sill:sill
 
-      width:width,
+});
 
-      height:height,
+}else{
 
-      sill:sill
+doors.push({
 
-    });
+wallIndex:selectedWallIndex,
 
-  }else{
+offset:offset,
 
-    const swing =
-      document.getElementById("doorSwing").value;
+width:width,
 
+height:height,
 
-    doors.push({
+sill:sill,
 
-      wallIndex:selectedWallIndex,
+swing:
+document.getElementById(
+"doorSwing"
+).value
 
-      offset:offset,
+});
 
-      width:width,
+}
 
-      height:height,
 
-      sill:sill,
+saveCase();
 
-      swing:swing
+cancelWallSelection();
 
-    });
-
-  }
-
-
-  saveCase();
-
-  cancelWallSelection();
-
-  render();
+render();
 
 }
 
 
 /* =========================
-   向量工具
+   幾何
 ========================= */
 
 function wallGeometry(wall){
 
-  const dx =
-    wall.end.x - wall.start.x;
+const dx =
+wall.end.x-wall.start.x;
 
-  const dy =
-    wall.end.y - wall.start.y;
-
-
-  const len =
-    Math.hypot(dx,dy);
+const dy =
+wall.end.y-wall.start.y;
 
 
-  const ux =
-    dx / len;
-
-  const uy =
-    dy / len;
+const len =
+Math.hypot(dx,dy);
 
 
-  /*
-    法向量
-  */
+return {
 
-  const nx =
-    -uy;
+ux:dx/len,
 
-  const ny =
-    ux;
+uy:dy/len,
 
+nx:-dy/len,
 
-  return {
-    ux,
-    uy,
-    nx,
-    ny,
-    len
-  };
+ny:dx/len,
+
+len:len
+
+};
 
 }
 
 
 function pointAlongWall(
-  wall,
-  distance
+wall,
+distance
 ){
 
-  const g =
-    wallGeometry(wall);
+const g =
+wallGeometry(wall);
 
 
-  return {
+return {
 
-    x:
-      wall.start.x +
-      g.ux * distance,
+x:
+wall.start.x+
+g.ux*distance,
 
-    y:
-      wall.start.y +
-      g.uy * distance
+y:
+wall.start.y+
+g.uy*distance
 
-  };
+};
 
 }
 
 
 /* =========================
-   畫牆
+   牆
 ========================= */
 
 function drawWalls(group){
 
-  walls.forEach(function(wall,index){
+walls.forEach(
+function(wall,index){
 
-    const openings = [
+const openings = [
 
-      ...windows
-        .filter(x => x.wallIndex === index)
-        .map(x => ({
-          ...x,
-          type:"window"
-        })),
+...windows
+.filter(
+x=>x.wallIndex===index
+)
+.map(
+x=>({...x,type:"window"})
+),
 
-      ...doors
-        .filter(x => x.wallIndex === index)
-        .map(x => ({
-          ...x,
-          type:"door"
-        }))
+...doors
+.filter(
+x=>x.wallIndex===index
+)
+.map(
+x=>({...x,type:"door"})
+)
 
-    ];
-
-
-    openings.sort(
-      (a,b)=>a.offset-b.offset
-    );
+];
 
 
-    let current = 0;
+openings.sort(
+(a,b)=>a.offset-b.offset
+);
 
 
-    openings.forEach(function(opening){
-
-      /*
-        先畫門窗前面的牆
-      */
-
-      if(opening.offset > current){
-
-        drawWallSegment(
-
-          group,
-          wall,
-          current,
-          opening.offset
-
-        );
-
-      }
+let current = 0;
 
 
-      current =
-        opening.offset +
-        opening.width;
+openings.forEach(
+function(opening){
 
-    });
-
-
-    /*
-      最後一段牆
-    */
-
-    if(current < wall.length){
-
-      drawWallSegment(
-
-        group,
-        wall,
-        current,
-        wall.length
-
-      );
-
-    }
-
-
-    /*
-      選取區域
-
-      讓使用者更容易點到牆
-    */
-
-    const hit =
-      document.createElementNS(
-        "http://www.w3.org/2000/svg",
-        "line"
-      );
-
-
-    hit.setAttribute(
-      "x1",
-      wall.start.x
-    );
-
-    hit.setAttribute(
-      "y1",
-      wall.start.y
-    );
-
-    hit.setAttribute(
-      "x2",
-      wall.end.x
-    );
-
-    hit.setAttribute(
-      "y2",
-      wall.end.y
-    );
-
-    hit.setAttribute(
-      "class",
-      "wall-hit"
-    );
-
-
-    group.appendChild(hit);
-
-
-    /*
-      牆面總尺寸
-    */
-
-    drawDimension(
-
-      group,
-
-      wall.start,
-      wall.end,
-
-      wall.length,
-
-      100
-
-    );
-
-  });
-
-}
-
-
-/* =========================
-   畫牆段
-========================= */
-
-function drawWallSegment(
-  group,
-  wall,
-  startDistance,
-  endDistance
+if(
+opening.offset >
+current
 ){
 
-  const start =
-    pointAlongWall(
-      wall,
-      startDistance
-    );
+drawWallSegment(
+
+group,
+wall,
+current,
+opening.offset
+
+);
+
+}
 
 
-  const end =
-    pointAlongWall(
-      wall,
-      endDistance
-    );
+current =
+opening.offset+
+opening.width;
+
+});
 
 
-  const line =
-    document.createElementNS(
-      "http://www.w3.org/2000/svg",
-      "line"
-    );
+if(current < wall.length){
+
+drawWallSegment(
+
+group,
+wall,
+current,
+wall.length
+
+);
+
+}
 
 
-  line.setAttribute(
-    "x1",
-    start.x
-  );
+/*
+  透明選取線
+*/
 
-  line.setAttribute(
-    "y1",
-    start.y
-  );
-
-  line.setAttribute(
-    "x2",
-    end.x
-  );
-
-  line.setAttribute(
-    "y2",
-    end.y
-  );
-
-  line.setAttribute(
-    "class",
-    "wall"
-  );
+const hit =
+document.createElementNS(
+"http://www.w3.org/2000/svg",
+"line"
+);
 
 
-  group.appendChild(line);
+hit.setAttribute(
+"x1",
+wall.start.x
+);
+
+hit.setAttribute(
+"y1",
+wall.start.y
+);
+
+hit.setAttribute(
+"x2",
+wall.end.x
+);
+
+hit.setAttribute(
+"y2",
+wall.end.y
+);
+
+hit.setAttribute(
+"class",
+"wall-hit"
+);
+
+
+group.appendChild(hit);
+
+
+/*
+  牆面尺寸
+*/
+
+drawDimension(
+
+group,
+wall.start,
+wall.end,
+wall.length,
+140
+
+);
+
+});
+
+}
+
+
+function drawWallSegment(
+group,
+wall,
+startDistance,
+endDistance
+){
+
+const start =
+pointAlongWall(
+wall,
+startDistance
+);
+
+const end =
+pointAlongWall(
+wall,
+endDistance
+);
+
+
+const line =
+document.createElementNS(
+"http://www.w3.org/2000/svg",
+"line"
+);
+
+
+line.setAttribute(
+"x1",
+start.x
+);
+
+line.setAttribute(
+"y1",
+start.y
+);
+
+line.setAttribute(
+"x2",
+end.x
+);
+
+line.setAttribute(
+"y2",
+end.y
+);
+
+line.setAttribute(
+"class",
+"wall"
+);
+
+
+group.appendChild(line);
 
 }
 
 
 /* =========================
-   一般尺寸
+   尺寸
 ========================= */
 
 function drawDimension(
-  group,
-  start,
-  end,
-  value,
-  offset
+group,
+start,
+end,
+value,
+offset
 ){
 
-  const dx =
-    end.x - start.x;
+const dx =
+end.x-start.x;
 
-  const dy =
-    end.y - start.y;
-
-
-  const len =
-    Math.hypot(dx,dy);
+const dy =
+end.y-start.y;
 
 
-  if(len === 0)
-    return;
+const len =
+Math.hypot(dx,dy);
 
 
-  const ux =
-    dx / len;
-
-  const uy =
-    dy / len;
+if(!len)
+return;
 
 
-  const nx =
-    -uy;
+const ux =
+dx/len;
 
-  const ny =
-    ux;
+const uy =
+dy/len;
 
+const nx =
+-uy;
 
-  const s = {
-
-    x:
-      start.x +
-      nx * offset,
-
-    y:
-      start.y +
-      ny * offset
-
-  };
+const ny =
+ux;
 
 
-  const e = {
+const s = {
 
-    x:
-      end.x +
-      nx * offset,
+x:start.x+nx*offset,
 
-    y:
-      end.y +
-      ny * offset
+y:start.y+ny*offset
 
-  };
+};
 
 
-  const line =
-    document.createElementNS(
-      "http://www.w3.org/2000/svg",
-      "line"
-    );
+const e = {
+
+x:end.x+nx*offset,
+
+y:end.y+ny*offset
+
+};
 
 
-  line.setAttribute(
-    "x1",
-    s.x
-  );
+/*
+  尺寸線
+*/
 
-  line.setAttribute(
-    "y1",
-    s.y
-  );
-
-  line.setAttribute(
-    "x2",
-    e.x
-  );
-
-  line.setAttribute(
-    "y2",
-    e.y
-  );
-
-  line.setAttribute(
-    "class",
-    "dimension"
-  );
-
-  line.setAttribute(
-    "marker-start",
-    "url(#arrow)"
-  );
-
-  line.setAttribute(
-    "marker-end",
-    "url(#arrow)"
-  );
+const line =
+document.createElementNS(
+"http://www.w3.org/2000/svg",
+"line"
+);
 
 
-  group.appendChild(line);
+line.setAttribute(
+"x1",
+s.x
+);
+
+line.setAttribute(
+"y1",
+s.y
+);
+
+line.setAttribute(
+"x2",
+e.x
+);
+
+line.setAttribute(
+"y2",
+e.y
+);
+
+line.setAttribute(
+"class",
+"dimension"
+);
+
+line.setAttribute(
+"marker-start",
+"url(#arrow)"
+);
+
+line.setAttribute(
+"marker-end",
+"url(#arrow)"
+);
 
 
-  /*
-    延伸線
-  */
-
-  [start,end].forEach(function(p){
-
-    const q = {
-
-      x:
-        p.x +
-        nx * offset,
-
-      y:
-        p.y +
-        ny * offset
-
-    };
+group.appendChild(line);
 
 
-    const ext =
-      document.createElementNS(
-        "http://www.w3.org/2000/svg",
-        "line"
-      );
+/*
+  延伸線
+*/
+
+[start,end].forEach(
+function(p){
+
+const q = {
+
+x:p.x+nx*offset,
+
+y:p.y+ny*offset
+
+};
 
 
-    ext.setAttribute(
-      "x1",
-      p.x
-    );
-
-    ext.setAttribute(
-      "y1",
-      p.y
-    );
-
-    ext.setAttribute(
-      "x2",
-      q.x
-    );
-
-    ext.setAttribute(
-      "y2",
-      q.y
-    );
-
-    ext.setAttribute(
-      "class",
-      "dimension"
-    );
+const ext =
+document.createElementNS(
+"http://www.w3.org/2000/svg",
+"line"
+);
 
 
-    group.appendChild(ext);
+ext.setAttribute(
+"x1",
+p.x
+);
 
-  });
+ext.setAttribute(
+"y1",
+p.y
+);
 
+ext.setAttribute(
+"x2",
+q.x
+);
 
-  const text =
-    document.createElementNS(
-      "http://www.w3.org/2000/svg",
-      "text"
-    );
+ext.setAttribute(
+"y2",
+q.y
+);
 
-
-  text.setAttribute(
-    "x",
-    (s.x + e.x) / 2
-  );
-
-  text.setAttribute(
-    "y",
-    (s.y + e.y) / 2
-  );
-
-  text.setAttribute(
-    "class",
-    "dimension-text"
-  );
+ext.setAttribute(
+"class",
+"dimension"
+);
 
 
-  text.textContent =
-    `${value} mm`;
+group.appendChild(ext);
+
+});
 
 
-  group.appendChild(text);
+/*
+  數字
+*/
+
+const text =
+document.createElementNS(
+"http://www.w3.org/2000/svg",
+"text"
+);
+
+
+text.setAttribute(
+"x",
+(s.x+e.x)/2
+);
+
+text.setAttribute(
+"y",
+(s.y+e.y)/2
+);
+
+text.setAttribute(
+"class",
+"dimension-text"
+);
+
+
+text.textContent =
+`${value} mm`;
+
+
+group.appendChild(text);
 
 }
 
@@ -2255,514 +2346,415 @@ function drawDimension(
 ========================= */
 
 function drawOffsetDimension(
-  group,
-  wall,
-  offset,
-  width
+group,
+wall,
+offset
 ){
 
-  const start =
-    pointAlongWall(
-      wall,
-      0
-    );
+if(offset <= 0)
+return;
 
 
-  const end =
-    pointAlongWall(
-      wall,
-      offset
-    );
+const g =
+wallGeometry(wall);
 
 
-  const g =
-    wallGeometry(wall);
+const start =
+pointAlongWall(
+wall,
+0
+);
+
+const end =
+pointAlongWall(
+wall,
+offset
+);
 
 
-  const dimensionOffset =
-    -130;
+const distanceOffset =
+-180;
 
 
-  const s = {
+const s = {
 
-    x:
-      start.x +
-      g.nx * dimensionOffset,
+x:start.x+
+g.nx*distanceOffset,
 
-    y:
-      start.y +
-      g.ny * dimensionOffset
+y:start.y+
+g.ny*distanceOffset
 
-  };
+};
 
 
-  const e = {
+const e = {
 
-    x:
-      end.x +
-      g.nx * dimensionOffset,
+x:end.x+
+g.nx*distanceOffset,
 
-    y:
-      end.y +
-      g.ny * dimensionOffset
+y:end.y+
+g.ny*distanceOffset
 
-  };
+};
 
 
-  const line =
-    document.createElementNS(
-      "http://www.w3.org/2000/svg",
-      "line"
-    );
+const line =
+document.createElementNS(
+"http://www.w3.org/2000/svg",
+"line"
+);
 
 
-  line.setAttribute(
-    "x1",
-    s.x
-  );
+line.setAttribute(
+"x1",
+s.x
+);
 
-  line.setAttribute(
-    "y1",
-    s.y
-  );
+line.setAttribute(
+"y1",
+s.y
+);
 
-  line.setAttribute(
-    "x2",
-    e.x
-  );
+line.setAttribute(
+"x2",
+e.x
+);
 
-  line.setAttribute(
-    "y2",
-    e.y
-  );
+line.setAttribute(
+"y2",
+e.y
+);
 
-  line.setAttribute(
-    "class",
-    "dimension"
-  );
-
-
-  group.appendChild(line);
+line.setAttribute(
+"class",
+"dimension"
+);
 
 
-  const text =
-    document.createElementNS(
-      "http://www.w3.org/2000/svg",
-      "text"
-    );
+group.appendChild(line);
 
 
-  text.setAttribute(
-    "x",
-    (s.x + e.x) / 2
-  );
-
-  text.setAttribute(
-    "y",
-    (s.y + e.y) / 2 - 25
-  );
-
-  text.setAttribute(
-    "class",
-    "offset-text"
-  );
+const text =
+document.createElementNS(
+"http://www.w3.org/2000/svg",
+"text"
+);
 
 
-  text.textContent =
-    `${offset} mm`;
+text.setAttribute(
+"x",
+(s.x+e.x)/2
+);
+
+text.setAttribute(
+"y",
+(s.y+e.y)/2-35
+);
+
+text.setAttribute(
+"class",
+"offset-text"
+);
 
 
-  group.appendChild(text);
+text.textContent =
+`${offset} mm`;
+
+
+group.appendChild(text);
 
 }
 
 
 /* =========================
-   畫窗戶
+   窗
 ========================= */
 
 function drawWindow(
-  group,
-  w
+group,
+w
 ){
 
-  const wall =
-    walls[w.wallIndex];
+const wall =
+walls[w.wallIndex];
+
+if(!wall)
+return;
 
 
-  if(!wall)
-    return;
+const g =
+wallGeometry(wall);
 
 
-  const g =
-    wallGeometry(wall);
+const start =
+pointAlongWall(
+wall,
+w.offset
+);
+
+const end =
+pointAlongWall(
+wall,
+w.offset+w.width
+);
 
 
-  const start =
-    pointAlongWall(
-      wall,
-      w.offset
-    );
+const distance = 25;
 
 
-  const end =
-    pointAlongWall(
-      wall,
-      w.offset + w.width
-    );
+[-distance,distance]
+.forEach(
+function(off){
+
+const line =
+document.createElementNS(
+"http://www.w3.org/2000/svg",
+"line"
+);
 
 
-  const distance =
-    28;
+line.setAttribute(
+"x1",
+start.x+g.nx*off
+);
+
+line.setAttribute(
+"y1",
+start.y+g.ny*off
+);
+
+line.setAttribute(
+"x2",
+end.x+g.nx*off
+);
+
+line.setAttribute(
+"y2",
+end.y+g.ny*off
+);
+
+line.setAttribute(
+"class",
+"window-line"
+);
 
 
-  /*
-    兩條藍線
+group.appendChild(line);
 
-    窗戶獨立於牆面
-  */
-
-  [-distance,distance]
-    .forEach(function(offset){
-
-      const line =
-        document.createElementNS(
-          "http://www.w3.org/2000/svg",
-          "line"
-        );
+});
 
 
-      line.setAttribute(
-        "x1",
-        start.x + g.nx * offset
-      );
+drawColoredDimension(
 
-      line.setAttribute(
-        "y1",
-        start.y + g.ny * offset
-      );
+group,
+start,
+end,
 
-      line.setAttribute(
-        "x2",
-        end.x + g.nx * offset
-      );
+`${w.width} × ${w.height}`,
 
-      line.setAttribute(
-        "y2",
-        end.y + g.ny * offset
-      );
+190,
+
+"window-text"
+
+);
 
 
-      line.setAttribute(
-        "class",
-        "window-line"
-      );
+drawOffsetDimension(
+
+group,
+wall,
+w.offset
+
+);
 
 
-      group.appendChild(line);
+drawHeightText(
 
-    });
+group,
+start,
+end,
 
+`窗台離地 ${w.sill} mm`
 
-  /*
-    窗戶寬度
-  */
-
-  drawColoredDimension(
-
-    group,
-
-    start,
-    end,
-
-    `${w.width} × ${w.height}`,
-
-    170,
-
-    "window-text"
-
-  );
-
-
-  /*
-    距離牆端
-  */
-
-  drawOffsetDimension(
-    group,
-    wall,
-    w.offset,
-    w.width
-  );
-
-
-  /*
-    窗台高度
-  */
-
-  drawHeightText(
-
-    group,
-
-    start,
-    end,
-
-    `窗台離地 ${w.sill} mm`
-
-  );
+);
 
 }
 
 
 /* =========================
-   畫門
+   門
 ========================= */
 
 function drawDoor(
-  group,
-  d
+group,
+d
 ){
 
-  const wall =
-    walls[d.wallIndex];
+const wall =
+walls[d.wallIndex];
 
+if(!wall)
+return;
 
-  if(!wall)
-    return;
 
+const g =
+wallGeometry(wall);
 
-  const g =
-    wallGeometry(wall);
 
+const start =
+pointAlongWall(
+wall,
+d.offset
+);
 
-  const start =
-    pointAlongWall(
-      wall,
-      d.offset
-    );
+const end =
+pointAlongWall(
+wall,
+d.offset+d.width
+);
 
 
-  const end =
-    pointAlongWall(
-      wall,
-      d.offset + d.width
-    );
+let hinge;
 
 
-  /*
-    門框
-  */
+if(d.swing === "left")
+hinge = start;
+else
+hinge = end;
 
-  [start,end]
-    .forEach(function(p){
 
-      const frame =
-        document.createElementNS(
-          "http://www.w3.org/2000/svg",
-          "circle"
-        );
+const leafEnd = {
 
+x:
+hinge.x+
+g.nx*d.width,
 
-      frame.setAttribute(
-        "cx",
-        p.x
-      );
+y:
+hinge.y+
+g.ny*d.width
 
-      frame.setAttribute(
-        "cy",
-        p.y
-      );
+};
 
-      frame.setAttribute(
-        "r",
-        8
-      );
 
-      frame.setAttribute(
-        "fill",
-        "#e67e22"
-      );
+const leaf =
+document.createElementNS(
+"http://www.w3.org/2000/svg",
+"line"
+);
 
 
-      group.appendChild(frame);
+leaf.setAttribute(
+"x1",
+hinge.x
+);
 
-    });
+leaf.setAttribute(
+"y1",
+hinge.y
+);
 
+leaf.setAttribute(
+"x2",
+leafEnd.x
+);
 
-  /*
-    門片方向
+leaf.setAttribute(
+"y2",
+leafEnd.y
+);
 
-    左開：
-    從 start 往 end 方向
+leaf.setAttribute(
+"class",
+"door-leaf"
+);
 
-    右開：
-    從 end 往 start 方向
-  */
 
-  let hinge;
-  let free;
+group.appendChild(leaf);
 
 
-  if(d.swing === "left"){
+/*
+  開門弧線
+*/
 
-    hinge = start;
-    free = end;
+const arc =
+document.createElementNS(
+"http://www.w3.org/2000/svg",
+"path"
+);
 
-  }else{
 
-    hinge = end;
-    free = start;
+const sweep =
+d.swing === "left"
+? 1
+: 0;
 
-  }
 
+const r =
+d.width;
 
-  /*
-    門片打開後往牆外側
-  */
 
-  const leafEnd = {
+const free =
+d.swing === "left"
+? end
+: start;
 
-    x:
-      hinge.x +
-      g.nx * d.width,
 
-    y:
-      hinge.y +
-      g.ny * d.width
+arc.setAttribute(
+"d",
 
-  };
+`M ${free.x} ${free.y}
+A ${r} ${r} 0 0 ${sweep}
+${leafEnd.x} ${leafEnd.y}`
 
+);
 
-  const leaf =
-    document.createElementNS(
-      "http://www.w3.org/2000/svg",
-      "line"
-    );
 
+arc.setAttribute(
+"class",
+"door-arc"
+);
 
-  leaf.setAttribute(
-    "x1",
-    hinge.x
-  );
 
-  leaf.setAttribute(
-    "y1",
-    hinge.y
-  );
+group.appendChild(arc);
 
-  leaf.setAttribute(
-    "x2",
-    leafEnd.x
-  );
 
-  leaf.setAttribute(
-    "y2",
-    leafEnd.y
-  );
+drawColoredDimension(
 
-  leaf.setAttribute(
-    "class",
-    "door-leaf"
-  );
+group,
+start,
+end,
 
+`${d.width} × ${d.height}`,
 
-  group.appendChild(leaf);
+190,
 
+"door-text"
 
-  /*
-    開門弧線
-  */
+);
 
-  const arc =
-    document.createElementNS(
-      "http://www.w3.org/2000/svg",
-      "path"
-    );
 
+drawOffsetDimension(
 
-  const sweep =
-    d.swing === "left"
-    ? 1
-    : 0;
+group,
+wall,
+d.offset
 
+);
 
-  const r =
-    d.width;
 
+if(d.sill > 0){
 
-  const arcPath =
+drawHeightText(
 
-    `M ${free.x} ${free.y}
-     A ${r} ${r} 0 0 ${sweep}
-     ${leafEnd.x} ${leafEnd.y}`;
+group,
+start,
+end,
 
+`門檻離地 ${d.sill} mm`
 
-  arc.setAttribute(
-    "d",
-    arcPath
-  );
+);
 
-  arc.setAttribute(
-    "class",
-    "door-arc"
-  );
-
-
-  group.appendChild(arc);
-
-
-  /*
-    門寬 × 高
-  */
-
-  drawColoredDimension(
-
-    group,
-
-    start,
-    end,
-
-    `${d.width} × ${d.height}`,
-
-    170,
-
-    "door-text"
-
-  );
-
-
-  /*
-    定位尺寸
-  */
-
-  drawOffsetDimension(
-
-    group,
-    wall,
-    d.offset,
-    d.width
-
-  );
-
-
-  /*
-    門檻高度
-  */
-
-  if(d.sill > 0){
-
-    drawHeightText(
-
-      group,
-
-      start,
-      end,
-
-      `門檻離地 ${d.sill} mm`
-
-    );
-
-  }
+}
 
 }
 
@@ -2772,133 +2764,118 @@ function drawDoor(
 ========================= */
 
 function drawColoredDimension(
-  group,
-  start,
-  end,
-  textValue,
-  offset,
-  className
+group,
+start,
+end,
+value,
+offset,
+className
 ){
 
-  const dx =
-    end.x - start.x;
+const dx =
+end.x-start.x;
 
-  const dy =
-    end.y - start.y;
-
-
-  const len =
-    Math.hypot(dx,dy);
+const dy =
+end.y-start.y;
 
 
-  if(len === 0)
-    return;
+const len =
+Math.hypot(dx,dy);
 
 
-  const ux =
-    dx / len;
-
-  const uy =
-    dy / len;
+if(!len)
+return;
 
 
-  const nx =
-    -uy;
+const nx =
+-dy/len;
 
-  const ny =
-    ux;
-
-
-  const s = {
-
-    x:
-      start.x +
-      nx * offset,
-
-    y:
-      start.y +
-      ny * offset
-
-  };
+const ny =
+dx/len;
 
 
-  const e = {
+const s = {
 
-    x:
-      end.x +
-      nx * offset,
+x:start.x+nx*offset,
 
-    y:
-      end.y +
-      ny * offset
+y:start.y+ny*offset
 
-  };
+};
 
 
-  const line =
-    document.createElementNS(
-      "http://www.w3.org/2000/svg",
-      "line"
-    );
+const e = {
+
+x:end.x+nx*offset,
+
+y:end.y+ny*offset
+
+};
 
 
-  line.setAttribute(
-    "x1",
-    s.x
-  );
-
-  line.setAttribute(
-    "y1",
-    s.y
-  );
-
-  line.setAttribute(
-    "x2",
-    e.x
-  );
-
-  line.setAttribute(
-    "y2",
-    e.y
-  );
-
-  line.setAttribute(
-    "class",
-    "dimension"
-  );
+const line =
+document.createElementNS(
+"http://www.w3.org/2000/svg",
+"line"
+);
 
 
-  group.appendChild(line);
+line.setAttribute(
+"x1",
+s.x
+);
+
+line.setAttribute(
+"y1",
+s.y
+);
+
+line.setAttribute(
+"x2",
+e.x
+);
+
+line.setAttribute(
+"y2",
+e.y
+);
+
+line.setAttribute(
+"class",
+"dimension"
+);
 
 
-  const text =
-    document.createElementNS(
-      "http://www.w3.org/2000/svg",
-      "text"
-    );
+group.appendChild(line);
 
 
-  text.setAttribute(
-    "x",
-    (s.x + e.x) / 2
-  );
-
-  text.setAttribute(
-    "y",
-    (s.y + e.y) / 2
-  );
-
-  text.setAttribute(
-    "class",
-    className
-  );
+const text =
+document.createElementNS(
+"http://www.w3.org/2000/svg",
+"text"
+);
 
 
-  text.textContent =
-    textValue;
+text.setAttribute(
+"x",
+(s.x+e.x)/2
+);
+
+text.setAttribute(
+"y",
+(s.y+e.y)/2
+);
+
+text.setAttribute(
+"class",
+className
+);
 
 
-  group.appendChild(text);
+text.textContent =
+value;
+
+
+group.appendChild(text);
 
 }
 
@@ -2908,188 +2885,185 @@ function drawColoredDimension(
 ========================= */
 
 function drawHeightText(
-  group,
-  start,
-  end,
-  textValue
+group,
+start,
+end,
+value
 ){
 
-  const x =
-    (start.x + end.x) / 2;
-
-  const y =
-    (start.y + end.y) / 2;
-
-
-  const text =
-    document.createElementNS(
-      "http://www.w3.org/2000/svg",
-      "text"
-    );
+const text =
+document.createElementNS(
+"http://www.w3.org/2000/svg",
+"text"
+);
 
 
-  text.setAttribute(
-    "x",
-    x
-  );
+text.setAttribute(
+"x",
+(start.x+end.x)/2
+);
 
-  text.setAttribute(
-    "y",
-    y - 65
-  );
+text.setAttribute(
+"y",
+(start.y+end.y)/2-65
+);
 
-  text.setAttribute(
-    "class",
-    "offset-text"
-  );
-
-
-  text.textContent =
-    textValue;
+text.setAttribute(
+"class",
+"offset-text"
+);
 
 
-  group.appendChild(text);
+text.textContent =
+value;
+
+
+group.appendChild(text);
 
 }
 
 
 /* =========================
-   渲染
+   Render
 ========================= */
 
 function render(){
 
-  const group =
-    document.getElementById(
-      "drawingGroup"
-    );
+const group =
+document.getElementById(
+"drawingGroup"
+);
 
 
-  group.innerHTML = "";
+group.innerHTML = "";
 
 
-  drawWalls(group);
+drawWalls(group);
 
 
-  windows.forEach(function(w){
+windows.forEach(
+function(w){
 
-    drawWindow(
-      group,
-      w
-    );
+drawWindow(
+group,
+w
+);
 
-  });
-
-
-  doors.forEach(function(d){
-
-    drawDoor(
-      group,
-      d
-    );
-
-  });
+});
 
 
-  /*
-    牆面端點
-  */
+doors.forEach(
+function(d){
 
-  points.forEach(function(p){
+drawDoor(
+group,
+d
+);
 
-    const circle =
-      document.createElementNS(
-        "http://www.w3.org/2000/svg",
-        "circle"
-      );
+});
 
 
-    circle.setAttribute(
-      "cx",
-      p.x
-    );
+/*
+  端點
+*/
 
-    circle.setAttribute(
-      "cy",
-      p.y
-    );
+points.forEach(
+function(p){
 
-    circle.setAttribute(
-      "r",
-      14
-    );
-
-    circle.setAttribute(
-      "class",
-      "point"
-    );
+const circle =
+document.createElementNS(
+"http://www.w3.org/2000/svg",
+"circle"
+);
 
 
-    group.appendChild(circle);
+circle.setAttribute(
+"cx",
+p.x
+);
 
-  });
+circle.setAttribute(
+"cy",
+p.y
+);
 
+circle.setAttribute(
+"r",
+12
+);
 
-  /*
-    選中的牆面標記
-  */
-
-  if(selectedWallIndex !== null){
-
-    const wall =
-      walls[selectedWallIndex];
-
-
-    const line =
-      document.createElementNS(
-        "http://www.w3.org/2000/svg",
-        "line"
-      );
-
-
-    line.setAttribute(
-      "x1",
-      wall.start.x
-    );
-
-    line.setAttribute(
-      "y1",
-      wall.start.y
-    );
-
-    line.setAttribute(
-      "x2",
-      wall.end.x
-    );
-
-    line.setAttribute(
-      "y2",
-      wall.end.y
-    );
+circle.setAttribute(
+"class",
+"point"
+);
 
 
-    line.setAttribute(
-      "stroke",
-      "#8e44ad"
-    );
+group.appendChild(circle);
 
-    line.setAttribute(
-      "stroke-width",
-      "18"
-    );
-
-    line.setAttribute(
-      "opacity",
-      ".35"
-    );
+});
 
 
-    group.insertBefore(
-      line,
-      group.firstChild
-    );
+/*
+  選中的牆
+*/
 
-  }
+if(
+selectedWallIndex !== null
+){
+
+const wall =
+walls[selectedWallIndex];
+
+
+const line =
+document.createElementNS(
+"http://www.w3.org/2000/svg",
+"line"
+);
+
+
+line.setAttribute(
+"x1",
+wall.start.x
+);
+
+line.setAttribute(
+"y1",
+wall.start.y
+);
+
+line.setAttribute(
+"x2",
+wall.end.x
+);
+
+line.setAttribute(
+"y2",
+wall.end.y
+);
+
+line.setAttribute(
+"stroke",
+"#8e44ad"
+);
+
+line.setAttribute(
+"stroke-width",
+18
+);
+
+line.setAttribute(
+"opacity",
+".3"
+);
+
+
+group.insertBefore(
+line,
+group.firstChild
+);
+
+}
 
 }
 
@@ -3100,106 +3074,163 @@ function render(){
 
 function fitView(){
 
-  if(points.length === 0){
-
-    return;
-
-  }
-
-
-  let xs = [];
-  let ys = [];
+if(
+walls.length === 0 &&
+points.length <= 1
+)
+return;
 
 
-  points.forEach(function(p){
+let minX = Infinity;
 
-    xs.push(p.x);
-    ys.push(p.y);
+let maxX = -Infinity;
 
-  });
+let minY = Infinity;
 
-
-  walls.forEach(function(w){
-
-    xs.push(w.start.x);
-    xs.push(w.end.x);
-
-    ys.push(w.start.y);
-    ys.push(w.end.y);
-
-  });
+let maxY = -Infinity;
 
 
-  if(xs.length === 0)
-    return;
+function include(x,y){
+
+minX =
+Math.min(minX,x);
+
+maxX =
+Math.max(maxX,x);
+
+minY =
+Math.min(minY,y);
+
+maxY =
+Math.max(maxY,y);
+
+}
 
 
-  const minX =
-    Math.min(...xs);
+/*
+  牆
+*/
 
-  const maxX =
-    Math.max(...xs);
+points.forEach(
+function(p){
 
-  const minY =
-    Math.min(...ys);
+include(
+p.x,
+p.y
+);
 
-  const maxY =
-    Math.max(...ys);
-
-
-  const padding = 500;
-
-
-  const width =
-    Math.max(
-      maxX - minX + padding * 2,
-      1500
-    );
+});
 
 
-  const height =
-    Math.max(
-      maxY - minY + padding * 2,
-      1500
-    );
+/*
+  尺寸會伸出去，
+  所以預留足夠空間。
+*/
+
+walls.forEach(
+function(w){
+
+include(
+w.start.x-300,
+w.start.y-300
+);
+
+include(
+w.end.x+300,
+w.end.y+300
+);
+
+});
 
 
-  document.getElementById("drawing")
-    .setAttribute(
+if(!isFinite(minX))
+return;
 
-      "viewBox",
 
-      `${minX-padding}
-       ${minY-padding}
-       ${width}
-       ${height}`
+const padding = 300;
 
-    );
+
+minX -= padding;
+
+maxX += padding;
+
+minY -= padding;
+
+maxY += padding;
+
+
+let width =
+maxX-minX;
+
+let height =
+maxY-minY;
+
+
+const minSize = 1500;
+
+
+if(width < minSize){
+
+const extra =
+(minSize-width)/2;
+
+minX -= extra;
+
+maxX += extra;
+
+width = minSize;
+
+}
+
+
+if(height < minSize){
+
+const extra =
+(minSize-height)/2;
+
+minY -= extra;
+
+maxY += extra;
+
+height = minSize;
+
+}
+
+
+document
+.getElementById("drawing")
+.setAttribute(
+
+"viewBox",
+
+`${minX} ${minY} ${width} ${height}`
+
+);
 
 }
 
 
 /* =========================
-   SVG 點擊
+   圖面點擊
 ========================= */
 
 document
-  .getElementById("drawing")
-  .addEventListener(
-    "pointerdown",
-    function(evt){
+.getElementById("drawing")
+.addEventListener(
+"pointerdown",
+function(evt){
 
-      if(
-        currentTool === "window" ||
-        currentTool === "door"
-      ){
+if(
+currentTool === "window" ||
+currentTool === "door"
+){
 
-        selectWallByTap(evt);
+selectWallByTap(evt);
 
-      }
+}
 
-    }
-  );
+}
+);
 
 
 /* =========================
