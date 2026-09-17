@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-
 <meta charset="UTF-8">
 
 <meta
@@ -19,6 +18,8 @@
 
 body{
   margin:0;
+  background:#f3f4f6;
+  color:#222;
   font-family:
     -apple-system,
     BlinkMacSystemFont,
@@ -26,20 +27,18 @@ body{
     "Noto Sans TC",
     Arial,
     sans-serif;
-  background:#f3f4f6;
-  color:#222;
 }
 
 header{
   background:#111827;
-  color:#fff;
-  padding:14px 16px;
+  color:white;
+  padding:12px 15px;
   display:flex;
-  align-items:center;
   justify-content:space-between;
+  align-items:center;
   position:sticky;
   top:0;
-  z-index:20;
+  z-index:100;
 }
 
 header h1{
@@ -49,7 +48,7 @@ header h1{
 
 .header-buttons{
   display:flex;
-  gap:8px;
+  gap:7px;
 }
 
 button{
@@ -65,28 +64,27 @@ button:active{
 }
 
 button:disabled{
-  opacity:.7;
-  cursor:default;
+  opacity:.6;
 }
 
 .btn-dark{
   background:#374151;
-  color:#fff;
+  color:white;
 }
 
 .btn-blue{
   background:#2563eb;
-  color:#fff;
-}
-
-.btn-red{
-  background:#dc2626;
-  color:#fff;
+  color:white;
 }
 
 .btn-green{
   background:#16a34a;
-  color:#fff;
+  color:white;
+}
+
+.btn-red{
+  background:#dc2626;
+  color:white;
 }
 
 .btn-gray{
@@ -95,49 +93,49 @@ button:disabled{
 }
 
 .container{
-  padding:12px;
   max-width:1200px;
   margin:auto;
+  padding:10px;
 }
 
 .card{
-  background:#fff;
+  background:white;
   border-radius:12px;
   padding:12px;
-  margin-bottom:12px;
-  box-shadow:0 2px 8px rgba(0,0,0,.08);
+  margin-bottom:10px;
+  box-shadow:0 2px 7px rgba(0,0,0,.08);
 }
 
 .card-title{
-  font-weight:bold;
   font-size:16px;
+  font-weight:bold;
   margin-bottom:10px;
 }
 
 .row{
   display:flex;
-  gap:8px;
   align-items:center;
+  gap:8px;
   flex-wrap:wrap;
 }
 
 input,
 select{
-  font-size:16px;
-  padding:9px 10px;
   border:1px solid #d1d5db;
   border-radius:8px;
-  background:#fff;
+  background:white;
+  padding:9px 10px;
+  font-size:16px;
 }
 
 input[type="number"]{
-  width:130px;
+  width:125px;
 }
 
 .tool-buttons{
   display:flex;
-  gap:7px;
   flex-wrap:wrap;
+  gap:7px;
 }
 
 .tool-btn{
@@ -154,13 +152,14 @@ input[type="number"]{
 
 .direction-buttons{
   display:grid;
-  grid-template-columns:repeat(3,50px);
+  grid-template-columns:50px 50px 50px;
   gap:5px;
   justify-content:center;
   margin:10px 0;
 }
 
 .direction-buttons button{
+  width:50px;
   height:45px;
   padding:0;
   font-size:22px;
@@ -175,169 +174,19 @@ input[type="number"]{
   border:1px solid #bfdbfe;
   border-radius:8px;
   padding:9px;
-  font-size:13px;
-  line-height:1.6;
   color:#1e40af;
-}
-
-.warning{
-  background:#fff7ed;
-  border:1px solid #fed7aa;
-  border-radius:8px;
-  padding:9px;
   font-size:13px;
   line-height:1.6;
-  color:#9a3412;
 }
 
 .small-note{
-  font-size:12px;
   color:#6b7280;
-  margin-top:5px;
+  font-size:12px;
+  line-height:1.5;
 }
 
 .hidden{
   display:none !important;
-}
-
-svg{
-  width:100%;
-  height:65vh;
-  min-height:450px;
-  background:#fff;
-  border:1px solid #d1d5db;
-  border-radius:10px;
-  touch-action:none;
-  display:block;
-}
-
-.wall{
-  stroke:#111;
-  stroke-width:24;
-  stroke-linecap:round;
-}
-
-.selected-wall{
-  stroke:#9333ea;
-  stroke-width:35;
-  stroke-dasharray:20 15;
-  stroke-linecap:round;
-}
-
-.window{
-  stroke:#2563eb;
-  stroke-width:18;
-}
-
-.window-line{
-  stroke:#2563eb;
-  stroke-width:8;
-}
-
-.door{
-  stroke:#f97316;
-  stroke-width:18;
-}
-
-.door-leaf{
-  stroke:#f97316;
-  stroke-width:14;
-}
-
-.door-arc{
-  fill:none;
-  stroke:#f97316;
-  stroke-width:8;
-  stroke-dasharray:18 12;
-}
-
-.beam{
-  stroke:#dc2626;
-  stroke-width:28;
-  stroke-dasharray:35 20;
-}
-
-.dimension-line{
-  stroke:#6b7280;
-  stroke-width:5;
-}
-
-.dimension-tick{
-  stroke:#6b7280;
-  stroke-width:5;
-}
-
-.dimension-text{
-  font-size:70px;
-  font-weight:bold;
-  fill:#374151;
-}
-
-.window-text{
-  font-size:58px;
-  font-weight:bold;
-  fill:#2563eb;
-}
-
-.door-text{
-  font-size:58px;
-  font-weight:bold;
-  fill:#ea580c;
-}
-
-.offset-text{
-  font-size:50px;
-  font-weight:bold;
-  fill:#4b5563;
-}
-
-.height-text{
-  font-size:82px;
-  font-weight:bold;
-  fill:#059669;
-}
-
-.beam-text{
-  font-size:60px;
-  font-weight:bold;
-  fill:#dc2626;
-}
-
-.beam-distance-text{
-  font-size:50px;
-  font-weight:bold;
-  fill:#dc2626;
-}
-
-.center-label{
-  font-size:34px;
-  font-weight:bold;
-  fill:#6b7280;
-}
-
-.opening-info-text{
-  font-size:46px;
-  font-weight:bold;
-}
-
-.window-detail-text{
-  fill:#2563eb;
-}
-
-.door-detail-text{
-  fill:#ea580c;
-}
-
-.export-buttons{
-  display:flex;
-  gap:8px;
-  flex-wrap:wrap;
-  margin-top:10px;
-}
-
-.export-buttons button{
-  flex:1;
-  min-width:140px;
 }
 
 .opening-fields{
@@ -356,24 +205,175 @@ svg{
 .field-group label{
   font-size:13px;
   color:#4b5563;
-  font-weight:600;
+  font-weight:bold;
+}
+
+#drawing{
+  width:100%;
+  height:65vh;
+  min-height:430px;
+  display:block;
+  background:white;
+  border:1px solid #d1d5db;
+  border-radius:10px;
+  touch-action:none;
+}
+
+.wall{
+  stroke:#111;
+  stroke-width:24;
+  stroke-linecap:round;
+}
+
+.selected-wall{
+  stroke:#9333ea;
+  stroke-width:34;
+  stroke-dasharray:20 14;
+  stroke-linecap:round;
+}
+
+.window-line-main{
+  stroke:#2563eb;
+  stroke-width:18;
+}
+
+.window-line-inner{
+  stroke:#2563eb;
+  stroke-width:7;
+}
+
+.door-line{
+  stroke:#f97316;
+  stroke-width:18;
+}
+
+.door-leaf{
+  stroke:#f97316;
+  stroke-width:13;
+}
+
+.door-arc{
+  fill:none;
+  stroke:#f97316;
+  stroke-width:7;
+  stroke-dasharray:16 10;
+}
+
+.beam-line{
+  stroke:#dc2626;
+  stroke-width:28;
+  stroke-dasharray:35 18;
+}
+
+.dimension-line{
+  stroke:#6b7280;
+  stroke-width:5;
+}
+
+.dimension-tick{
+  stroke:#6b7280;
+  stroke-width:5;
+}
+
+.dimension-text{
+  font-size:70px;
+  font-weight:bold;
+  fill:#374151;
+}
+
+.window-title{
+  font-size:55px;
+  font-weight:bold;
+  fill:#2563eb;
+}
+
+.window-detail{
+  font-size:48px;
+  font-weight:bold;
+  fill:#2563eb;
+}
+
+.window-height{
+  font-size:45px;
+  font-weight:bold;
+  fill:#2563eb;
+}
+
+.door-title{
+  font-size:55px;
+  font-weight:bold;
+  fill:#ea580c;
+}
+
+.door-detail{
+  font-size:48px;
+  font-weight:bold;
+  fill:#ea580c;
+}
+
+.door-height{
+  font-size:45px;
+  font-weight:bold;
+  fill:#ea580c;
+}
+
+.offset-text{
+  font-size:48px;
+  font-weight:bold;
+  fill:#4b5563;
+}
+
+.height-text{
+  font-size:78px;
+  font-weight:bold;
+  fill:#059669;
+}
+
+.beam-text{
+  font-size:58px;
+  font-weight:bold;
+  fill:#dc2626;
+}
+
+.beam-distance-text{
+  font-size:48px;
+  font-weight:bold;
+  fill:#dc2626;
+}
+
+.center-label{
+  font-size:34px;
+  font-weight:bold;
+  fill:#6b7280;
+}
+
+.export-buttons{
+  display:flex;
+  gap:8px;
+  margin-top:10px;
+  flex-wrap:wrap;
+}
+
+.export-buttons button{
+  flex:1;
+  min-width:140px;
 }
 
 .case-list{
   display:flex;
   flex-direction:column;
-  gap:7px;
+  gap:8px;
 }
 
 .case-item{
   display:flex;
-  align-items:center;
   justify-content:space-between;
-  gap:10px;
-  padding:10px;
+  align-items:center;
+  gap:8px;
   border:1px solid #e5e7eb;
-  border-radius:8px;
   background:#fafafa;
+  padding:10px;
+  border-radius:8px;
 }
 
 .case-name{
@@ -385,19 +385,18 @@ svg{
   inset:0;
   background:rgba(0,0,0,.45);
   display:flex;
-  align-items:center;
   justify-content:center;
-  z-index:100;
+  align-items:center;
   padding:20px;
+  z-index:200;
 }
 
 .modal-box{
-  background:#fff;
+  background:white;
   width:100%;
   max-width:430px;
   border-radius:14px;
   padding:18px;
-  box-shadow:0 10px 40px rgba(0,0,0,.2);
 }
 
 .modal-title{
@@ -408,41 +407,32 @@ svg{
 
 .modal-actions{
   display:flex;
-  gap:8px;
   justify-content:flex-end;
   margin-top:15px;
 }
 
 @media(max-width:600px){
 
-  header{
-    padding:11px 12px;
-  }
-
   header h1{
     font-size:16px;
   }
 
   .container{
-    padding:8px;
+    padding:7px;
   }
 
   .card{
     padding:10px;
   }
 
-  svg{
+  #drawing{
     height:58vh;
     min-height:400px;
   }
 
-  input[type="number"]{
-    width:120px;
-  }
-
   .opening-fields{
     display:grid;
-    grid-template-columns:repeat(2,1fr);
+    grid-template-columns:1fr 1fr;
   }
 
   .opening-fields .field-group{
@@ -461,12 +451,9 @@ svg{
 }
 
 </style>
-
 </head>
 
-
 <body>
-
 
 <header>
 
@@ -496,9 +483,7 @@ svg{
 <div class="container">
 
 
-<!-- =====================================================
-     案件
-===================================================== -->
+<!-- 案件 -->
 
 <div class="card">
 
@@ -528,9 +513,7 @@ svg{
 </div>
 
 
-<!-- =====================================================
-     工具
-===================================================== -->
+<!-- 工具 -->
 
 <div class="card">
 
@@ -585,9 +568,7 @@ svg{
 </div>
 
 
-<!-- =====================================================
-     牆線
-===================================================== -->
+<!-- 牆 -->
 
 <div
   id="wallPanel"
@@ -657,7 +638,6 @@ svg{
 
     <div class="direction-empty"></div>
 
-
     <button
       id="dir-left"
       class="btn-gray"
@@ -681,7 +661,6 @@ svg{
       →
     </button>
 
-
     <div class="direction-empty"></div>
 
     <button
@@ -699,19 +678,19 @@ svg{
 
   <div class="info">
 
-    電腦版可使用鍵盤 ↑ ↓ ← → 切換方向。<br>
+    電腦版可以使用鍵盤
+    ↑ ↓ ← →
+    切換方向。<br>
 
     在牆長輸入框按 Enter：
-    新增牆 → 清空尺寸 → 游標繼續留在輸入框。<br>
+    新增牆 → 清除輸入 → 游標繼續留在輸入框。
 
   </div>
 
 </div>
 
 
-<!-- =====================================================
-     窗戶
-===================================================== -->
+<!-- 窗戶 -->
 
 <div
   id="windowPanel"
@@ -721,7 +700,6 @@ svg{
   <div class="card-title">
     🪟 窗戶
   </div>
-
 
   <div class="row">
 
@@ -740,7 +718,6 @@ svg{
 
 
   <div class="opening-fields">
-
 
     <div class="field-group">
 
@@ -840,21 +817,19 @@ svg{
 
   <div class="info">
 
-    左側／右側以「站在室內、面向這面牆」判斷。<br>
+    先按「選擇牆」，再直接點圖上的牆。<br>
 
-    距離是從選擇的牆端量到窗戶開始位置。<br>
+    距離＝從你指定的左側／右側牆端開始量。<br>
 
-    窗戶資料包含：
-    <strong>窗寬、窗高、窗離地</strong>。
+    窗戶會顯示：
+    <strong>窗寬 × 窗高 × 窗離地</strong>。
 
   </div>
 
 </div>
 
 
-<!-- =====================================================
-     門
-===================================================== -->
+<!-- 門 -->
 
 <div
   id="doorPanel"
@@ -864,7 +839,6 @@ svg{
   <div class="card-title">
     🚪 門
   </div>
-
 
   <div class="row">
 
@@ -883,7 +857,6 @@ svg{
 
 
   <div class="opening-fields">
-
 
     <div class="field-group">
 
@@ -974,7 +947,7 @@ svg{
     <div class="field-group">
 
       <label>
-        開門
+        開門方向
       </label>
 
       <select id="doorSwing">
@@ -1004,23 +977,17 @@ svg{
 
   <div class="info">
 
-    左側／右側以「站在室內、面向這面牆」判斷。<br>
+    先按「選擇牆」，再直接點圖上的牆。<br>
 
-    <strong>左開＝鉸鍊在左側。</strong><br>
-
-    <strong>右開＝鉸鍊在右側。</strong><br>
-
-    門資料包含：
-    <strong>門寬、門高、門離地</strong>。
+    門會顯示：
+    <strong>門寬 × 門高 × 門離地</strong>。
 
   </div>
 
 </div>
 
 
-<!-- =====================================================
-     樓高
-===================================================== -->
+<!-- 樓高 -->
 
 <div
   id="heightPanel"
@@ -1056,9 +1023,7 @@ svg{
 </div>
 
 
-<!-- =====================================================
-     樑
-===================================================== -->
+<!-- 樑 -->
 
 <div
   id="beamPanel"
@@ -1068,7 +1033,6 @@ svg{
   <div class="card-title">
     ▰ 樑
   </div>
-
 
   <div class="row">
 
@@ -1087,7 +1051,6 @@ svg{
 
 
   <div class="opening-fields">
-
 
     <div class="field-group">
 
@@ -1148,26 +1111,19 @@ svg{
 
 
   <div class="info">
-
-    樑高會依照：
-    樓高 − 樑底高
-    自動計算。
-
+    樑高會依照「樓高－樑底高」自動計算。
   </div>
 
 </div>
 
 
-<!-- =====================================================
-     圖面
-===================================================== -->
+<!-- 圖面 -->
 
 <div class="card">
 
   <div class="card-title">
     平面圖
   </div>
-
 
   <svg
     id="drawing"
@@ -1200,13 +1156,10 @@ svg{
 
 </div>
 
-
 </div>
 
 
-<!-- =====================================================
-     案件視窗
-===================================================== -->
+<!-- 案件視窗 -->
 
 <div
   id="caseModal"
@@ -1248,7 +1201,7 @@ svg{
 
 
 /* =========================================================
-   全域資料
+   全域
 ========================================================= */
 
 let currentTool="wall";
@@ -1264,7 +1217,10 @@ let doors=[];
 let beams=[];
 
 let points=[
-  {x:0,y:0}
+  {
+    x:0,
+    y:0
+  }
 ];
 
 let floorHeight=0;
@@ -1277,7 +1233,7 @@ let currentCaseId=null;
 
 
 /* =========================================================
-   案件
+   ID
 ========================================================= */
 
 function generateId(){
@@ -1288,19 +1244,21 @@ function generateId(){
 }
 
 
+/* =========================================================
+   案件
+========================================================= */
+
 function newCase(){
 
-  const name=
-    prompt("請輸入案件名稱");
+  const name=prompt(
+    "請輸入案件名稱"
+  );
 
   if(!name){
-
     return;
-
   }
 
-  currentCaseId=
-    generateId();
+  currentCaseId=generateId();
 
   walls=[];
 
@@ -1311,7 +1269,10 @@ function newCase(){
   beams=[];
 
   points=[
-    {x:0,y:0}
+    {
+      x:0,
+      y:0
+    }
   ];
 
   floorHeight=0;
@@ -1320,9 +1281,9 @@ function newCase(){
 
   selectedWallIndex=-1;
 
-  document
-    .getElementById("caseName")
-    .value=name;
+  document.getElementById(
+    "caseName"
+  ).value=name;
 
   saveCase();
 
@@ -1330,7 +1291,7 @@ function newCase(){
 
   setTimeout(
     fitView,
-    30
+    50
   );
 
 }
@@ -1338,32 +1299,26 @@ function newCase(){
 
 function saveCase(){
 
-  const name=
-    document
-      .getElementById("caseName")
-      .value
-      .trim();
+  const name=document
+    .getElementById("caseName")
+    .value
+    .trim();
 
   if(!name){
-
     return;
-
   }
 
   if(!currentCaseId){
 
-    currentCaseId=
-      generateId();
+    currentCaseId=generateId();
 
   }
 
-  const cases=
-    JSON.parse(
-      localStorage.getItem(
-        "measureCases"
-      ) || "[]"
-    );
-
+  const cases=JSON.parse(
+    localStorage.getItem(
+      "measureCases"
+    )||"[]"
+  );
 
   const data={
 
@@ -1387,12 +1342,9 @@ function saveCase(){
 
   };
 
-
-  const index=
-    cases.findIndex(
-      x=>x.id===currentCaseId
-    );
-
+  const index=cases.findIndex(
+    x=>x.id===currentCaseId
+  );
 
   if(index>=0){
 
@@ -1403,7 +1355,6 @@ function saveCase(){
     cases.push(data);
 
   }
-
 
   localStorage.setItem(
     "measureCases",
@@ -1417,113 +1368,111 @@ function loadCase(data){
 
   currentCaseId=data.id;
 
-  document
-    .getElementById("caseName")
-    .value=data.name||"";
+  document.getElementById(
+    "caseName"
+  ).value=data.name||"";
 
+  walls=data.walls||[];
 
-  walls=
-    data.walls||[];
+  windows=(data.windows||[]).map(
+    item=>({
 
+      wallIndex:Number(
+        item.wallIndex
+      )||0,
 
-  /*
-    舊案件相容
-  */
+      offset:Number(
+        item.offset
+      )||0,
 
-  windows=
-    (data.windows||[]).map(
-      x=>({
+      width:Number(
+        item.width
+      )||0,
 
-        wallIndex:
-          Number(x.wallIndex)||0,
+      height:Number(
+        item.height
+      )||0,
 
-        offset:
-          Number(x.offset)||0,
+      sillHeight:Number(
+        item.sillHeight ??
+        item.windowSillHeight ??
+        900
+      ),
 
-        width:
-          Number(x.width)||0,
+      side:
+        item.side==="right"
+          ?"right"
+          :"left"
 
-        height:
-          Number(x.height)||0,
+    })
+  );
 
-        sillHeight:
-          Number(
-            x.sillHeight ??
-            x.windowSillHeight ??
-            900
-          ),
+  doors=(data.doors||[]).map(
+    item=>({
 
-        side:
-          x.side==="right"
-            ? "right"
-            : "left"
+      wallIndex:Number(
+        item.wallIndex
+      )||0,
 
-      })
-    );
+      offset:Number(
+        item.offset
+      )||0,
 
+      width:Number(
+        item.width
+      )||0,
 
-  doors=
-    (data.doors||[]).map(
-      x=>({
+      height:Number(
+        item.height
+      )||0,
 
-        wallIndex:
-          Number(x.wallIndex)||0,
+      floorHeight:Number(
+        item.floorHeight ??
+        item.doorFloorHeight ??
+        0
+      ),
 
-        offset:
-          Number(x.offset)||0,
+      side:
+        item.side==="right"
+          ?"right"
+          :"left",
 
-        width:
-          Number(x.width)||0,
+      swing:
+        item.swing==="right"
+          ?"right"
+          :"left"
 
-        height:
-          Number(x.height)||0,
+    })
+  );
 
-        floorHeight:
-          Number(
-            x.floorHeight ??
-            x.doorFloorHeight ??
-            0
-          ),
+  beams=(data.beams||[]).map(
+    item=>({
 
-        swing:
-          x.swing==="right"
-            ? "right"
-            : "left",
+      wallIndex:Number(
+        item.wallIndex
+      )||0,
 
-        side:
-          x.side==="right"
-            ? "right"
-            : "left"
+      distance:Number(
+        item.distance
+      )||0,
 
-      })
-    );
+      bottom:Number(
+        item.bottom
+      )||0,
 
+      depth:Number(
+        item.depth
+      )||0
 
-  beams=
-    (data.beams||[]).map(
-      x=>({
+    })
+  );
 
-        wallIndex:
-          Number(x.wallIndex)||0,
-
-        distance:
-          Number(x.distance)||0,
-
-        bottom:
-          Number(x.bottom)||0,
-
-        depth:
-          Number(x.depth)||0
-
-      })
-    );
-
-
-  points=
-    data.points||[
-      {x:0,y:0}
-    ];
-
+  points=data.points||[
+    {
+      x:0,
+      y:0
+    }
+  ];
 
   floorHeight=
     Number(data.floorHeight)||0;
@@ -1544,27 +1493,21 @@ function loadCase(data){
 
 function openCaseList(){
 
-  const modal=
-    document.getElementById(
-      "caseModal"
-    );
+  const modal=document.getElementById(
+    "caseModal"
+  );
 
-  const list=
-    document.getElementById(
-      "caseList"
-    );
+  const list=document.getElementById(
+    "caseList"
+  );
 
-
-  const cases=
-    JSON.parse(
-      localStorage.getItem(
-        "measureCases"
-      ) || "[]"
-    );
-
+  const cases=JSON.parse(
+    localStorage.getItem(
+      "measureCases"
+    )||"[]"
+  );
 
   list.innerHTML="";
-
 
   if(cases.length===0){
 
@@ -1583,84 +1526,63 @@ function openCaseList(){
         data=>{
 
           const item=
-            document.createElement(
-              "div"
-            );
+            document.createElement("div");
 
-          item.className=
-            "case-item";
+          item.className="case-item";
 
 
           const name=
-            document.createElement(
-              "div"
-            );
+            document.createElement("div");
 
-          name.className=
-            "case-name";
+          name.className="case-name";
 
-          name.textContent=
-            data.name;
+          name.textContent=data.name;
 
 
           const buttons=
-            document.createElement(
-              "div"
-            );
+            document.createElement("div");
 
           buttons.className="row";
 
 
           const openBtn=
-            document.createElement(
-              "button"
-            );
+            document.createElement("button");
 
-          openBtn.className=
-            "btn-blue";
+          openBtn.className="btn-blue";
 
-          openBtn.textContent=
-            "開啟";
+          openBtn.textContent="開啟";
 
-          openBtn.onclick=
-            function(){
+          openBtn.onclick=function(){
 
-              loadCase(data);
+            loadCase(data);
 
-              closeCaseList();
+            closeCaseList();
 
-            };
+          };
 
 
           const deleteBtn=
-            document.createElement(
-              "button"
-            );
+            document.createElement("button");
 
-          deleteBtn.className=
-            "btn-red";
+          deleteBtn.className="btn-red";
 
-          deleteBtn.textContent=
-            "刪除";
+          deleteBtn.textContent="刪除";
 
-          deleteBtn.onclick=
-            function(){
+          deleteBtn.onclick=function(){
 
-              if(
-                confirm(
-                  "確定要刪除這個案件嗎？"
-                )
-              ){
+            if(
+              confirm(
+                "確定要刪除這個案件嗎？"
+              )
+            ){
 
-                deleteCase(
-                  data.id
-                );
+              deleteCase(data.id);
 
-                openCaseList();
+              openCaseList();
 
-              }
+            }
 
-            };
+          };
 
 
           buttons.appendChild(
@@ -1672,23 +1594,27 @@ function openCaseList(){
           );
 
 
-          item.appendChild(name);
+          item.appendChild(
+            name
+          );
 
           item.appendChild(
             buttons
           );
 
-          list.appendChild(item);
+
+          list.appendChild(
+            item
+          );
 
         }
       );
 
   }
 
-
-  modal
-    .classList
-    .remove("hidden");
+  modal.classList.remove(
+    "hidden"
+  );
 
 }
 
@@ -1699,42 +1625,38 @@ function closeCaseList(event){
     event &&
     event.target!==event.currentTarget
   ){
-
     return;
-
   }
 
-  document
-    .getElementById("caseModal")
-    .classList
-    .add("hidden");
+  document.getElementById(
+    "caseModal"
+  ).classList.add(
+    "hidden"
+  );
 
 }
 
 
 function deleteCase(id){
 
-  let cases=
-    JSON.parse(
-      localStorage.getItem(
-        "measureCases"
-      ) || "[]"
-    );
+  let cases=JSON.parse(
+    localStorage.getItem(
+      "measureCases"
+    )||"[]"
+  );
 
-
-  cases=
-    cases.filter(
-      x=>x.id!==id
-    );
-
+  cases=cases.filter(
+    x=>x.id!==id
+  );
 
   localStorage.setItem(
     "measureCases",
     JSON.stringify(cases)
   );
 
-
-  if(currentCaseId===id){
+  if(
+    currentCaseId===id
+  ){
 
     currentCaseId=null;
 
@@ -1761,65 +1683,58 @@ function setTool(tool){
       }
     );
 
-
-  const button=
+  const toolButton=
     document.getElementById(
       "tool-"+tool
     );
 
+  if(toolButton){
 
-  if(button){
-
-    button.classList.add(
+    toolButton.classList.add(
       "active"
     );
 
   }
 
 
-  document
-    .getElementById("wallPanel")
-    .classList
-    .toggle(
-      "hidden",
-      tool!=="wall"
-    );
+  document.getElementById(
+    "wallPanel"
+  ).classList.toggle(
+    "hidden",
+    tool!=="wall"
+  );
 
 
-  document
-    .getElementById("windowPanel")
-    .classList
-    .toggle(
-      "hidden",
-      tool!=="window"
-    );
+  document.getElementById(
+    "windowPanel"
+  ).classList.toggle(
+    "hidden",
+    tool!=="window"
+  );
 
 
-  document
-    .getElementById("doorPanel")
-    .classList
-    .toggle(
-      "hidden",
-      tool!=="door"
-    );
+  document.getElementById(
+    "doorPanel"
+  ).classList.toggle(
+    "hidden",
+    tool!=="door"
+  );
 
 
-  document
-    .getElementById("heightPanel")
-    .classList
-    .toggle(
-      "hidden",
-      tool!=="height"
-    );
+  document.getElementById(
+    "heightPanel"
+  ).classList.toggle(
+    "hidden",
+    tool!=="height"
+  );
 
 
-  document
-    .getElementById("beamPanel")
-    .classList
-    .toggle(
-      "hidden",
-      tool!=="beam"
-    );
+  document.getElementById(
+    "beamPanel"
+  ).classList.toggle(
+    "hidden",
+    tool!=="beam"
+  );
 
 
   selectedWallIndex=-1;
@@ -1837,14 +1752,12 @@ function setDirection(direction){
 
   currentDirection=direction;
 
-
   [
     "up",
     "down",
     "left",
     "right"
-  ]
-  .forEach(
+  ].forEach(
     dir=>{
 
       const btn=
@@ -1852,17 +1765,30 @@ function setDirection(direction){
           "dir-"+dir
         );
 
+      if(!btn){
+        return;
+      }
 
-      if(btn){
+      if(
+        dir===direction
+      ){
 
-        btn.classList.toggle(
-          "btn-blue",
-          dir===direction
+        btn.classList.remove(
+          "btn-gray"
         );
 
-        btn.classList.toggle(
-          "btn-gray",
-          dir!==direction
+        btn.classList.add(
+          "btn-blue"
+        );
+
+      }else{
+
+        btn.classList.remove(
+          "btn-blue"
+        );
+
+        btn.classList.add(
+          "btn-gray"
         );
 
       }
@@ -1871,9 +1797,6 @@ function setDirection(direction){
   );
 
 }
-
-
-setDirection("right");
 
 
 /* =========================================================
@@ -1900,8 +1823,9 @@ function saveHistory(){
     })
   );
 
-
-  if(history.length>30){
+  if(
+    history.length>30
+  ){
 
     history.shift();
 
@@ -1912,39 +1836,35 @@ function saveHistory(){
 
 function undo(){
 
-  if(history.length===0){
-
+  if(
+    history.length===0
+  ){
     return;
-
   }
-
 
   const state=
     JSON.parse(
       history.pop()
     );
 
+  walls=state.walls||[];
 
-  walls=
-    state.walls||[];
+  windows=state.windows||[];
 
-  windows=
-    state.windows||[];
+  doors=state.doors||[];
 
-  doors=
-    state.doors||[];
-
-  beams=
-    state.beams||[];
+  beams=state.beams||[];
 
   points=
     state.points||[
-      {x:0,y:0}
+      {
+        x:0,
+        y:0
+      }
     ];
 
   floorHeight=
-    state.floorHeight||0;
-
+    Number(state.floorHeight)||0;
 
   selectedWallIndex=-1;
 
@@ -1971,12 +1891,13 @@ function addWall(){
       "wallLength"
     );
 
-
   const length=
     Number(input.value);
 
-
-  if(!length || length<=0){
+  if(
+    !length ||
+    length<=0
+  ){
 
     input.focus();
 
@@ -1985,10 +1906,8 @@ function addWall(){
   }
 
 
-  const last=
-    points[
-      points.length-1
-    ];
+  const start=
+    points[points.length-1];
 
 
   let dx=0;
@@ -1999,44 +1918,33 @@ function addWall(){
   if(
     currentDirection==="right"
   ){
-
     dx=length;
-
   }
-
 
   if(
     currentDirection==="left"
   ){
-
     dx=-length;
-
   }
-
 
   if(
     currentDirection==="down"
   ){
-
     dy=length;
-
   }
-
 
   if(
     currentDirection==="up"
   ){
-
     dy=-length;
-
   }
 
 
   const end={
 
-    x:last.x+dx,
+    x:start.x+dx,
 
-    y:last.y+dy
+    y:start.y+dy
 
   };
 
@@ -2046,16 +1954,22 @@ function addWall(){
 
   walls.push({
 
-    start:{...last},
+    start:{
+      ...start
+    },
 
-    end:{...end},
+    end:{
+      ...end
+    },
 
     length:length
 
   });
 
 
-  points.push(end);
+  points.push(
+    end
+  );
 
 
   saveCase();
@@ -2067,10 +1981,8 @@ function addWall(){
 
 
   setTimeout(
-    function(){
-
+    ()=>{
       input.focus();
-
     },
     0
   );
@@ -2085,9 +1997,7 @@ function clearDrawing(){
       "確定要清除目前圖面嗎？"
     )
   ){
-
     return;
-
   }
 
 
@@ -2102,9 +2012,14 @@ function clearDrawing(){
 
   beams=[];
 
+
   points=[
-    {x:0,y:0}
+    {
+      x:0,
+      y:0
+    }
   ];
+
 
   selectedWallIndex=-1;
 
@@ -2129,7 +2044,6 @@ function wallGeometry(wall){
   const dy=
     wall.end.y-
     wall.start.y;
-
 
   const len=
     Math.hypot(
@@ -2197,11 +2111,9 @@ function pointToSegment(
   y2
 ){
 
-  const dx=
-    x2-x1;
+  const dx=x2-x1;
 
-  const dy=
-    y2-y1;
+  const dy=y2-y1;
 
 
   if(
@@ -2224,21 +2136,20 @@ function pointToSegment(
   }
 
 
-  const t=
-    Math.max(
-      0,
-      Math.min(
-        1,
-        (
-          (px-x1)*dx+
-          (py-y1)*dy
-        )/
-        (
-          dx*dx+
-          dy*dy
-        )
+  const t=Math.max(
+    0,
+    Math.min(
+      1,
+      (
+        (px-x1)*dx+
+        (py-y1)*dy
+      )/
+      (
+        dx*dx+
+        dy*dy
       )
-    );
+    )
+  );
 
 
   const x=
@@ -2269,28 +2180,13 @@ function pointToSegment(
 
 function getRoomCenter(){
 
-  const all=[];
-
-
-  walls.forEach(
-    w=>{
-
-      all.push(w.start);
-
-      all.push(w.end);
-
-    }
-  );
-
-
-  if(all.length===0){
+  if(
+    walls.length===0
+  ){
 
     return{
-
       x:0,
-
       y:0
-
     };
 
   }
@@ -2305,31 +2201,35 @@ function getRoomCenter(){
   let maxY=-Infinity;
 
 
-  all.forEach(
-    p=>{
+  walls.forEach(
+    wall=>{
 
       minX=
         Math.min(
           minX,
-          p.x
+          wall.start.x,
+          wall.end.x
         );
 
       maxX=
         Math.max(
           maxX,
-          p.x
+          wall.start.x,
+          wall.end.x
         );
 
       minY=
         Math.min(
           minY,
-          p.y
+          wall.start.y,
+          wall.end.y
         );
 
       maxY=
         Math.max(
           maxY,
-          p.y
+          wall.start.y,
+          wall.end.y
         );
 
     }
@@ -2338,11 +2238,9 @@ function getRoomCenter(){
 
   return{
 
-    x:
-      (minX+maxX)/2,
+    x:(minX+maxX)/2,
 
-    y:
-      (minY+maxY)/2
+    y:(minY+maxY)/2
 
   };
 
@@ -2350,12 +2248,17 @@ function getRoomCenter(){
 
 
 /* =========================================================
-   左右判斷
+   判斷牆的室內側
 ========================================================= */
 
 function getWallReferenceInfo(wall){
 
-  if(!wall){
+  const g=
+    wallGeometry(wall);
+
+  if(
+    !g.len
+  ){
 
     return{
 
@@ -2366,27 +2269,6 @@ function getWallReferenceInfo(wall){
       roomNx:0,
 
       roomNy:0
-
-    };
-
-  }
-
-
-  const g=
-    wallGeometry(wall);
-
-
-  if(!g.len){
-
-    return{
-
-      leftAtStart:true,
-
-      rightAtStart:false,
-
-      roomNx:g.nx,
-
-      roomNy:g.ny
 
     };
 
@@ -2414,6 +2296,7 @@ function getWallReferenceInfo(wall){
   const toCenterX=
     center.x-midX;
 
+
   const toCenterY=
     center.y-midY;
 
@@ -2424,25 +2307,8 @@ function getWallReferenceInfo(wall){
 
 
   if(
-    Math.abs(cross)<0.001
+    cross>0
   ){
-
-    return{
-
-      leftAtStart:true,
-
-      rightAtStart:false,
-
-      roomNx:g.nx,
-
-      roomNy:g.ny
-
-    };
-
-  }
-
-
-  if(cross>0){
 
     return{
 
@@ -2475,7 +2341,7 @@ function getWallReferenceInfo(wall){
 
 
 /* =========================================================
-   左右距離
+   距離轉換
 ========================================================= */
 
 function referenceDistanceToOffset(
@@ -2490,6 +2356,9 @@ function referenceDistanceToOffset(
       wall
     );
 
+  const length=
+    Number(wall.length)||
+    wallGeometry(wall).len;
 
   distance=
     Number(distance)||0;
@@ -2498,35 +2367,32 @@ function referenceDistanceToOffset(
     Number(width)||0;
 
 
-  if(side==="left"){
+  if(
+    side==="left"
+  ){
 
-    if(info.leftAtStart){
+    if(
+      info.leftAtStart
+    ){
 
       return distance;
 
-    }else{
-
-      return
-        wall.length-
-        distance-
-        width;
-
     }
+
+    return length-distance-width;
 
   }
 
 
-  if(info.rightAtStart){
+  if(
+    info.rightAtStart
+  ){
 
     return distance;
 
   }
 
-
-  return
-    wall.length-
-    distance-
-    width;
+  return length-distance-width;
 
 }
 
@@ -2543,6 +2409,9 @@ function offsetToReferenceDistance(
       wall
     );
 
+  const length=
+    Number(wall.length)||
+    wallGeometry(wall).len;
 
   offset=
     Number(offset)||0;
@@ -2551,37 +2420,321 @@ function offsetToReferenceDistance(
     Number(width)||0;
 
 
-  if(side==="left"){
+  if(
+    side==="left"
+  ){
 
-    if(info.leftAtStart){
+    if(
+      info.leftAtStart
+    ){
 
       return offset;
 
-    }else{
-
-      return
-        wall.length-
-        offset-
-        width;
-
     }
+
+    return length-offset-width;
 
   }
 
 
-  if(info.rightAtStart){
+  if(
+    info.rightAtStart
+  ){
 
     return offset;
 
   }
 
-
-  return
-    wall.length-
-    offset-
-    width;
+  return length-offset-width;
 
 }
+
+
+/* =========================================================
+   選牆
+========================================================= */
+
+function getWallScreenPoints(wall){
+
+  const svg=
+    document.getElementById(
+      "drawing"
+    );
+
+  if(
+    !svg ||
+    !wall
+  ){
+
+    return null;
+
+  }
+
+
+  const matrix=
+    svg.getScreenCTM();
+
+  if(!matrix){
+
+    return null;
+
+  }
+
+
+  const p1=
+    svg.createSVGPoint();
+
+  p1.x=
+    wall.start.x;
+
+  p1.y=
+    wall.start.y;
+
+
+  const p2=
+    svg.createSVGPoint();
+
+  p2.x=
+    wall.end.x;
+
+  p2.y=
+    wall.end.y;
+
+
+  const s1=
+    p1.matrixTransform(
+      matrix
+    );
+
+  const s2=
+    p2.matrixTransform(
+      matrix
+    );
+
+
+  return{
+
+    start:{
+      x:s1.x,
+      y:s1.y
+    },
+
+    end:{
+      x:s2.x,
+      y:s2.y
+    }
+
+  };
+
+}
+
+
+function findNearestWallOnScreen(
+  event
+){
+
+  let bestIndex=-1;
+
+  let bestDistance=Infinity;
+
+
+  walls.forEach(
+    (wall,index)=>{
+
+      const screen=
+        getWallScreenPoints(
+          wall
+        );
+
+      if(!screen){
+        return;
+      }
+
+
+      const result=
+        pointToSegment(
+
+          event.clientX,
+
+          event.clientY,
+
+          screen.start.x,
+
+          screen.start.y,
+
+          screen.end.x,
+
+          screen.end.y
+
+        );
+
+
+      if(
+        result.distance<
+        bestDistance
+      ){
+
+        bestDistance=
+          result.distance;
+
+        bestIndex=index;
+
+      }
+
+    }
+  );
+
+
+  return{
+
+    index:bestIndex,
+
+    distance:bestDistance
+
+  };
+
+}
+
+
+function updateSelectedWallInfo(){
+
+  if(
+    selectedWallIndex<0 ||
+    !walls[selectedWallIndex]
+  ){
+    return;
+  }
+
+
+  const wall=
+    walls[selectedWallIndex];
+
+
+  const length=Math.round(
+    Number(wall.length)||
+    wallGeometry(wall).len||
+    0
+  );
+
+
+  if(
+    currentTool==="window"
+  ){
+
+    document.getElementById(
+      "windowWallInfo"
+    ).textContent=
+      "已選擇第 "+
+      (
+        selectedWallIndex+1
+      )+
+      " 面牆｜長 "+
+      length+
+      " mm";
+
+  }
+
+
+  if(
+    currentTool==="door"
+  ){
+
+    document.getElementById(
+      "doorWallInfo"
+    ).textContent=
+      "已選擇第 "+
+      (
+        selectedWallIndex+1
+      )+
+      " 面牆｜長 "+
+      length+
+      " mm";
+
+  }
+
+
+  if(
+    currentTool==="beam"
+  ){
+
+    document.getElementById(
+      "beamWallInfo"
+    ).textContent=
+      "已選擇第 "+
+      (
+        selectedWallIndex+1
+      )+
+      " 面牆｜長 "+
+      length+
+      " mm";
+
+  }
+
+}
+
+
+document
+  .getElementById("drawing")
+  .addEventListener(
+    "pointerdown",
+    function(event){
+
+      if(
+        currentTool!=="window" &&
+        currentTool!=="door" &&
+        currentTool!=="beam"
+      ){
+
+        return;
+
+      }
+
+
+      event.preventDefault();
+
+      event.stopPropagation();
+
+
+      const result=
+        findNearestWallOnScreen(
+          event
+        );
+
+
+      if(
+        result.index<0
+      ){
+        return;
+      }
+
+
+      /*
+        手指／滑鼠距離牆
+        45px 內都算選到
+      */
+
+      if(
+        result.distance>45
+      ){
+
+        return;
+
+      }
+
+
+      selectedWallIndex=
+        result.index;
+
+
+      updateSelectedWallInfo();
+
+      render();
+
+    },
+    {
+      passive:false
+    }
+  );
 
 
 /* =========================================================
@@ -2594,13 +2747,10 @@ function startWindowSelection(){
 
   selectedWallIndex=-1;
 
-
-  document
-    .getElementById(
-      "windowWallInfo"
-    )
-    .textContent=
-      "請直接點擊圖上的牆";
+  document.getElementById(
+    "windowWallInfo"
+  ).textContent=
+    "請直接點擊圖上的牆";
 
 }
 
@@ -2612,7 +2762,9 @@ function addWindow(){
     !walls[selectedWallIndex]
   ){
 
-    alert("請先選擇牆");
+    alert(
+      "請先選擇牆"
+    );
 
     return;
 
@@ -2624,65 +2776,65 @@ function addWindow(){
 
 
   const side=
-    document
-      .getElementById(
-        "windowSide"
-      )
-      .value;
+    document.getElementById(
+      "windowSide"
+    ).value;
 
 
   const distance=
     Number(
-      document
-        .getElementById(
-          "windowOffset"
-        )
-        .value
+      document.getElementById(
+        "windowOffset"
+      ).value
     )||0;
 
 
   const width=
     Number(
-      document
-        .getElementById(
-          "windowWidth"
-        )
-        .value
+      document.getElementById(
+        "windowWidth"
+      ).value
     );
 
 
   const height=
     Number(
-      document
-        .getElementById(
-          "windowHeight"
-        )
-        .value
-    )||0;
+      document.getElementById(
+        "windowHeight"
+      ).value
+    );
 
 
   const sillHeight=
     Number(
-      document
-        .getElementById(
-          "windowSillHeight"
-        )
-        .value
+      document.getElementById(
+        "windowSillHeight"
+      ).value
     )||0;
 
 
-  if(!width || width<=0){
+  if(
+    !width ||
+    width<=0
+  ){
 
-    alert("請輸入窗寬");
+    alert(
+      "請輸入窗寬"
+    );
 
     return;
 
   }
 
 
-  if(!height || height<=0){
+  if(
+    !height ||
+    height<=0
+  ){
 
-    alert("請輸入窗高");
+    alert(
+      "請輸入窗高"
+    );
 
     return;
 
@@ -2701,69 +2853,53 @@ function addWindow(){
   if(
     offset<0 ||
     offset+width>
-      wall.length
+    Number(wall.length)
   ){
 
-    alert("窗戶超出牆面");
+    alert(
+      "窗戶超出牆面"
+    );
 
     return;
 
   }
 
 
-  const existing=[
+  /*
+    檢查和其他門窗重疊
+  */
 
-    ...windows.map(
-      x=>({
+  const openings=[
 
-        wallIndex:x.wallIndex,
+    ...windows,
 
-        offset:
-          Number(x.offset)||0,
-
-        width:
-          Number(x.width)||0
-
-      })
-    ),
-
-    ...doors.map(
-      x=>({
-
-        wallIndex:x.wallIndex,
-
-        offset:
-          Number(x.offset)||0,
-
-        width:
-          Number(x.width)||0
-
-      })
-    )
+    ...doors
 
   ];
 
 
   const overlap=
-    existing
+    openings
       .filter(
-        x=>
-          x.wallIndex===
+        item=>
+          item.wallIndex===
           selectedWallIndex
       )
       .some(
-        x=>
+        item=>
           offset<
-            x.offset+x.width &&
+          Number(item.offset)+
+          Number(item.width)
+          &&
           offset+width>
-            x.offset
+          Number(item.offset)
       );
 
 
   if(overlap){
 
     alert(
-      "這個位置和現有開口重疊"
+      "這個位置和現有門窗重疊"
     );
 
     return;
@@ -2814,13 +2950,10 @@ function startDoorSelection(){
 
   selectedWallIndex=-1;
 
-
-  document
-    .getElementById(
-      "doorWallInfo"
-    )
-    .textContent=
-      "請直接點擊圖上的牆";
+  document.getElementById(
+    "doorWallInfo"
+  ).textContent=
+    "請直接點擊圖上的牆";
 
 }
 
@@ -2832,7 +2965,9 @@ function addDoor(){
     !walls[selectedWallIndex]
   ){
 
-    alert("請先選擇牆");
+    alert(
+      "請先選擇牆"
+    );
 
     return;
 
@@ -2844,73 +2979,71 @@ function addDoor(){
 
 
   const side=
-    document
-      .getElementById(
-        "doorSide"
-      )
-      .value;
+    document.getElementById(
+      "doorSide"
+    ).value;
 
 
   const distance=
     Number(
-      document
-        .getElementById(
-          "doorOffset"
-        )
-        .value
+      document.getElementById(
+        "doorOffset"
+      ).value
     )||0;
 
 
   const width=
     Number(
-      document
-        .getElementById(
-          "doorWidth"
-        )
-        .value
+      document.getElementById(
+        "doorWidth"
+      ).value
     );
 
 
   const height=
     Number(
-      document
-        .getElementById(
-          "doorHeight"
-        )
-        .value
-    )||0;
+      document.getElementById(
+        "doorHeight"
+      ).value
+    );
 
 
-  const doorFloorHeight=
+  const floor=
     Number(
-      document
-        .getElementById(
-          "doorFloorHeight"
-        )
-        .value
+      document.getElementById(
+        "doorFloorHeight"
+      ).value
     )||0;
 
 
   const swing=
-    document
-      .getElementById(
-        "doorSwing"
-      )
-      .value;
+    document.getElementById(
+      "doorSwing"
+    ).value;
 
 
-  if(!width || width<=0){
+  if(
+    !width ||
+    width<=0
+  ){
 
-    alert("請輸入門寬");
+    alert(
+      "請輸入門寬"
+    );
 
     return;
 
   }
 
 
-  if(!height || height<=0){
+  if(
+    !height ||
+    height<=0
+  ){
 
-    alert("請輸入門高");
+    alert(
+      "請輸入門高"
+    );
 
     return;
 
@@ -2929,69 +3062,49 @@ function addDoor(){
   if(
     offset<0 ||
     offset+width>
-      wall.length
+    Number(wall.length)
   ){
 
-    alert("門超出牆面");
+    alert(
+      "門超出牆面"
+    );
 
     return;
 
   }
 
 
-  const existing=[
+  const openings=[
 
-    ...windows.map(
-      x=>({
+    ...windows,
 
-        wallIndex:x.wallIndex,
-
-        offset:
-          Number(x.offset)||0,
-
-        width:
-          Number(x.width)||0
-
-      })
-    ),
-
-    ...doors.map(
-      x=>({
-
-        wallIndex:x.wallIndex,
-
-        offset:
-          Number(x.offset)||0,
-
-        width:
-          Number(x.width)||0
-
-      })
-    )
+    ...doors
 
   ];
 
 
   const overlap=
-    existing
+    openings
       .filter(
-        x=>
-          x.wallIndex===
+        item=>
+          item.wallIndex===
           selectedWallIndex
       )
       .some(
-        x=>
+        item=>
           offset<
-            x.offset+x.width &&
+          Number(item.offset)+
+          Number(item.width)
+          &&
           offset+width>
-            x.offset
+          Number(item.offset)
       );
 
 
   if(overlap){
 
     alert(
-      "這個位置和現有開口重疊"
+      "這個位置和現有門窗重疊"
     );
 
     return;
@@ -3017,13 +3130,13 @@ function addDoor(){
       height,
 
     floorHeight:
-      doorFloorHeight,
-
-    swing:
-      swing,
+      floor,
 
     side:
-      side
+      side,
+
+    swing:
+      swing
 
   });
 
@@ -3043,17 +3156,20 @@ function setFloorHeight(){
 
   const value=
     Number(
-      document
-        .getElementById(
-          "floorHeight"
-        )
-        .value
+      document.getElementById(
+        "floorHeight"
+      ).value
     );
 
 
-  if(!value || value<=0){
+  if(
+    !value ||
+    value<=0
+  ){
 
-    alert("請輸入樓高");
+    alert(
+      "請輸入樓高"
+    );
 
     return;
 
@@ -3081,13 +3197,10 @@ function startBeamSelection(){
 
   selectedWallIndex=-1;
 
-
-  document
-    .getElementById(
-      "beamWallInfo"
-    )
-    .textContent=
-      "請直接點擊圖上的牆";
+  document.getElementById(
+    "beamWallInfo"
+  ).textContent=
+    "請直接點擊圖上的牆";
 
 }
 
@@ -3099,7 +3212,9 @@ function addBeam(){
     !walls[selectedWallIndex]
   ){
 
-    alert("請先選擇牆");
+    alert(
+      "請先選擇牆"
+    );
 
     return;
 
@@ -3108,37 +3223,35 @@ function addBeam(){
 
   const distance=
     Number(
-      document
-        .getElementById(
-          "beamDistance"
-        )
-        .value
+      document.getElementById(
+        "beamDistance"
+      ).value
     )||0;
 
 
   const bottom=
     Number(
-      document
-        .getElementById(
-          "beamBottom"
-        )
-        .value
+      document.getElementById(
+        "beamBottom"
+      ).value
     )||0;
 
 
   const depth=
     Number(
-      document
-        .getElementById(
-          "beamDepth"
-        )
-        .value
+      document.getElementById(
+        "beamDepth"
+      ).value
     )||0;
 
 
-  if(depth<=0){
+  if(
+    depth<=0
+  ){
 
-    alert("請輸入樑深");
+    alert(
+      "請輸入樑深"
+    );
 
     return;
 
@@ -3173,33 +3286,36 @@ function addBeam(){
 
 
 /* =========================================================
-   SVG
+   SVG 工具
 ========================================================= */
 
 function createSvgElement(
   tag,
-  attrs={}
+  attributes={}
 ){
 
-  const el=
+  const element=
     document.createElementNS(
       "http://www.w3.org/2000/svg",
       tag
     );
 
 
-  Object.entries(attrs)
-    .forEach(
-      ([key,value])=>{
-        el.setAttribute(
-          key,
-          value
-        );
-      }
-    );
+  Object.entries(
+    attributes
+  ).forEach(
+    ([key,value])=>{
+
+      element.setAttribute(
+        key,
+        value
+      );
+
+    }
+  );
 
 
-  return el;
+  return element;
 
 }
 
@@ -3213,7 +3329,7 @@ function addText(
   anchor="middle"
 ){
 
-  const el=
+  const element=
     createSvgElement(
       "text",
       {
@@ -3235,17 +3351,19 @@ function addText(
     );
 
 
-  el.textContent=text;
+  element.textContent=text;
 
-  group.appendChild(el);
+  group.appendChild(
+    element
+  );
 
-  return el;
+  return element;
 
 }
 
 
 /* =========================================================
-   尺寸
+   尺寸線
 ========================================================= */
 
 function drawDimension(
@@ -3269,9 +3387,7 @@ function drawDimension(
 
 
   if(!len){
-
     return;
-
   }
 
 
@@ -3311,7 +3427,7 @@ function drawDimension(
 
         y2:by,
 
-        "class":
+        class:
           "dimension-line"
 
       }
@@ -3325,26 +3441,18 @@ function drawDimension(
       {
 
         x1:
-          ax-
-          ux*25-
-          nx*25,
+          ax-ux*25-nx*25,
 
         y1:
-          ay-
-          uy*25-
-          ny*25,
+          ay-uy*25-ny*25,
 
         x2:
-          ax+
-          ux*25+
-          nx*25,
+          ax+ux*25+nx*25,
 
         y2:
-          ay+
-          uy*25+
-          ny*25,
+          ay+uy*25+ny*25,
 
-        "class":
+        class:
           "dimension-tick"
 
       }
@@ -3358,26 +3466,18 @@ function drawDimension(
       {
 
         x1:
-          bx-
-          ux*25-
-          nx*25,
+          bx-ux*25-nx*25,
 
         y1:
-          by-
-          uy*25-
-          ny*25,
+          by-uy*25-ny*25,
 
         x2:
-          bx+
-          ux*25+
-          nx*25,
+          bx+ux*25+nx*25,
 
         y2:
-          by+
-          uy*25+
-          ny*25,
+          by+uy*25+ny*25,
 
-        "class":
+        class:
           "dimension-tick"
 
       }
@@ -3386,13 +3486,14 @@ function drawDimension(
 
 
   addText(
+
     group,
 
     (ax+bx)/2,
 
     (ay+by)/2,
 
-    Math.round(len)+"",
+    Math.round(len),
 
     "dimension-text"
 
@@ -3410,10 +3511,10 @@ function drawWalls(group){
   walls.forEach(
     (wall,index)=>{
 
-      const cls=
+      const className=
         index===selectedWallIndex
-          ? "selected-wall"
-          : "wall";
+          ?"selected-wall"
+          :"wall";
 
 
       group.appendChild(
@@ -3433,8 +3534,8 @@ function drawWalls(group){
             y2:
               wall.end.y,
 
-            "class":
-              cls
+            class:
+              className
 
           }
         )
@@ -3442,6 +3543,7 @@ function drawWalls(group){
 
 
       drawDimension(
+
         group,
 
         wall.start.x,
@@ -3453,6 +3555,7 @@ function drawWalls(group){
         wall.end.y,
 
         100
+
       );
 
     }
@@ -3462,71 +3565,104 @@ function drawWalls(group){
 
 
 /* =========================================================
-   窗戶
+   ★ 窗戶
+   這裡重新處理座標
 ========================================================= */
 
 function drawWindows(group){
 
   windows.forEach(
-    win=>{
+    (windowItem,index)=>{
 
       const wall=
-        walls[win.wallIndex];
+        walls[
+          windowItem.wallIndex
+        ];
 
 
       if(!wall){
-
         return;
-
       }
 
 
       const g=
-        wallGeometry(wall);
+        wallGeometry(
+          wall
+        );
 
 
-      const sx=
+      const ref=
+        getWallReferenceInfo(
+          wall
+        );
+
+
+      /*
+        窗戶起點
+      */
+
+      const startX=
         wall.start.x+
-        g.ux*win.offset;
+        g.ux*
+        Number(
+          windowItem.offset
+        );
 
 
-      const sy=
+      const startY=
         wall.start.y+
-        g.uy*win.offset;
+        g.uy*
+        Number(
+          windowItem.offset
+        );
 
 
-      const ex=
-        sx+
-        g.ux*win.width;
+      const endX=
+        startX+
+        g.ux*
+        Number(
+          windowItem.width
+        );
 
 
-      const ey=
-        sy+
-        g.uy*win.width;
+      const endY=
+        startY+
+        g.uy*
+        Number(
+          windowItem.width
+        );
 
+
+      /*
+        第一條窗線
+      */
 
       group.appendChild(
         createSvgElement(
           "line",
           {
 
-            x1:sx,
+            x1:startX,
 
-            y1:sy,
+            y1:startY,
 
-            x2:ex,
+            x2:endX,
 
-            y2:ey,
+            y2:endY,
 
-            "class":
-              "window"
+            class:
+              "window-line-main"
 
           }
         )
       );
 
 
-      const gap=22;
+      /*
+        第二條窗線
+      */
+
+      const gap=28;
 
 
       group.appendChild(
@@ -3535,77 +3671,135 @@ function drawWindows(group){
           {
 
             x1:
-              sx+
-              g.nx*gap,
+              startX+
+              ref.roomNx*gap,
 
             y1:
-              sy+
-              g.ny*gap,
+              startY+
+              ref.roomNy*gap,
 
             x2:
-              ex+
-              g.nx*gap,
+              endX+
+              ref.roomNx*gap,
 
             y2:
-              ey+
-              g.ny*gap,
+              endY+
+              ref.roomNy*gap,
 
-            "class":
-              "window-line"
+            class:
+              "window-line-inner"
 
           }
         )
       );
 
 
-      const ref=
-        getWallReferenceInfo(
-          wall
-        );
+      /*
+        ★ 文字位置
+        不再用固定右上角
+        而是跟著窗戶中心走
+      */
+
+      const centerX=
+        (
+          startX+
+          endX
+        )/2;
 
 
-      const cx=
-        (sx+ex)/2+
-        ref.roomNx*80;
+      const centerY=
+        (
+          startY+
+          endY
+        )/2;
 
 
-      const cy=
-        (sy+ey)/2+
-        ref.roomNy*80;
+      /*
+        文字放在室內側
+      */
 
+      const textBaseX=
+        centerX+
+        ref.roomNx*
+        110;
+
+
+      const textBaseY=
+        centerY+
+        ref.roomNy*
+        110;
+
+
+      /*
+        窗
+      */
 
       addText(
+
         group,
-        cx,
-        cy,
+
+        textBaseX,
+
+        textBaseY,
+
         "窗",
-        "window-text"
+
+        "window-title"
+
       );
 
 
+      /*
+        寬 × 高
+      */
+
       addText(
+
         group,
-        cx,
-        cy+72,
+
+        textBaseX,
+
+        textBaseY+70,
+
         "寬 "+
-        Math.round(win.width)+
+        Math.round(
+          Number(
+            windowItem.width
+          )
+        )+
         " × 高 "+
-        Math.round(win.height),
-        "opening-info-text window-detail-text"
+        Math.round(
+          Number(
+            windowItem.height
+          )
+        ),
+
+        "window-detail"
+
       );
 
 
+      /*
+        離地
+      */
+
       addText(
+
         group,
-        cx,
-        cy+132,
+
+        textBaseX,
+
+        textBaseY+130,
+
         "離地 "+
         Math.round(
           Number(
-            win.sillHeight
+            windowItem.sillHeight
           )||0
         ),
-        "offset-text"
+
+        "window-height"
+
       );
 
     }
@@ -3615,27 +3809,29 @@ function drawWindows(group){
 
 
 /* =========================================================
-   門
+   ★ 門
 ========================================================= */
 
 function drawDoors(group){
 
   doors.forEach(
-    door=>{
+    (door,index)=>{
 
       const wall=
-        walls[door.wallIndex];
+        walls[
+          door.wallIndex
+        ];
 
 
       if(!wall){
-
         return;
-
       }
 
 
       const g=
-        wallGeometry(wall);
+        wallGeometry(
+          wall
+        );
 
 
       const ref=
@@ -3644,98 +3840,36 @@ function drawDoors(group){
         );
 
 
-      const sx=
+      const startX=
         wall.start.x+
-        g.ux*door.offset;
+        g.ux*
+        Number(
+          door.offset
+        );
 
 
-      const sy=
+      const startY=
         wall.start.y+
-        g.uy*door.offset;
+        g.uy*
+        Number(
+          door.offset
+        );
 
 
-      const ex=
-        sx+
-        g.ux*door.width;
+      const endX=
+        startX+
+        g.ux*
+        Number(
+          door.width
+        );
 
 
-      const ey=
-        sy+
-        g.uy*door.width;
-
-
-      let hingeX;
-
-      let hingeY;
-
-      let freeX;
-
-      let freeY;
-
-
-      /*
-        左開＝鉸鍊在左側
-      */
-
-      if(
-        door.swing==="left"
-      ){
-
-        if(
-          ref.leftAtStart
-        ){
-
-          hingeX=sx;
-
-          hingeY=sy;
-
-          freeX=ex;
-
-          freeY=ey;
-
-        }else{
-
-          hingeX=ex;
-
-          hingeY=ey;
-
-          freeX=sx;
-
-          freeY=sy;
-
-        }
-
-      }else{
-
-        /*
-          右開＝鉸鍊在右側
-        */
-
-        if(
-          ref.rightAtStart
-        ){
-
-          hingeX=ex;
-
-          hingeY=ey;
-
-          freeX=sx;
-
-          freeY=sy;
-
-        }else{
-
-          hingeX=sx;
-
-          hingeY=sy;
-
-          freeX=ex;
-
-          freeY=ey;
-
-        }
-
-      }
+      const endY=
+        startY+
+        g.uy*
+        Number(
+          door.width
+        );
 
 
       /*
@@ -3747,16 +3881,16 @@ function drawDoors(group){
           "line",
           {
 
-            x1:sx,
+            x1:startX,
 
-            y1:sy,
+            y1:startY,
 
-            x2:ex,
+            x2:endX,
 
-            y2:ey,
+            y2:endY,
 
-            "class":
-              "door"
+            class:
+              "door-line"
 
           }
         )
@@ -3764,19 +3898,73 @@ function drawDoors(group){
 
 
       /*
+        鉸鍊位置
+      */
+
+      let hingeX;
+
+      let hingeY;
+
+
+      if(
+        door.swing==="left"
+      ){
+
+        if(
+          ref.leftAtStart
+        ){
+
+          hingeX=startX;
+
+          hingeY=startY;
+
+        }else{
+
+          hingeX=endX;
+
+          hingeY=endY;
+
+        }
+
+      }else{
+
+        if(
+          ref.rightAtStart
+        ){
+
+          hingeX=endX;
+
+          hingeY=endY;
+
+        }else{
+
+          hingeX=startX;
+
+          hingeY=startY;
+
+        }
+
+      }
+
+
+      /*
         門扇
       */
 
-      const leafX=
+      const leafEndX=
         hingeX+
         ref.roomNx*
-        door.width;
+        Number(
+          door.width
+        );
 
 
-      const leafY=
+      const leafEndY=
         hingeY+
         ref.roomNy*
-        door.width;
+        Number(
+          door.width
+        );
 
 
       group.appendChild(
@@ -3791,12 +3979,12 @@ function drawDoors(group){
               hingeY,
 
             x2:
-              leafX,
+              leafEndX,
 
             y2:
-              leafY,
+              leafEndY,
 
-            "class":
+            class:
               "door-leaf"
 
           }
@@ -3805,7 +3993,7 @@ function drawDoors(group){
 
 
       /*
-        開門弧
+        開門弧線
       */
 
       group.appendChild(
@@ -3814,12 +4002,20 @@ function drawDoors(group){
           {
 
             d:
-              `M ${freeX} ${freeY}
-               A ${door.width} ${door.width}
-               0 0 1
-               ${leafX} ${leafY}`,
+              "M "+
+              startX+
+              " "+
+              startY+
+              " A "+
+              Number(door.width)+
+              " "+
+              Number(door.width)+
+              " 0 0 1 "+
+              leafEndX+
+              " "+
+              leafEndY,
 
-            "class":
+            class:
               "door-arc"
 
           }
@@ -3827,48 +4023,94 @@ function drawDoors(group){
       );
 
 
-      const cx=
-        (sx+ex)/2+
-        ref.roomNx*80;
+      /*
+        文字位置
+      */
+
+      const centerX=
+        (
+          startX+
+          endX
+        )/2;
 
 
-      const cy=
-        (sy+ey)/2+
-        ref.roomNy*80;
+      const centerY=
+        (
+          startY+
+          endY
+        )/2;
+
+
+      const textBaseX=
+        centerX+
+        ref.roomNx*
+        110;
+
+
+      const textBaseY=
+        centerY+
+        ref.roomNy*
+        110;
 
 
       addText(
+
         group,
-        cx,
-        cy,
+
+        textBaseX,
+
+        textBaseY,
+
         "門",
-        "door-text"
+
+        "door-title"
+
       );
 
 
       addText(
+
         group,
-        cx,
-        cy+72,
+
+        textBaseX,
+
+        textBaseY+70,
+
         "寬 "+
-        Math.round(door.width)+
+        Math.round(
+          Number(
+            door.width
+          )
+        )+
         " × 高 "+
-        Math.round(door.height),
-        "opening-info-text door-detail-text"
+        Math.round(
+          Number(
+            door.height
+          )
+        ),
+
+        "door-detail"
+
       );
 
 
       addText(
+
         group,
-        cx,
-        cy+132,
+
+        textBaseX,
+
+        textBaseY+130,
+
         "離地 "+
         Math.round(
           Number(
             door.floorHeight
           )||0
         ),
-        "offset-text"
+
+        "door-height"
+
       );
 
     }
@@ -3878,44 +4120,47 @@ function drawDoors(group){
 
 
 /* =========================================================
-   開口距離
+   門窗距離文字
 ========================================================= */
 
 function drawOpeningDistances(group){
 
-  /*
-    窗
-  */
-
   windows.forEach(
-    win=>{
+    windowItem=>{
 
       const wall=
-        walls[win.wallIndex];
+        walls[
+          windowItem.wallIndex
+        ];
 
 
       if(!wall){
-
         return;
-
       }
-
-
-      const side=
-        win.side||"left";
 
 
       const distance=
         offsetToReferenceDistance(
+
           wall,
-          side,
-          win.offset,
-          win.width
+
+          windowItem.side||"left",
+
+          Number(
+            windowItem.offset
+          ),
+
+          Number(
+            windowItem.width
+          )
+
         );
 
 
       const g=
-        wallGeometry(wall);
+        wallGeometry(
+          wall
+        );
 
 
       const ref=
@@ -3924,98 +4169,116 @@ function drawOpeningDistances(group){
         );
 
 
-      let sx;
+      let x;
 
-      let sy;
+      let y;
 
 
       if(
         (
-          side==="left" &&
+          windowItem.side==="left" &&
           ref.leftAtStart
-        ) ||
+        )
+        ||
         (
-          side==="right" &&
+          windowItem.side==="right" &&
           ref.rightAtStart
         )
       ){
 
-        sx=
+        x=
           wall.start.x+
-          g.ux*win.offset;
+          g.ux*
+          Number(
+            windowItem.offset
+          );
 
-        sy=
+        y=
           wall.start.y+
-          g.uy*win.offset;
+          g.uy*
+          Number(
+            windowItem.offset
+          );
 
       }else{
 
-        sx=
+        x=
           wall.end.x-
-          g.ux*win.offset;
+          g.ux*
+          Number(
+            windowItem.offset
+          );
 
-        sy=
+        y=
           wall.end.y-
-          g.uy*win.offset;
+          g.uy*
+          Number(
+            windowItem.offset
+          );
 
       }
 
 
-      const tx=
-        sx+
-        ref.roomNx*115;
-
-
-      const ty=
-        sy+
-        ref.roomNy*115;
-
-
       addText(
+
         group,
-        tx,
-        ty,
-        Math.round(distance),
+
+        x+
+        ref.roomNx*
+        70,
+
+        y+
+        ref.roomNy*
+        70,
+
+        Math.round(
+          distance
+        ),
+
         "offset-text"
+
       );
 
     }
   );
 
 
-  /*
-    門
-  */
-
   doors.forEach(
     door=>{
 
       const wall=
-        walls[door.wallIndex];
+        walls[
+          door.wallIndex
+        ];
 
 
       if(!wall){
-
         return;
-
       }
-
-
-      const side=
-        door.side||"left";
 
 
       const distance=
         offsetToReferenceDistance(
+
           wall,
-          side,
-          door.offset,
-          door.width
+
+          door.side||"left",
+
+          Number(
+            door.offset
+          ),
+
+          Number(
+            door.width
+          )
+
         );
 
 
       const g=
-        wallGeometry(wall);
+        wallGeometry(
+          wall
+        );
 
 
       const ref=
@@ -4024,59 +4287,74 @@ function drawOpeningDistances(group){
         );
 
 
-      let sx;
+      let x;
 
-      let sy;
+      let y;
 
 
       if(
         (
-          side==="left" &&
+          door.side==="left" &&
           ref.leftAtStart
-        ) ||
+        )
+        ||
         (
-          side==="right" &&
+          door.side==="right" &&
           ref.rightAtStart
         )
       ){
 
-        sx=
+        x=
           wall.start.x+
-          g.ux*door.offset;
+          g.ux*
+          Number(
+            door.offset
+          );
 
-        sy=
+        y=
           wall.start.y+
-          g.uy*door.offset;
+          g.uy*
+          Number(
+            door.offset
+          );
 
       }else{
 
-        sx=
+        x=
           wall.end.x-
-          g.ux*door.offset;
+          g.ux*
+          Number(
+            door.offset
+          );
 
-        sy=
+        y=
           wall.end.y-
-          g.uy*door.offset;
+          g.uy*
+          Number(
+            door.offset
+          );
 
       }
 
 
-      const tx=
-        sx+
-        ref.roomNx*145;
-
-
-      const ty=
-        sy+
-        ref.roomNy*145;
-
-
       addText(
+
         group,
-        tx,
-        ty,
-        Math.round(distance),
+
+        x+
+        ref.roomNx*
+        80,
+
+        y+
+        ref.roomNy*
+        80,
+
+        Math.round(
+          distance
+        ),
+
         "offset-text"
+
       );
 
     }
@@ -4091,10 +4369,10 @@ function drawOpeningDistances(group){
 
 function drawFloorHeight(group){
 
-  if(!floorHeight){
-
+  if(
+    !floorHeight
+  ){
     return;
-
   }
 
 
@@ -4103,13 +4381,21 @@ function drawFloorHeight(group){
 
 
   addText(
+
     group,
+
     center.x,
+
     center.y,
+
     "樓高 "+
-    Math.round(floorHeight)+
+    Math.round(
+      floorHeight
+    )+
     " mm",
+
     "height-text"
+
   );
 
 }
@@ -4125,13 +4411,13 @@ function drawBeams(group){
     beam=>{
 
       const wall=
-        walls[beam.wallIndex];
+        walls[
+          beam.wallIndex
+        ];
 
 
       if(!wall){
-
         return;
-
       }
 
 
@@ -4147,24 +4433,28 @@ function drawBeams(group){
         )||0;
 
 
-      const sx=
+      const startX=
         wall.start.x+
-        ref.roomNx*distance;
+        ref.roomNx*
+        distance;
 
 
-      const sy=
+      const startY=
         wall.start.y+
-        ref.roomNy*distance;
+        ref.roomNy*
+        distance;
 
 
-      const ex=
+      const endX=
         wall.end.x+
-        ref.roomNx*distance;
+        ref.roomNx*
+        distance;
 
 
-      const ey=
+      const endY=
         wall.end.y+
-        ref.roomNy*distance;
+        ref.roomNy*
+        distance;
 
 
       group.appendChild(
@@ -4172,16 +4462,16 @@ function drawBeams(group){
           "line",
           {
 
-            x1:sx,
+            x1:startX,
 
-            y1:sy,
+            y1:startY,
 
-            x2:ex,
+            x2:endX,
 
-            y2:ey,
+            y2:endY,
 
-            "class":
-              "beam"
+            class:
+              "beam-line"
 
           }
         )
@@ -4189,62 +4479,76 @@ function drawBeams(group){
 
 
       const beamHeight=
-        floorHeight-
-        Number(
-          beam.bottom||0
-        );
+        Number(floorHeight)-
+        Number(beam.bottom||0);
 
 
-      const cx=
-        (sx+ex)/2+
-        ref.roomNx*80;
+      const centerX=
+        (
+          startX+
+          endX
+        )/2;
 
 
-      const cy=
-        (sy+ey)/2+
-        ref.roomNy*80;
+      const centerY=
+        (
+          startY+
+          endY
+        )/2;
 
 
       addText(
+
         group,
-        cx,
-        cy,
+
+        centerX+
+        ref.roomNx*
+        80,
+
+        centerY+
+        ref.roomNy*
+        80,
+
         "樑 "+
         Math.round(
           beamHeight
         )+
         "mm",
+
         "beam-text"
+
       );
 
 
-      if(distance>0){
-
-        const wx=
-          (
-            sx+
-            wall.start.x
-          )/2;
-
-
-        const wy=
-          (
-            sy+
-            wall.start.y
-          )/2;
-
+      if(
+        distance>0
+      ){
 
         addText(
+
           group,
-          wx+
-            ref.roomNx*35,
-          wy+
-            ref.roomNy*35,
+
+          (
+            startX+
+            wall.start.x
+          )/2+
+          ref.roomNx*
+          35,
+
+          (
+            startY+
+            wall.start.y
+          )/2+
+          ref.roomNy*
+          35,
+
           "離牆 "+
-            Math.round(
-              distance
-            ),
+          Math.round(
+            distance
+          ),
+
           "beam-distance-text"
+
         );
 
       }
@@ -4270,30 +4574,47 @@ function render(){
   group.innerHTML="";
 
 
-  drawWalls(group);
+  drawWalls(
+    group
+  );
 
-  drawWindows(group);
+  drawWindows(
+    group
+  );
 
-  drawDoors(group);
+  drawDoors(
+    group
+  );
 
-  drawOpeningDistances(group);
+  drawOpeningDistances(
+    group
+  );
 
-  drawBeams(group);
+  drawBeams(
+    group
+  );
 
-  drawFloorHeight(group);
+  drawFloorHeight(
+    group
+  );
 
 
   if(
-    walls.length===0 &&
-    floorHeight===0
+    walls.length===0
   ){
 
     addText(
+
       group,
+
       0,
+
       0,
+
       "請輸入牆長開始丈量",
+
       "center-label"
+
     );
 
   }
@@ -4320,20 +4641,34 @@ function fitView(){
 
 
   if(!group){
+    return;
+  }
+
+
+  let bbox;
+
+
+  try{
+
+    bbox=
+      group.getBBox();
+
+  }catch(error){
 
     return;
 
   }
 
 
-  const bbox=
-    group.getBBox();
-
-
   if(
-    !bbox.width ||
+    !bbox.width &&
     !bbox.height
   ){
+
+    svg.setAttribute(
+      "viewBox",
+      "-500 -500 1500 1500"
+    );
 
     return;
 
@@ -4344,11 +4679,13 @@ function fitView(){
 
 
   let x=
-    bbox.x-padding;
+    bbox.x-
+    padding;
 
 
   let y=
-    bbox.y-padding;
+    bbox.y-
+    padding;
 
 
   let width=
@@ -4364,10 +4701,15 @@ function fitView(){
   const minSize=1500;
 
 
-  if(width<minSize){
+  if(
+    width<minSize
+  ){
 
     const extra=
-      (minSize-width)/2;
+      (
+        minSize-
+        width
+      )/2;
 
     x-=extra;
 
@@ -4376,10 +4718,15 @@ function fitView(){
   }
 
 
-  if(height<minSize){
+  if(
+    height<minSize
+  ){
 
     const extra=
-      (minSize-height)/2;
+      (
+        minSize-
+        height
+      )/2;
 
     y-=extra;
 
@@ -4397,443 +4744,20 @@ function fitView(){
 
 
 /* =========================================================
-   ★★★ 新版選牆系統 ★★★
-
-   使用「螢幕座標」判斷。
-
-   不把手指座標轉成 SVG 座標，
-   而是把每一面牆轉成螢幕座標。
-
-   這樣可以避免：
-   - viewBox
-   - fitView()
-   - 手機畫面比例
-   - SVG 縮放
-
-   造成選牆位置偏移。
-
-   所有牆都會逐一檢查。
-========================================================= */
-
-
-/* =========================================================
-   取得牆在螢幕上的兩個端點
-========================================================= */
-
-function getWallScreenPoints(wall){
-
-  const svg=
-    document.getElementById(
-      "drawing"
-    );
-
-
-  if(
-    !svg ||
-    !wall ||
-    !wall.start ||
-    !wall.end
-  ){
-
-    return null;
-
-  }
-
-
-  const matrix=
-    svg.getScreenCTM();
-
-
-  if(!matrix){
-
-    return null;
-
-  }
-
-
-  const p1=
-    svg.createSVGPoint();
-
-
-  p1.x=
-    wall.start.x;
-
-  p1.y=
-    wall.start.y;
-
-
-  const p2=
-    svg.createSVGPoint();
-
-
-  p2.x=
-    wall.end.x;
-
-  p2.y=
-    wall.end.y;
-
-
-  const screenP1=
-    p1.matrixTransform(
-      matrix
-    );
-
-
-  const screenP2=
-    p2.matrixTransform(
-      matrix
-    );
-
-
-  return{
-
-    start:{
-      x:screenP1.x,
-      y:screenP1.y
-    },
-
-    end:{
-      x:screenP2.x,
-      y:screenP2.y
-    }
-
-  };
-
-}
-
-
-/* =========================================================
-   找最近的一面牆
-========================================================= */
-
-function findNearestWallOnScreen(evt){
-
-  if(
-    !walls ||
-    walls.length===0
-  ){
-
-    return{
-
-      index:-1,
-
-      distance:Infinity
-
-    };
-
-  }
-
-
-  let bestIndex=-1;
-
-  let bestDistance=Infinity;
-
-
-  /*
-    ★★★ 所有牆逐一檢查 ★★★
-  */
-
-  walls.forEach(
-    (wall,index)=>{
-
-      const screen=
-        getWallScreenPoints(
-          wall
-        );
-
-
-      if(!screen){
-
-        return;
-
-      }
-
-
-      /*
-        使用螢幕座標
-        計算手指離牆的距離
-      */
-
-      const result=
-        pointToSegment(
-
-          evt.clientX,
-          evt.clientY,
-
-          screen.start.x,
-          screen.start.y,
-
-          screen.end.x,
-          screen.end.y
-
-        );
-
-
-      if(
-        result.distance<
-        bestDistance
-      ){
-
-        bestDistance=
-          result.distance;
-
-        bestIndex=
-          index;
-
-      }
-
-    }
-  );
-
-
-  return{
-
-    index:
-      bestIndex,
-
-    distance:
-      bestDistance
-
-  };
-
-}
-
-
-/* =========================================================
-   顯示目前選到哪一面牆
-========================================================= */
-
-function updateSelectedWallInfo(){
-
-  if(
-    selectedWallIndex<0 ||
-    !walls[selectedWallIndex]
-  ){
-
-    return;
-
-  }
-
-
-  const wall=
-    walls[selectedWallIndex];
-
-
-  const length=
-    Math.round(
-      Number(
-        wall.length||
-        wallGeometry(wall).len||
-        0
-      )
-    );
-
-
-  /*
-    窗戶
-  */
-
-  if(
-    currentTool==="window"
-  ){
-
-    const info=
-      document.getElementById(
-        "windowWallInfo"
-      );
-
-
-    if(info){
-
-      info.textContent=
-        "已選擇第 "+
-        (selectedWallIndex+1)+
-        " 面牆｜長 "+
-        length+
-        " mm";
-
-    }
-
-  }
-
-
-  /*
-    門
-  */
-
-  if(
-    currentTool==="door"
-  ){
-
-    const info=
-      document.getElementById(
-        "doorWallInfo"
-      );
-
-
-    if(info){
-
-      info.textContent=
-        "已選擇第 "+
-        (selectedWallIndex+1)+
-        " 面牆｜長 "+
-        length+
-        " mm";
-
-    }
-
-  }
-
-
-  /*
-    樑
-  */
-
-  if(
-    currentTool==="beam"
-  ){
-
-    const info=
-      document.getElementById(
-        "beamWallInfo"
-      );
-
-
-    if(info){
-
-      info.textContent=
-        "已選擇第 "+
-        (selectedWallIndex+1)+
-        " 面牆｜長 "+
-        length+
-        " mm";
-
-    }
-
-  }
-
-}
-
-
-/* =========================================================
-   SVG 點擊／觸控選牆
-========================================================= */
-
-const drawingSVG=
-  document.getElementById(
-    "drawing"
-  );
-
-
-drawingSVG.addEventListener(
-  "pointerdown",
-  function(evt){
-
-    /*
-      只有窗戶、門、樑
-      才需要選牆
-    */
-
-    if(
-      currentTool!=="window" &&
-      currentTool!=="door" &&
-      currentTool!=="beam"
-    ){
-
-      return;
-
-    }
-
-
-    evt.preventDefault();
-
-    evt.stopPropagation();
-
-
-    /*
-      找離手指最近的牆
-    */
-
-    const result=
-      findNearestWallOnScreen(
-        evt
-      );
-
-
-    if(
-      result.index<0
-    ){
-
-      return;
-
-    }
-
-
-    /*
-      ★ 直接使用螢幕像素
-
-      45px 以內都算點到牆。
-    */
-
-    const tolerance=45;
-
-
-    if(
-      result.distance>
-      tolerance
-    ){
-
-      return;
-
-    }
-
-
-    /*
-      ★ 成功選到牆
-    */
-
-    selectedWallIndex=
-      result.index;
-
-
-    /*
-      更新 UI
-    */
-
-    updateSelectedWallInfo();
-
-
-    /*
-      重畫
-      被選到的牆會變成紫色
-    */
-
-    render();
-
-  },
-  {
-    passive:false
-  }
-);
-
-
-/* =========================================================
    鍵盤
 ========================================================= */
 
 document.addEventListener(
   "keydown",
-  function(evt){
+  function(event){
 
     const active=
       document.activeElement;
 
 
-    /*
-      Enter 新增牆
-    */
-
-    if(evt.key==="Enter"){
+    if(
+      event.key==="Enter"
+    ){
 
       if(
         currentTool==="wall" &&
@@ -4841,11 +4765,9 @@ document.addEventListener(
         active.id==="wallLength"
       ){
 
-        evt.preventDefault();
+        event.preventDefault();
 
         addWall();
-
-        return;
 
       }
 
@@ -4853,10 +4775,6 @@ document.addEventListener(
 
     }
 
-
-    /*
-      不是牆線模式
-    */
 
     if(
       currentTool!=="wall"
@@ -4881,27 +4799,22 @@ document.addEventListener(
 
 
     const direction=
-      directionMap[evt.key];
+      directionMap[
+        event.key
+      ];
 
 
     if(!direction){
-
       return;
-
     }
 
-
-    /*
-      游標在牆長輸入框
-      方向鍵改變方向
-    */
 
     if(
       active &&
       active.id==="wallLength"
     ){
 
-      evt.preventDefault();
+      event.preventDefault();
 
       setDirection(
         direction
@@ -4911,11 +4824,6 @@ document.addEventListener(
 
     }
 
-
-    /*
-      如果正在輸入其他欄位
-      不干擾
-    */
 
     if(
       active &&
@@ -4931,7 +4839,7 @@ document.addEventListener(
     }
 
 
-    evt.preventDefault();
+    event.preventDefault();
 
     setDirection(
       direction
@@ -4954,34 +4862,14 @@ function createExportSvg(){
 
 
   const clone=
-    original.cloneNode(true);
+    original.cloneNode(
+      true
+    );
 
 
   clone.setAttribute(
     "xmlns",
     "http://www.w3.org/2000/svg"
-  );
-
-
-  const viewBox=
-    original.getAttribute(
-      "viewBox"
-    );
-
-
-  if(viewBox){
-
-    clone.setAttribute(
-      "viewBox",
-      viewBox
-    );
-
-  }
-
-
-  clone.setAttribute(
-    "preserveAspectRatio",
-    "xMidYMid meet"
   );
 
 
@@ -4997,220 +4885,16 @@ function createExportSvg(){
   );
 
 
-  const style=
-    document.createElementNS(
-      "http://www.w3.org/2000/svg",
-      "style"
-    );
-
-
-  style.textContent=`
-
-.wall{
-stroke:#111;
-stroke-width:24;
-stroke-linecap:round;
-}
-
-.selected-wall{
-stroke:#9333ea;
-stroke-width:35;
-stroke-dasharray:20 15;
-}
-
-.window{
-stroke:#2563eb;
-stroke-width:18;
-}
-
-.window-line{
-stroke:#2563eb;
-stroke-width:8;
-}
-
-.door{
-stroke:#f97316;
-stroke-width:18;
-}
-
-.door-leaf{
-stroke:#f97316;
-stroke-width:14;
-}
-
-.door-arc{
-fill:none;
-stroke:#f97316;
-stroke-width:8;
-stroke-dasharray:18 12;
-}
-
-.beam{
-stroke:#dc2626;
-stroke-width:28;
-stroke-dasharray:35 20;
-}
-
-.dimension-line{
-stroke:#6b7280;
-stroke-width:5;
-}
-
-.dimension-tick{
-stroke:#6b7280;
-stroke-width:5;
-}
-
-.dimension-text{
-font-size:70px;
-font-weight:bold;
-fill:#374151;
-}
-
-.window-text{
-font-size:58px;
-font-weight:bold;
-fill:#2563eb;
-}
-
-.door-text{
-font-size:58px;
-font-weight:bold;
-fill:#ea580c;
-}
-
-.offset-text{
-font-size:50px;
-font-weight:bold;
-fill:#4b5563;
-}
-
-.height-text{
-font-size:82px;
-font-weight:bold;
-fill:#059669;
-}
-
-.beam-text{
-font-size:60px;
-font-weight:bold;
-fill:#dc2626;
-}
-
-.beam-distance-text{
-font-size:50px;
-font-weight:bold;
-fill:#dc2626;
-}
-
-.center-label{
-font-size:34px;
-font-weight:bold;
-fill:#6b7280;
-}
-
-.opening-info-text{
-font-size:46px;
-font-weight:bold;
-}
-
-.window-detail-text{
-fill:#2563eb;
-}
-
-.door-detail-text{
-fill:#ea580c;
-}
-
-`;
-
-
-  clone.insertBefore(
-    style,
-    clone.firstChild
-  );
-
-
   return clone;
 
 }
 
 
 /* =========================================================
-   Export Size
+   Export JPG
 ========================================================= */
 
-function getExportSize(){
-
-  const svg=
-    document.getElementById(
-      "drawing"
-    );
-
-
-  const viewBox=
-    svg.viewBox.baseVal;
-
-
-  if(
-    viewBox &&
-    viewBox.width &&
-    viewBox.height
-  ){
-
-    const ratio=
-      viewBox.width/
-      viewBox.height;
-
-
-    let width=2400;
-
-
-    let height=
-      Math.round(
-        width/ratio
-      );
-
-
-    if(height>1800){
-
-      height=1800;
-
-      width=
-        Math.round(
-          height*ratio
-        );
-
-    }
-
-
-    return{
-
-      width:width,
-
-      height:height
-
-    };
-
-  }
-
-
-  return{
-
-    width:2400,
-
-    height:1600
-
-  };
-
-}
-
-
-/* =========================================================
-   SVG → Image
-========================================================= */
-
-function svgToImage(callback){
+function exportJPG(){
 
   fitView();
 
@@ -5249,150 +4933,111 @@ function svgToImage(callback){
     new Image();
 
 
-  img.onload=
-    function(){
+  img.onload=function(){
 
-      URL.revokeObjectURL(
-        url
+    URL.revokeObjectURL(
+      url
+    );
+
+
+    const canvas=
+      document.createElement(
+        "canvas"
       );
 
 
-      callback(img);
+    canvas.width=2400;
 
-    };
+    canvas.height=1600;
 
 
-  img.onerror=
-    function(){
-
-      URL.revokeObjectURL(
-        url
+    const ctx=
+      canvas.getContext(
+        "2d"
       );
 
 
-      alert(
-        "匯出圖片失敗，請再試一次。"
-      );
+    ctx.fillStyle=
+      "#ffffff";
 
-    };
+
+    ctx.fillRect(
+      0,
+      0,
+      2400,
+      1600
+    );
+
+
+    ctx.drawImage(
+      img,
+      0,
+      0,
+      2400,
+      1600
+    );
+
+
+    canvas.toBlob(
+      function(result){
+
+        if(!result){
+
+          alert(
+            "JPG 匯出失敗"
+          );
+
+          return;
+
+        }
+
+
+        const a=
+          document.createElement(
+            "a"
+          );
+
+
+        a.href=
+          URL.createObjectURL(
+            result
+          );
+
+
+        a.download=
+          (
+            document.getElementById(
+              "caseName"
+            ).value||
+            "房屋丈量"
+          )+
+          ".jpg";
+
+
+        a.click();
+
+      },
+      "image/jpeg",
+      .95
+    );
+
+  };
+
+
+  img.onerror=function(){
+
+    URL.revokeObjectURL(
+      url
+    );
+
+    alert(
+      "圖片匯出失敗"
+    );
+
+  };
 
 
   img.src=url;
-
-}
-
-
-/* =========================================================
-   JPG
-========================================================= */
-
-function exportJPG(){
-
-  svgToImage(
-    function(img){
-
-      const size=
-        getExportSize();
-
-
-      const canvas=
-        document.createElement(
-          "canvas"
-        );
-
-
-      canvas.width=
-        size.width;
-
-      canvas.height=
-        size.height;
-
-
-      const ctx=
-        canvas.getContext(
-          "2d"
-        );
-
-
-      ctx.fillStyle="#ffffff";
-
-
-      ctx.fillRect(
-        0,
-        0,
-        canvas.width,
-        canvas.height
-      );
-
-
-      ctx.drawImage(
-        img,
-        0,
-        0,
-        canvas.width,
-        canvas.height
-      );
-
-
-      canvas.toBlob(
-        function(blob){
-
-          if(!blob){
-
-            alert(
-              "JPG 匯出失敗"
-            );
-
-            return;
-
-          }
-
-
-          const a=
-            document.createElement(
-              "a"
-            );
-
-
-          a.href=
-            URL.createObjectURL(
-              blob
-            );
-
-
-          a.download=
-            (
-              document
-                .getElementById(
-                  "caseName"
-                )
-                .value||
-              "房屋丈量"
-            )+
-            ".jpg";
-
-
-          a.click();
-
-
-          setTimeout(
-            function(){
-
-              URL.revokeObjectURL(
-                a.href
-              );
-
-            },
-            1000
-          );
-
-        },
-        "image/jpeg",
-        0.95
-      );
-
-    }
-  );
 
 }
 
@@ -5403,408 +5048,124 @@ function exportJPG(){
 
 function exportPDF(){
 
-  svgToImage(
-    function(img){
+  /*
+    使用瀏覽器列印功能
+    產生 PDF
+  */
 
-      const size=
-        getExportSize();
-
-
-      const canvas=
-        document.createElement(
-          "canvas"
-        );
+  fitView();
 
 
-      canvas.width=
-        size.width;
-
-      canvas.height=
-        size.height;
-
-
-      const ctx=
-        canvas.getContext(
-          "2d"
-        );
-
-
-      ctx.fillStyle="#ffffff";
-
-
-      ctx.fillRect(
-        0,
-        0,
-        canvas.width,
-        canvas.height
-      );
-
-
-      ctx.drawImage(
-        img,
-        0,
-        0,
-        canvas.width,
-        canvas.height
-      );
-
-
-      const jpeg=
-        canvas.toDataURL(
-          "image/jpeg",
-          0.95
-        );
-
-
-      const pdf=
-        createSimplePDF(
-          jpeg,
-          canvas.width,
-          canvas.height
-        );
-
-
-      const a=
-        document.createElement(
-          "a"
-        );
-
-
-      a.href=
-        URL.createObjectURL(
-          pdf
-        );
-
-
-      a.download=
-        (
-          document
-            .getElementById(
-              "caseName"
-            )
-            .value||
-          "房屋丈量"
-        )+
-        ".pdf";
-
-
-      a.click();
-
-
-      setTimeout(
-        function(){
-
-          URL.revokeObjectURL(
-            a.href
-          );
-
-        },
-        1000
-      );
-
-    }
-  );
-
-}
-
-
-/* =========================================================
-   PDF 建立
-========================================================= */
-
-function createSimplePDF(
-  imageData,
-  width,
-  height
-){
-
-  const binary=
-    atob(
-      imageData.split(",")[1]
+  const original=
+    document.getElementById(
+      "drawing"
     );
 
 
-  const imgBytes=
-    new Uint8Array(
-      binary.length
+  const svgData=
+    new XMLSerializer()
+      .serializeToString(
+        original
+      );
+
+
+  const blob=
+    new Blob(
+      [svgData],
+      {
+        type:
+          "image/svg+xml;charset=utf-8"
+      }
     );
 
 
-  for(
-    let i=0;
-    i<binary.length;
-    i++
-  ){
+  const url=
+    URL.createObjectURL(
+      blob
+    );
 
-    imgBytes[i]=
-      binary.charCodeAt(i);
+
+  const win=
+    window.open(
+      "",
+      "_blank"
+    );
+
+
+  if(!win){
+
+    alert(
+      "請允許瀏覽器開啟新視窗"
+    );
+
+    URL.revokeObjectURL(
+      url
+    );
+
+    return;
 
   }
 
 
-  const encoder=
-    new TextEncoder();
+  win.document.write(`
 
+<!DOCTYPE html>
 
-  const objects=[];
+<html>
 
+<head>
 
-  /*
-    Object 1
-  */
+<title>
+房屋丈量
+</title>
 
-  objects.push(
-    encoder.encode(
-      "1 0 obj\n"+
-      "<< /Type /Catalog /Pages 2 0 R >>\n"+
-      "endobj\n"
-    )
-  );
+<style>
 
-
-  /*
-    Object 2
-  */
-
-  objects.push(
-    encoder.encode(
-      "2 0 obj\n"+
-      "<< /Type /Pages /Kids [3 0 R] /Count 1 >>\n"+
-      "endobj\n"
-    )
-  );
-
-
-  /*
-    Object 3
-  */
-
-  objects.push(
-    encoder.encode(
-      "3 0 obj\n"+
-      "<< /Type /Page /Parent 2 0 R "+
-      "/MediaBox [0 0 "+
-      width+" "+height+"] "+
-      "/Resources << /XObject << /Im0 4 0 R >> >> "+
-      "/Contents 5 0 R >>\n"+
-      "endobj\n"
-    )
-  );
-
-
-  /*
-    Object 4
-  */
-
-  const imageHeader=
-    encoder.encode(
-      "4 0 obj\n"+
-      "<< /Type /XObject "+
-      "/Subtype /Image "+
-      "/Width "+width+" "+
-      "/Height "+height+" "+
-      "/ColorSpace /DeviceRGB "+
-      "/BitsPerComponent 8 "+
-      "/Filter /DCTDecode "+
-      "/Length "+imgBytes.length+" >>\n"+
-      "stream\n"
-    );
-
-
-  const imageFooter=
-    encoder.encode(
-      "\nendstream\n"+
-      "endobj\n"
-    );
-
-
-  objects.push(
-    concatUint8(
-      imageHeader,
-      imgBytes,
-      imageFooter
-    )
-  );
-
-
-  /*
-    Object 5
-  */
-
-  const content=
-    "q\n"+
-    width+
-    " 0 0 "+
-    height+
-    " 0 0 cm\n"+
-    "/Im0 Do\n"+
-    "Q\n";
-
-
-  const contentBytes=
-    encoder.encode(
-      content
-    );
-
-
-  objects.push(
-    concatUint8(
-
-      encoder.encode(
-        "5 0 obj\n"+
-        "<< /Length "+
-        contentBytes.length+
-        " >>\n"+
-        "stream\n"
-      ),
-
-      contentBytes,
-
-      encoder.encode(
-        "endstream\n"+
-        "endobj\n"
-      )
-
-    )
-  );
-
-
-  /*
-    PDF
-  */
-
-  let pdfParts=[];
-
-
-  const header=
-    encoder.encode(
-      "%PDF-1.4\n%\xFF\xFF\xFF\xFF\n"
-    );
-
-
-  pdfParts.push(header);
-
-
-  let offset=
-    header.length;
-
-
-  const offsets=[0];
-
-
-  objects.forEach(
-    obj=>{
-
-      offsets.push(offset);
-
-      pdfParts.push(obj);
-
-      offset+=obj.length;
-
-    }
-  );
-
-
-  let xref=
-    "xref\n0 "+
-    (objects.length+1)+
-    "\n";
-
-
-  xref+=
-    "0000000000 65535 f \n";
-
-
-  for(
-    let i=1;
-    i<offsets.length;
-    i++
-  ){
-
-    xref+=
-      String(
-        offsets[i]
-      )
-      .padStart(
-        10,
-        "0"
-      )+
-      " 00000 n \n";
-
-  }
-
-
-  const trailer=
-    "trailer\n"+
-    "<< /Size "+
-    (objects.length+1)+
-    " /Root 1 0 R >>\n"+
-    "startxref\n"+
-    offset+
-    "\n%%EOF";
-
-
-  pdfParts.push(
-    encoder.encode(
-      xref+
-      trailer
-    )
-  );
-
-
-  return new Blob(
-    pdfParts,
-    {
-      type:
-        "application/pdf"
-    }
-  );
-
+html,
+body{
+  margin:0;
+  padding:0;
+  background:white;
 }
 
+img{
+  width:100%;
+  height:auto;
+}
 
-/* =========================================================
-   Uint8Array
-========================================================= */
+</style>
 
-function concatUint8(
-  ...arrays
-){
+</head>
 
-  let total=0;
+<body>
 
+<img src="${url}">
 
-  arrays.forEach(
-    a=>{
-      total+=a.length;
-    }
+<script>
+
+window.onload=function(){
+
+  setTimeout(
+    function(){
+
+      window.print();
+
+    },
+    500
   );
 
+};
 
-  const result=
-    new Uint8Array(
-      total
-    );
+<\/script>
 
+</body>
 
-  let offset=0;
+</html>
 
-
-  arrays.forEach(
-    a=>{
-
-      result.set(
-        a,
-        offset
-      );
-
-      offset+=a.length;
-
-    }
-  );
+  `);
 
 
-  return result;
+  win.document.close();
 
 }
 
@@ -5819,26 +5180,31 @@ function init(){
     JSON.parse(
       localStorage.getItem(
         "measureCases"
-      ) || "[]"
+      )||"[]"
     );
 
 
-  if(cases.length>0){
+  if(
+    cases.length>0
+  ){
 
     const latest=
-      [...cases]
-        .sort(
-          (a,b)=>
-            (b.updatedAt||0)-
-            (a.updatedAt||0)
-        )[0];
+      [...cases].sort(
+        (a,b)=>
+          (
+            b.updatedAt||0
+          )-
+          (
+            a.updatedAt||0
+          )
+      )[0];
 
 
-    loadCase(latest);
+    loadCase(
+      latest
+    );
 
   }else{
-
-    currentCaseId=null;
 
     walls=[];
 
@@ -5849,7 +5215,10 @@ function init(){
     beams=[];
 
     points=[
-      {x:0,y:0}
+      {
+        x:0,
+        y:0
+      }
     ];
 
     floorHeight=0;
@@ -5857,6 +5226,11 @@ function init(){
     render();
 
   }
+
+
+  setDirection(
+    "right"
+  );
 
 }
 
