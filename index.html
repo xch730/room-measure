@@ -58,6 +58,11 @@ button:active{
 transform:scale(.97);
 }
 
+button:disabled{
+opacity:.7;
+cursor:default;
+}
+
 .btn-dark{
 background:#374151;
 color:white;
@@ -204,6 +209,11 @@ display:flex;
 gap:8px;
 flex-wrap:wrap;
 margin-top:10px;
+}
+
+.export-buttons button{
+flex:1;
+min-width:140px;
 }
 
 svg{
@@ -623,10 +633,10 @@ onclick="setDirection('down')"
 
 電腦版可使用鍵盤
 ↑ ↓ ← →
-切換牆線方向。
+切換牆線方向。<br>
 
 在牆長輸入框按 Enter，
-會直接新增牆。
+會直接新增牆。<br>
 
 新增牆後輸入框會自動清空，
 游標會繼續停在牆長輸入框，
@@ -726,11 +736,11 @@ onclick="addWindow()"
 
 左側／右側以
 「站在室內、面向這面牆」
-的視角判斷。
+的視角判斷。<br>
 
-距離是從窗戶靠近的那一端牆端開始計算。
+距離是從窗戶靠近的那一端牆端開始計算。<br>
 
-窗戶高度會顯示在圖面上。
+窗高會顯示在圖面上。
 
 </div>
 
@@ -840,15 +850,15 @@ onclick="addDoor()"
 
 <div class="info">
 
-左開門＝絞鍊在左側。
+左開門＝鉸鍊在左側。<br>
 
-右開門＝絞鍊在右側。
+右開門＝鉸鍊在右側。<br>
 
 左側／右側以
 「站在室內、面向這面牆」
-的視角判斷。
+的視角判斷。<br>
 
-門高度會顯示在圖面上。
+門高會顯示在圖面上。
 
 </div>
 
@@ -961,10 +971,8 @@ onclick="addBeam()"
 
 <div class="info">
 
-樑高會依照：
-
-樓高 − 樑底高
-
+樑高會依照：<br>
+樓高 − 樑底高<br>
 自動計算。
 
 </div>
@@ -1130,6 +1138,8 @@ saveCase();
 
 render();
 
+fitView();
+
 }
 
 
@@ -1208,19 +1218,59 @@ document.getElementById("caseName").value=data.name||"";
 
 walls=data.walls||[];
 
-windows=data.windows||[];
+windows=(data.windows||[]).map(x=>({
 
-doors=data.doors||[];
+wallIndex:Number(x.wallIndex)||0,
 
-beams=data.beams||[];
+offset:Number(x.offset)||0,
+
+width:Number(x.width)||0,
+
+height:Number(x.height)||0
+
+}));
+
+doors=(data.doors||[]).map(x=>({
+
+wallIndex:Number(x.wallIndex)||0,
+
+offset:Number(x.offset)||0,
+
+width:Number(x.width)||0,
+
+height:Number(x.height)||0,
+
+swing:x.swing==="right"?"right":"left"
+
+}));
+
+beams=(data.beams||[]).map(x=>({
+
+wallIndex:Number(x.wallIndex)||0,
+
+distance:Number(x.distance)||0,
+
+bottom:Number(x.bottom)||0,
+
+depth:Number(x.depth)||0
+
+}));
 
 points=data.points||[{x:0,y:0}];
 
-floorHeight=data.floorHeight||0;
+floorHeight=Number(data.floorHeight)||0;
 
 history=[];
 
+selectedWallIndex=-1;
+
 render();
+
+setTimeout(function(){
+
+fitView();
+
+},50);
 
 }
 
@@ -1460,7 +1510,6 @@ dir!==direction
 
 }
 
-
 setDirection("right");
 
 
@@ -1522,9 +1571,17 @@ points=state.points||[{x:0,y:0}];
 
 floorHeight=state.floorHeight||0;
 
+selectedWallIndex=-1;
+
 saveCase();
 
 render();
+
+setTimeout(function(){
+
+fitView();
+
+},30);
 
 }
 
@@ -1591,13 +1648,7 @@ saveCase();
 
 render();
 
-
-/* 新增牆後清空 */
-
 input.value="";
-
-
-/* 保持游標在牆長輸入框 */
 
 setTimeout(function(){
 
@@ -1816,7 +1867,11 @@ return{
 
 leftAtStart:true,
 
-rightAtStart:false
+rightAtStart:false,
+
+roomNx:0,
+
+roomNy:0
 
 };
 
@@ -1831,7 +1886,11 @@ return{
 
 leftAtStart:true,
 
-rightAtStart:false
+rightAtStart:false,
+
+roomNx:g.nx,
+
+roomNy:g.ny
 
 };
 
@@ -1856,13 +1915,23 @@ const cross=
 g.ux*toCenterY-
 g.uy*toCenterX;
 
+
+/*
+cross < 0：
+室內在牆的左側
+*/
+
 if(Math.abs(cross)<0.001){
 
 return{
 
 leftAtStart:true,
 
-rightAtStart:false
+rightAtStart:false,
+
+roomNx:g.nx,
+
+roomNy:g.ny
 
 };
 
@@ -1874,7 +1943,11 @@ return{
 
 leftAtStart:false,
 
-rightAtStart:true
+rightAtStart:true,
+
+roomNx:-g.nx,
+
+roomNy:-g.ny
 
 };
 
@@ -1884,7 +1957,11 @@ return{
 
 leftAtStart:true,
 
-rightAtStart:false
+rightAtStart:false,
+
+roomNx:g.nx,
+
+roomNy:g.ny
 
 };
 
@@ -2043,7 +2120,7 @@ document.getElementById("windowSide").value;
 const distance=
 Number(
 document.getElementById("windowOffset").value
-);
+)||0;
 
 const width=
 Number(
@@ -2088,9 +2165,9 @@ const existing=[
 
 wallIndex:x.wallIndex,
 
-offset:x.offset,
+offset:Number(x.offset)||0,
 
-width:x.width
+width:Number(x.width)||0
 
 })),
 
@@ -2098,9 +2175,9 @@ width:x.width
 
 wallIndex:x.wallIndex,
 
-offset:x.offset,
+offset:Number(x.offset)||0,
 
-width:x.width
+width:Number(x.width)||0
 
 }))
 
@@ -2133,7 +2210,9 @@ offset:offset,
 
 width:width,
 
-height:height
+height:height,
+
+side:side
 
 });
 
@@ -2183,7 +2262,7 @@ document.getElementById("doorSide").value;
 const distance=
 Number(
 document.getElementById("doorOffset").value
-);
+)||0;
 
 const width=
 Number(
@@ -2231,9 +2310,9 @@ const existing=[
 
 wallIndex:x.wallIndex,
 
-offset:x.offset,
+offset:Number(x.offset)||0,
 
-width:x.width
+width:Number(x.width)||0
 
 })),
 
@@ -2241,9 +2320,9 @@ width:x.width
 
 wallIndex:x.wallIndex,
 
-offset:x.offset,
+offset:Number(x.offset)||0,
 
-width:x.width
+width:Number(x.width)||0
 
 }))
 
@@ -2278,7 +2357,9 @@ width:width,
 
 height:height,
 
-swing:swing
+swing:swing,
+
+side:side
 
 });
 
@@ -2677,9 +2758,9 @@ cy,
 );
 
 
-/* 窗戶高度 */
+/* 窗高 */
 
-if(win.height>0){
+if(Number(win.height)>0){
 
 addText(
 group,
@@ -2692,7 +2773,6 @@ cy+75,
 }
 
 });
-
 
 }
 
@@ -2717,6 +2797,9 @@ return;
 const g=
 wallGeometry(wall);
 
+const ref=
+getWallReferenceInfo(wall);
+
 const sx=
 wall.start.x+
 g.ux*door.offset;
@@ -2733,18 +2816,28 @@ const ey=
 sy+
 g.uy*door.width;
 
+
+/*
+依「站在室內面向牆」判斷
+左開＝鉸鍊在左側
+右開＝鉸鍊在右側
+*/
+
+const doorSide=
+door.side||"left";
+
 let hingeX;
 let hingeY;
 let freeX;
 let freeY;
 
+if(doorSide==="left"){
 
 /*
-左開＝絞鍊在左側
-右開＝絞鍊在右側
+左側參考端
 */
 
-if(door.swing==="left"){
+if(ref.leftAtStart){
 
 hingeX=sx;
 hingeY=sy;
@@ -2759,6 +2852,32 @@ hingeY=ey;
 
 freeX=sx;
 freeY=sy;
+
+}
+
+}else{
+
+/*
+右側參考端
+*/
+
+if(ref.rightAtStart){
+
+hingeX=ex;
+hingeY=ey;
+
+freeX=sx;
+freeY=sy;
+
+}else{
+
+hingeX=sx;
+hingeY=sy;
+
+freeX=ex;
+freeY=ey;
+
+}
 
 }
 
@@ -2790,10 +2909,10 @@ x1:hingeX,
 y1:hingeY,
 x2:
 hingeX+
-g.nx*door.width,
+ref.roomNx*door.width,
 y2:
 hingeY+
-g.ny*door.width,
+ref.roomNy*door.width,
 "class":"door-leaf"
 }
 );
@@ -2803,7 +2922,13 @@ group.appendChild(leaf);
 
 /* 開門弧線 */
 
-const radius=door.width;
+const arcEndX=
+hingeX+
+ref.roomNx*door.width;
+
+const arcEndY=
+hingeY+
+ref.roomNy*door.width;
 
 const arc=
 createSvgElement(
@@ -2811,9 +2936,8 @@ createSvgElement(
 {
 d:
 `M ${freeX} ${freeY}
-A ${radius} ${radius} 0 0 1
-${hingeX+g.nx*door.width}
-${hingeY+g.ny*door.width}`,
+A ${door.width} ${door.width} 0 0 1
+${arcEndX} ${arcEndY}`,
 "class":"door-arc"
 }
 );
@@ -2825,11 +2949,11 @@ group.appendChild(arc);
 
 const cx=
 (sx+ex)/2+
-g.nx*75;
+ref.roomNx*75;
 
 const cy=
 (sy+ey)/2+
-g.ny*75;
+ref.roomNy*75;
 
 addText(
 group,
@@ -2842,7 +2966,7 @@ cy,
 
 /* 門高 */
 
-if(door.height>0){
+if(Number(door.height)>0){
 
 addText(
 group,
@@ -2876,10 +3000,13 @@ return;
 
 }
 
+const side=
+win.side||"left";
+
 const distance=
 offsetToReferenceDistance(
 wall,
-"left",
+side,
 win.offset,
 win.width
 );
@@ -2887,21 +3014,45 @@ win.width
 const g=
 wallGeometry(wall);
 
-const sx=
+const ref=
+getWallReferenceInfo(wall);
+
+let sx;
+
+let sy;
+
+if(
+(side==="left" && ref.leftAtStart) ||
+(side==="right" && ref.rightAtStart)
+){
+
+sx=
 wall.start.x+
 g.ux*win.offset;
 
-const sy=
+sy=
 wall.start.y+
 g.uy*win.offset;
 
+}else{
+
+sx=
+wall.end.x-
+g.ux*win.offset;
+
+sy=
+wall.end.y-
+g.uy*win.offset;
+
+}
+
 const tx=
 sx+
-g.nx*115;
+ref.roomNx*115;
 
 const ty=
 sy+
-g.ny*115;
+ref.roomNy*115;
 
 addText(
 group,
@@ -2925,10 +3076,13 @@ return;
 
 }
 
+const side=
+door.side||"left";
+
 const distance=
 offsetToReferenceDistance(
 wall,
-"left",
+side,
 door.offset,
 door.width
 );
@@ -2936,21 +3090,45 @@ door.width
 const g=
 wallGeometry(wall);
 
-const sx=
+const ref=
+getWallReferenceInfo(wall);
+
+let sx;
+
+let sy;
+
+if(
+(side==="left" && ref.leftAtStart) ||
+(side==="right" && ref.rightAtStart)
+){
+
+sx=
 wall.start.x+
 g.ux*door.offset;
 
-const sy=
+sy=
 wall.start.y+
 g.uy*door.offset;
 
+}else{
+
+sx=
+wall.end.x-
+g.ux*door.offset;
+
+sy=
+wall.end.y-
+g.uy*door.offset;
+
+}
+
 const tx=
 sx+
-g.nx*145;
+ref.roomNx*145;
 
 const ty=
 sy+
-g.ny*145;
+ref.roomNy*145;
 
 addText(
 group,
@@ -3011,24 +3189,27 @@ return;
 const g=
 wallGeometry(wall);
 
+const ref=
+getWallReferenceInfo(wall);
+
 const distance=
 Number(beam.distance)||0;
 
 const sx=
 wall.start.x+
-g.nx*distance;
+ref.roomNx*distance;
 
 const sy=
 wall.start.y+
-g.ny*distance;
+ref.roomNy*distance;
 
 const ex=
 wall.end.x+
-g.nx*distance;
+ref.roomNx*distance;
 
 const ey=
 wall.end.y+
-g.ny*distance;
+ref.roomNy*distance;
 
 const line=
 createSvgElement(
@@ -3051,11 +3232,11 @@ Number(beam.bottom||0);
 
 const cx=
 (sx+ex)/2+
-g.nx*80;
+ref.roomNx*80;
 
 const cy=
 (sy+ey)/2+
-g.ny*80;
+ref.roomNy*80;
 
 addText(
 group,
@@ -3076,8 +3257,8 @@ const wy=
 
 addText(
 group,
-wx+g.nx*35,
-wy+g.ny*35,
+wx+ref.roomNx*35,
+wy+ref.roomNy*35,
 "離牆 "+Math.round(distance),
 "beam-distance-text"
 );
@@ -3394,6 +3575,11 @@ return;
 }
 
 
+/*
+牆長輸入框內按方向鍵：
+不改數字，只切換牆方向
+*/
+
 if(
 active &&
 active.id==="wallLength"
@@ -3407,6 +3593,10 @@ return;
 
 }
 
+
+/*
+其他輸入框不攔截方向鍵
+*/
 
 if(
 active &&
@@ -3445,6 +3635,35 @@ clone.setAttribute(
 "xmlns",
 "http://www.w3.org/2000/svg"
 );
+
+
+/*
+把目前 viewBox 保留下來，
+讓 JPG / PDF 與畫面比例一致
+*/
+
+const viewBox=
+original.getAttribute("viewBox");
+
+if(viewBox){
+
+clone.setAttribute(
+"viewBox",
+viewBox
+);
+
+}
+
+
+/*
+使用目前 SVG 的比例
+*/
+
+clone.setAttribute(
+"preserveAspectRatio",
+"xMidYMid meet"
+);
+
 
 const style=
 document.createElementNS(
@@ -3570,10 +3789,60 @@ return clone;
 
 
 /* =========================
-   JPG
+   匯出前取得 SVG 尺寸
 ========================= */
 
-function exportJPG(){
+function getExportSize(){
+
+const svg=
+document.getElementById("drawing");
+
+const viewBox=
+svg.viewBox.baseVal;
+
+if(
+viewBox &&
+viewBox.width &&
+viewBox.height
+){
+
+const ratio=
+viewBox.width/viewBox.height;
+
+let width=2400;
+
+let height=
+Math.round(width/ratio);
+
+if(height>1800){
+
+height=1800;
+
+width=
+Math.round(height*ratio);
+
+}
+
+return{
+width:width,
+height:height
+};
+
+}
+
+return{
+width:2400,
+height:1600
+};
+
+}
+
+
+/* =========================
+   SVG → Image
+========================= */
+
+function svgToImage(callback){
 
 fitView();
 
@@ -3602,12 +3871,42 @@ new Image();
 
 img.onload=function(){
 
+URL.revokeObjectURL(url);
+
+callback(img);
+
+};
+
+img.onerror=function(){
+
+URL.revokeObjectURL(url);
+
+alert("匯出圖片失敗，請再試一次。");
+
+};
+
+img.src=url;
+
+}
+
+
+/* =========================
+   JPG
+========================= */
+
+function exportJPG(){
+
+svgToImage(function(img){
+
+const size=
+getExportSize();
+
 const canvas=
 document.createElement("canvas");
 
-canvas.width=2400;
+canvas.width=size.width;
 
-canvas.height=1600;
+canvas.height=size.height;
 
 const ctx=
 canvas.getContext("2d");
@@ -3629,10 +3928,16 @@ canvas.width,
 canvas.height
 );
 
-URL.revokeObjectURL(url);
-
 canvas.toBlob(
 function(blob){
+
+if(!blob){
+
+alert("JPG 匯出失敗");
+
+return;
+
+}
 
 const a=
 document.createElement("a");
@@ -3648,14 +3953,18 @@ document.getElementById("caseName").value||
 
 a.click();
 
+setTimeout(function(){
+
+URL.revokeObjectURL(a.href);
+
+},1000);
+
 },
 "image/jpeg",
 0.95
 );
 
-};
-
-img.src=url;
+});
 
 }
 
@@ -3666,44 +3975,22 @@ img.src=url;
 
 function exportPDF(){
 
-fitView();
+svgToImage(function(img){
 
-const svg=
-createExportSvg();
-
-const serializer=
-new XMLSerializer();
-
-const source=
-serializer.serializeToString(svg);
-
-const blob=
-new Blob(
-[source],
-{
-type:"image/svg+xml;charset=utf-8"
-}
-);
-
-const url=
-URL.createObjectURL(blob);
-
-const img=
-new Image();
-
-img.onload=function(){
+const size=
+getExportSize();
 
 const canvas=
 document.createElement("canvas");
 
-canvas.width=2400;
+canvas.width=size.width;
 
-canvas.height=1600;
+canvas.height=size.height;
 
 const ctx=
 canvas.getContext("2d");
 
-ctx.fillStyle="#fff";
+ctx.fillStyle="#ffffff";
 
 ctx.fillRect(
 0,
@@ -3719,8 +4006,6 @@ img,
 canvas.width,
 canvas.height
 );
-
-URL.revokeObjectURL(url);
 
 const jpeg=
 canvas.toDataURL(
@@ -3749,15 +4034,19 @@ document.getElementById("caseName").value||
 
 a.click();
 
-};
+setTimeout(function(){
 
-img.src=url;
+URL.revokeObjectURL(a.href);
+
+},1000);
+
+});
 
 }
 
 
 /* =========================
-   PDF
+   建立 PDF
 ========================= */
 
 function createSimplePDF(
@@ -3792,6 +4081,9 @@ new TextEncoder();
 
 const objects=[];
 
+
+/* 1 Catalog */
+
 objects.push(
 encoder.encode(
 "1 0 obj\n"+
@@ -3800,6 +4092,9 @@ encoder.encode(
 )
 );
 
+
+/* 2 Pages */
+
 objects.push(
 encoder.encode(
 "2 0 obj\n"+
@@ -3807,6 +4102,9 @@ encoder.encode(
 "endobj\n"
 )
 );
+
+
+/* 3 Page */
 
 objects.push(
 encoder.encode(
@@ -3818,6 +4116,9 @@ encoder.encode(
 "endobj\n"
 )
 );
+
+
+/* 4 Image */
 
 const imageHeader=
 encoder.encode(
@@ -3847,22 +4148,39 @@ imageFooter
 )
 );
 
+
+/* 5 Content */
+
 const content=
 "q\n"+
 width+" 0 0 "+height+" 0 0 cm\n"+
 "/Im0 Do\n"+
 "Q\n";
 
+const contentBytes=
+encoder.encode(content);
+
 objects.push(
+concatUint8(
+
 encoder.encode(
 "5 0 obj\n"+
-"<< /Length "+content.length+" >>\n"+
-"stream\n"+
-content+
+"<< /Length "+contentBytes.length+" >>\n"+
+"stream\n"
+),
+
+contentBytes,
+
+encoder.encode(
 "endstream\n"+
 "endobj\n"
 )
+
+)
 );
+
+
+/* PDF */
 
 let pdfParts=[];
 
@@ -3886,6 +4204,7 @@ pdfParts.push(obj);
 offset+=obj.length;
 
 });
+
 
 let xref=
 "xref\n0 "+
@@ -3931,6 +4250,10 @@ type:"application/pdf"
 
 }
 
+
+/* =========================
+   Uint8Array 合併
+========================= */
 
 function concatUint8(
 ...arrays
