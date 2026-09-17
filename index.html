@@ -4397,35 +4397,30 @@ function fitView(){
 
 
 /* =========================================================
-   ★★★ 修正版選牆系統 ★★★
+   ★★★ 新版選牆系統 ★★★
 
-   原本問題：
-   使用 getBoundingClientRect()
-   + viewBox.width / rect.width
-   自己換算座標。
+   使用「螢幕座標」判斷。
 
-   當 SVG 使用 viewBox、
-   preserveAspectRatio、
-   適合畫面、
-   手機畫面比例不同時，
+   不把手指座標轉成 SVG 座標，
+   而是把每一面牆轉成螢幕座標。
 
-   螢幕上的點不一定會正確對應
-   到 SVG 裡面的實際座標。
+   這樣可以避免：
+   - viewBox
+   - fitView()
+   - 手機畫面比例
+   - SVG 縮放
 
-   現在改成：
-   getScreenCTM().inverse()
-
-   直接取得真正 SVG 座標。
+   造成選牆位置偏移。
 
    所有牆都會逐一檢查。
 ========================================================= */
 
 
 /* =========================================================
-   螢幕座標 → 真正 SVG 座標
+   取得牆在螢幕上的兩個端點
 ========================================================= */
 
-function getSVGPoint(evt){
+function getWallScreenPoints(wall){
 
   const svg=
     document.getElementById(
@@ -4433,25 +4428,16 @@ function getSVGPoint(evt){
     );
 
 
-  if(!svg){
+  if(
+    !svg ||
+    !wall ||
+    !wall.start ||
+    !wall.end
+  ){
 
-    return{
-      x:0,
-      y:0
-    };
+    return null;
 
   }
-
-
-  const point=
-    svg.createSVGPoint();
-
-
-  point.x=
-    evt.clientX;
-
-  point.y=
-    evt.clientY;
 
 
   const matrix=
@@ -4460,125 +4446,58 @@ function getSVGPoint(evt){
 
   if(!matrix){
 
-    return{
-      x:0,
-      y:0
-    };
+    return null;
 
   }
 
 
-  const svgPoint=
-    point.matrixTransform(
-      matrix.inverse()
+  const p1=
+    svg.createSVGPoint();
+
+
+  p1.x=
+    wall.start.x;
+
+  p1.y=
+    wall.start.y;
+
+
+  const p2=
+    svg.createSVGPoint();
+
+
+  p2.x=
+    wall.end.x;
+
+  p2.y=
+    wall.end.y;
+
+
+  const screenP1=
+    p1.matrixTransform(
+      matrix
+    );
+
+
+  const screenP2=
+    p2.matrixTransform(
+      matrix
     );
 
 
   return{
 
-    x:svgPoint.x,
+    start:{
+      x:screenP1.x,
+      y:screenP1.y
+    },
 
-    y:svgPoint.y
+    end:{
+      x:screenP2.x,
+      y:screenP2.y
+    }
 
   };
-
-}
-
-
-/* =========================================================
-   ★ 計算真正的 SVG 點選範圍
-
-   不再單純用 viewBox / rect。
-
-   直接把螢幕上的兩個點
-   轉成 SVG 座標，
-   算出 35px 在目前畫面中
-   等於多少 SVG 單位。
-
-   所以：
-   手機
-   電腦
-   不同縮放
-   不同 viewBox
-   都可以正常使用。
-========================================================= */
-
-function getWallSelectionTolerance(evt){
-
-  const svg=
-    document.getElementById(
-      "drawing"
-    );
-
-
-  if(!svg){
-
-    return 100;
-
-  }
-
-
-  const matrix=
-    svg.getScreenCTM();
-
-
-  if(!matrix){
-
-    return 100;
-
-  }
-
-
-  const point1=
-    svg.createSVGPoint();
-
-
-  point1.x=
-    evt.clientX;
-
-  point1.y=
-    evt.clientY;
-
-
-  const point2=
-    svg.createSVGPoint();
-
-
-  point2.x=
-    evt.clientX+35;
-
-  point2.y=
-    evt.clientY;
-
-
-  const p1=
-    point1.matrixTransform(
-      matrix.inverse()
-    );
-
-
-  const p2=
-    point2.matrixTransform(
-      matrix.inverse()
-    );
-
-
-  const tolerance=
-    Math.hypot(
-      p2.x-p1.x,
-      p2.y-p1.y
-    );
-
-
-  /*
-    最少保留 60 SVG 單位，
-    避免縮放後太難點。
-  */
-
-  return Math.max(
-    60,
-    tolerance
-  );
 
 }
 
@@ -4587,7 +4506,7 @@ function getWallSelectionTolerance(evt){
    找最近的一面牆
 ========================================================= */
 
-function findNearestWall(evt){
+function findNearestWallOnScreen(evt){
 
   if(
     !walls ||
@@ -4605,64 +4524,48 @@ function findNearestWall(evt){
   }
 
 
-  /*
-    取得真正 SVG 座標
-  */
-
-  const point=
-    getSVGPoint(evt);
-
-
   let bestIndex=-1;
 
   let bestDistance=Infinity;
 
 
   /*
-    ★★★ 所有牆全部檢查 ★★★
-
-    第 1 面
-    第 2 面
-    第 3 面
-    第 4 面
-    第 5 面
-    第 6 面
-    第 7 面
-    ...
-
-    完全不限制數量。
+    ★★★ 所有牆逐一檢查 ★★★
   */
 
   walls.forEach(
     (wall,index)=>{
 
-      if(!wall){
+      const screen=
+        getWallScreenPoints(
+          wall
+        );
+
+
+      if(!screen){
 
         return;
 
       }
 
 
-      if(
-        !wall.start ||
-        !wall.end
-      ){
-
-        return;
-
-      }
-
+      /*
+        使用螢幕座標
+        計算手指離牆的距離
+      */
 
       const result=
         pointToSegment(
-          point.x,
-          point.y,
 
-          wall.start.x,
-          wall.start.y,
+          evt.clientX,
+          evt.clientY,
 
-          wall.end.x,
-          wall.end.y
+          screen.start.x,
+          screen.start.y,
+
+          screen.end.x,
+          screen.end.y
+
         );
 
 
@@ -4827,7 +4730,7 @@ drawingSVG.addEventListener(
   function(evt){
 
     /*
-      只有窗戶、門、樑模式
+      只有窗戶、門、樑
       才需要選牆
     */
 
@@ -4848,11 +4751,13 @@ drawingSVG.addEventListener(
 
 
     /*
-      找最近的牆
+      找離手指最近的牆
     */
 
     const result=
-      findNearestWall(evt);
+      findNearestWallOnScreen(
+        evt
+      );
 
 
     if(
@@ -4865,19 +4770,13 @@ drawingSVG.addEventListener(
 
 
     /*
-      計算目前畫面下
-      真正可以接受的距離
+      ★ 直接使用螢幕像素
+
+      45px 以內都算點到牆。
     */
 
-    const tolerance=
-      getWallSelectionTolerance(
-        evt
-      );
+    const tolerance=45;
 
-
-    /*
-      點擊位置離牆太遠
-    */
 
     if(
       result.distance>
