@@ -500,6 +500,32 @@ svg{
   margin-top:8px;
 }
 
+/* 電腦版鍵盤提示 */
+
+.keyboard-help{
+  background:#f7f7f7;
+  border-radius:10px;
+  padding:9px 10px;
+  margin-top:10px;
+  font-size:13px;
+  color:#666;
+  line-height:1.6;
+}
+
+kbd{
+  display:inline-block;
+  min-width:26px;
+  padding:2px 6px;
+  margin:0 2px;
+  border:1px solid #ccc;
+  border-bottom-width:2px;
+  border-radius:5px;
+  background:#fff;
+  color:#333;
+  font-family:inherit;
+  text-align:center;
+}
+
 @media(min-width:600px){
 
   .tool-row{
@@ -639,6 +665,18 @@ onclick="addWall()">
 
 <div class="help">
 輸入尺寸 → 選方向 → 新增牆面。
+</div>
+
+<div class="keyboard-help">
+電腦版可直接使用
+<kbd>↑</kbd>
+<kbd>↓</kbd>
+<kbd>←</kbd>
+<kbd>→</kbd>
+切換方向，
+按
+<kbd>Enter</kbd>
+新增牆面。
 </div>
 
 </div>
@@ -1222,6 +1260,84 @@ render();
 
 
 /* =========================================================
+鍵盤控制
+========================================================= */
+
+document.addEventListener("keydown",function(evt){
+
+/*
+  如果目前正在輸入文字、數字或下拉選單，
+  不攔截方向鍵，避免影響輸入。
+*/
+
+const active=document.activeElement;
+
+const isTyping=
+active &&
+(
+active.tagName==="INPUT" ||
+active.tagName==="TEXTAREA" ||
+active.tagName==="SELECT"
+);
+
+/*
+  Enter：
+  只有目前工具是「牆線」，
+  且不是正在使用其他輸入框時，
+  才直接新增牆面。
+*/
+
+if(evt.key==="Enter"){
+
+  if(
+    currentTool==="wall" &&
+    active &&
+    active.id==="wallLength"
+  ){
+
+    evt.preventDefault();
+    addWall();
+    return;
+
+  }
+
+  return;
+
+}
+
+
+/*
+  電腦版方向鍵：
+  只有牆線工具使用。
+*/
+
+if(
+  currentTool!=="wall" ||
+  isTyping
+){
+  return;
+}
+
+const directionMap={
+  ArrowUp:"up",
+  ArrowDown:"down",
+  ArrowLeft:"left",
+  ArrowRight:"right"
+};
+
+const direction=directionMap[evt.key];
+
+if(!direction)
+return;
+
+evt.preventDefault();
+
+setDirection(direction);
+
+});
+
+
+/* =========================================================
 方向
 ========================================================= */
 
@@ -1258,8 +1374,10 @@ const input=document.getElementById("wallLength");
 const length=Number(input.value);
 
 if(!length || length<=0){
+
 input.focus();
 return;
+
 }
 
 const last=points[points.length-1];
@@ -1654,43 +1772,6 @@ document.getElementById("caseOverlay").style.display="none";
 }
 
 
-function normalizeOpening(item){
-
-const copy={...item};
-
-if(!copy.referenceSide)
-copy.referenceSide="left";
-
-if(
-copy.referenceDistance===undefined||
-copy.referenceDistance===null||
-isNaN(Number(copy.referenceDistance))
-){
-
-if(copy.referenceSide==="right"){
-
-copy.referenceDistance=
-Math.max(
-0,
-Number(copy.wallLength||0)-
-Number(copy.offset||0)-
-Number(copy.width||0)
-);
-
-}else{
-
-copy.referenceDistance=
-Number(copy.offset||0);
-
-}
-
-}
-
-return copy;
-
-}
-
-
 function loadCase(id){
 
 const data=
@@ -1773,6 +1854,7 @@ return copy;
 });
 
 beams=item.beams||[];
+
 floorHeight=item.floorHeight||null;
 
 history=[];
@@ -2100,10 +2182,6 @@ return;
 
 const wall=walls[selectedWallIndex];
 
-/*
-  將「左側／右側起算」轉換成牆的實際 offset。
-*/
-
 let offset;
 
 if(referenceSide==="left"){
@@ -2122,7 +2200,7 @@ width;
 if(offset<0){
 
 alert(
-`門窗超出牆面。\n\n牆長：${wall.length} mm\n定位：${referenceSide==="left"?"右側":"左側"}距離 ${referenceDistance} mm\n寬度：${width} mm`
+`門窗超出牆面。\n\n牆長：${wall.length} mm\n定位：${referenceSide==="left"?"左側":"右側"}距離 ${referenceDistance} mm\n寬度：${width} mm`
 );
 
 return;
@@ -2179,16 +2257,7 @@ windows.push({
 
 wallIndex:selectedWallIndex,
 
-/*
-  offset 是實際從牆起點計算的位置
-*/
-
 offset:offset,
-
-/*
-  referenceSide / referenceDistance
-  用來記錄使用者是從哪一側量的
-*/
 
 referenceSide:referenceSide,
 
@@ -2215,11 +2284,6 @@ referenceDistance:referenceDistance,
 width:width,
 height:height,
 sill:sill,
-
-/*
-  left = 左側鉸鏈
-  right = 右側鉸鏈
-*/
 
 swing:document.getElementById("doorSwing").value
 
@@ -2605,7 +2669,7 @@ group.appendChild(arc);
 
 
 /*
-  在門上標示鉸鏈側
+  標示鉸鏈
 */
 
 const hingeText=
@@ -2629,13 +2693,7 @@ hingeText.setAttribute(
 "door-text"
 );
 
-hingeText.setAttribute(
-"font-size",
-"24"
-);
-
-hingeText.textContent=
-d.swing==="left"?"鉸鏈":"鉸鏈";
+hingeText.textContent="鉸鏈";
 
 group.appendChild(hingeText);
 
@@ -2767,20 +2825,10 @@ let endDistance;
 
 if(side==="right"){
 
-/*
-  右側起算：
-  從牆的終點量到門窗右端
-*/
-
 startDistance=wall.length;
 endDistance=wall.length-distance;
 
 }else{
-
-/*
-  左側起算：
-  從牆的起點量到門窗左端
-*/
 
 startDistance=0;
 endDistance=distance;
@@ -2807,10 +2855,6 @@ x:end.x+g.nx*distanceOffset,
 y:end.y+g.ny*distanceOffset
 };
 
-
-/*
-  0 mm 時仍然顯示定位文字
-*/
 
 if(distance>0){
 
