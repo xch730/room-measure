@@ -215,8 +215,6 @@ label{
   display:none;
 }
 
-/* 左右定位 */
-
 .reference-row{
   display:grid;
   grid-template-columns:1fr 1fr;
@@ -327,58 +325,66 @@ svg{
   stroke-linecap:butt;
 }
 
-.dimension{
-  stroke:#555;
-  stroke-width:2;
-}
+/* ===== 圖面文字放大 ===== */
 
 .dimension-text{
   fill:#222;
-  font-size:42px;
+  font-size:52px;
   font-weight:700;
   text-anchor:middle;
   dominant-baseline:middle;
   paint-order:stroke;
   stroke:#fff;
-  stroke-width:8;
+  stroke-width:10;
 }
 
 .window-text{
   fill:#1976d2;
-  font-size:34px;
+  font-size:44px;
   font-weight:700;
   text-anchor:middle;
   dominant-baseline:middle;
   paint-order:stroke;
   stroke:#fff;
-  stroke-width:8;
+  stroke-width:10;
 }
 
 .door-text{
   fill:#e67e22;
-  font-size:34px;
+  font-size:44px;
   font-weight:700;
   text-anchor:middle;
   dominant-baseline:middle;
   paint-order:stroke;
   stroke:#fff;
-  stroke-width:8;
+  stroke-width:10;
 }
 
 .offset-text{
   fill:#6a35a8;
-  font-size:30px;
+  font-size:38px;
   font-weight:700;
   text-anchor:middle;
   dominant-baseline:middle;
   paint-order:stroke;
   stroke:#fff;
-  stroke-width:8;
+  stroke-width:10;
 }
 
 .height-text{
   fill:#333;
-  font-size:55px;
+  font-size:68px;
+  font-weight:700;
+  text-anchor:middle;
+  dominant-baseline:middle;
+  paint-order:stroke;
+  stroke:#fff;
+  stroke-width:14;
+}
+
+.beam-text{
+  fill:#d62828;
+  font-size:46px;
   font-weight:700;
   text-anchor:middle;
   dominant-baseline:middle;
@@ -387,7 +393,7 @@ svg{
   stroke-width:12;
 }
 
-.beam-text{
+.beam-distance-text{
   fill:#d62828;
   font-size:38px;
   font-weight:700;
@@ -398,15 +404,9 @@ svg{
   stroke-width:10;
 }
 
-.beam-distance-text{
-  fill:#d62828;
-  font-size:30px;
-  font-weight:700;
-  text-anchor:middle;
-  dominant-baseline:middle;
-  paint-order:stroke;
-  stroke:#fff;
-  stroke-width:8;
+.dimension{
+  stroke:#555;
+  stroke-width:2;
 }
 
 .point{
@@ -499,8 +499,6 @@ svg{
   width:100%;
   margin-top:8px;
 }
-
-/* 電腦版鍵盤提示 */
 
 .keyboard-help{
   background:#f7f7f7;
@@ -1096,31 +1094,18 @@ onclick="closeCases()">
 <script>
 
 let points=[{x:0,y:0}];
-
 let walls=[];
-
 let windows=[];
-
 let doors=[];
-
 let beams=[];
-
 let floorHeight=null;
-
 let currentDirection="right";
-
 let currentTool="wall";
-
 let selectedWallIndex=null;
-
 let selectedTapDistance=0;
-
 let selectedBeamWallIndex=null;
-
 let currentCaseId=null;
-
 let currentCaseName="";
-
 let history=[];
 
 
@@ -1266,28 +1251,13 @@ render();
 document.addEventListener("keydown",function(evt){
 
 /*
-  如果目前正在輸入文字、數字或下拉選單，
-  不攔截方向鍵，避免影響輸入。
-*/
-
-const active=document.activeElement;
-
-const isTyping=
-active &&
-(
-active.tagName==="INPUT" ||
-active.tagName==="TEXTAREA" ||
-active.tagName==="SELECT"
-);
-
-/*
   Enter：
-  只有目前工具是「牆線」，
-  且不是正在使用其他輸入框時，
-  才直接新增牆面。
+  在牆長輸入框時，直接新增牆面
 */
 
 if(evt.key==="Enter"){
+
+  const active=document.activeElement;
 
   if(
     currentTool==="wall" &&
@@ -1307,16 +1277,16 @@ if(evt.key==="Enter"){
 
 
 /*
-  電腦版方向鍵：
-  只有牆線工具使用。
+  電腦版方向鍵
+  ↑ ↓ ← →
+  即使游標在牆長輸入框也可以控制方向。
 */
 
-if(
-  currentTool!=="wall" ||
-  isTyping
-){
+if(currentTool!=="wall"){
   return;
 }
+
+const active=document.activeElement;
 
 const directionMap={
   ArrowUp:"up",
@@ -1327,8 +1297,23 @@ const directionMap={
 
 const direction=directionMap[evt.key];
 
-if(!direction)
-return;
+if(!direction){
+  return;
+}
+
+
+/*
+  只有「牆長」輸入框允許方向鍵控制方向。
+  這裡阻止 number input 原本的上下調整數字功能。
+*/
+
+if(
+  active &&
+  active.tagName==="INPUT" &&
+  active.id!=="wallLength"
+){
+  return;
+}
 
 evt.preventDefault();
 
@@ -1621,21 +1606,13 @@ currentCaseName=name;
 points=[{x:0,y:0}];
 
 walls=[];
-
 windows=[];
-
 doors=[];
-
 beams=[];
-
 floorHeight=null;
-
 history=[];
-
 selectedWallIndex=null;
-
 selectedBeamWallIndex=null;
-
 selectedTapDistance=0;
 
 document.querySelector(
@@ -2610,11 +2587,6 @@ const end=pointAlongWall(wall,d.offset+d.width);
 
 let hinge;
 
-/*
-  左開＝左側鉸鏈
-  右開＝右側鉸鏈
-*/
-
 if(d.swing==="left")
 hinge=start;
 else
@@ -2639,11 +2611,6 @@ leaf.setAttribute("class","door-leaf");
 
 group.appendChild(leaf);
 
-
-/*
-  門開啟弧線
-*/
-
 const arc=
 document.createElementNS(
 "http://www.w3.org/2000/svg",
@@ -2666,11 +2633,6 @@ arc.setAttribute(
 arc.setAttribute("class","door-arc");
 
 group.appendChild(arc);
-
-
-/*
-  標示鉸鏈
-*/
 
 const hingeText=
 document.createElementNS(
@@ -2696,7 +2658,6 @@ hingeText.setAttribute(
 hingeText.textContent="鉸鏈";
 
 group.appendChild(hingeText);
-
 
 drawColoredDimension(
 group,
@@ -2855,7 +2816,6 @@ x:end.x+g.nx*distanceOffset,
 y:end.y+g.ny*distanceOffset
 };
 
-
 if(distance>0){
 
 const line=
@@ -2911,7 +2871,7 @@ let textY;
 if(distance>0){
 
 textX=(s.x+e.x)/2;
-textY=(s.y+e.y)/2-35;
+textY=(s.y+e.y)/2-45;
 
 }else{
 
@@ -2921,7 +2881,7 @@ side==="right"?wall.length:0
 );
 
 textX=p.x+g.nx*distanceOffset;
-textY=p.y+g.ny*distanceOffset-35;
+textY=p.y+g.ny*distanceOffset-45;
 
 }
 
@@ -2950,7 +2910,7 @@ document.createElementNS(
 );
 
 text.setAttribute("x",(start.x+end.x)/2);
-text.setAttribute("y",(start.y+end.y)/2-65);
+text.setAttribute("y",(start.y+end.y)/2-75);
 text.setAttribute("class","offset-text");
 text.textContent=value;
 
@@ -3072,7 +3032,7 @@ document.createElementNS(
 );
 
 text.setAttribute("x",center.x);
-text.setAttribute("y",center.y-45);
+text.setAttribute("y",center.y-55);
 text.setAttribute("class","beam-text");
 text.textContent=`樑 H${beam.height} × D${beam.depth}`;
 
@@ -3401,63 +3361,43 @@ stroke:#555;
 stroke-width:2;
 }
 
+/* 匯出文字同步放大 */
+
 .dimension-text{
 fill:#222;
-font-size:42px;
+font-size:52px;
 font-weight:700;
 text-anchor:middle;
 dominant-baseline:middle;
 paint-order:stroke;
 stroke:#fff;
-stroke-width:8;
+stroke-width:10;
 }
 
 .window-text{
 fill:#1976d2;
-font-size:34px;
+font-size:44px;
 font-weight:700;
 text-anchor:middle;
 dominant-baseline:middle;
 paint-order:stroke;
 stroke:#fff;
-stroke-width:8;
+stroke-width:10;
 }
 
 .door-text{
 fill:#e67e22;
-font-size:34px;
+font-size:44px;
 font-weight:700;
 text-anchor:middle;
 dominant-baseline:middle;
 paint-order:stroke;
 stroke:#fff;
-stroke-width:8;
+stroke-width:10;
 }
 
 .offset-text{
 fill:#6a35a8;
-font-size:30px;
-font-weight:700;
-text-anchor:middle;
-dominant-baseline:middle;
-paint-order:stroke;
-stroke:#fff;
-stroke-width:8;
-}
-
-.height-text{
-fill:#333;
-font-size:55px;
-font-weight:700;
-text-anchor:middle;
-dominant-baseline:middle;
-paint-order:stroke;
-stroke:#fff;
-stroke-width:12;
-}
-
-.beam-text{
-fill:#d62828;
 font-size:38px;
 font-weight:700;
 text-anchor:middle;
@@ -3467,15 +3407,37 @@ stroke:#fff;
 stroke-width:10;
 }
 
-.beam-distance-text{
-fill:#d62828;
-font-size:30px;
+.height-text{
+fill:#333;
+font-size:68px;
 font-weight:700;
 text-anchor:middle;
 dominant-baseline:middle;
 paint-order:stroke;
 stroke:#fff;
-stroke-width:8;
+stroke-width:14;
+}
+
+.beam-text{
+fill:#d62828;
+font-size:46px;
+font-weight:700;
+text-anchor:middle;
+dominant-baseline:middle;
+paint-order:stroke;
+stroke:#fff;
+stroke-width:12;
+}
+
+.beam-distance-text{
+fill:#d62828;
+font-size:38px;
+font-weight:700;
+text-anchor:middle;
+dominant-baseline:middle;
+paint-order:stroke;
+stroke:#fff;
+stroke-width:10;
 }
 
 .point{
