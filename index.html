@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
@@ -214,6 +213,55 @@ label{
 #openingPanel,
 #beamPanel{
   display:none;
+}
+
+/* 左右定位 */
+
+.reference-row{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  margin-bottom:10px;
+}
+
+.reference-option{
+  position:relative;
+  margin:0;
+}
+
+.reference-option input{
+  position:absolute;
+  opacity:0;
+  width:1px;
+  height:1px;
+}
+
+.reference-option span{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  min-height:46px;
+  border:1px solid #ccc;
+  border-radius:10px;
+  background:#fff;
+  font-size:15px;
+  font-weight:600;
+}
+
+.reference-option input:checked + span{
+  background:#222;
+  color:#fff;
+  border-color:#222;
+}
+
+.door-direction-info{
+  background:#fff7ed;
+  color:#8a4b08;
+  border-radius:10px;
+  padding:9px 10px;
+  font-size:13px;
+  line-height:1.5;
+  margin-bottom:10px;
 }
 
 #drawingWrap{
@@ -750,6 +798,58 @@ id="selectedWallInfo">
 <div id="openingForm" style="display:none;">
 
 <label>
+定位方向
+</label>
+
+<div class="reference-row">
+
+<label class="reference-option">
+
+<input
+type="radio"
+name="openingReferenceSide"
+value="left"
+checked
+onchange="updateOpeningReference()">
+
+<span>← 左側起算</span>
+
+</label>
+
+<label class="reference-option">
+
+<input
+type="radio"
+name="openingReferenceSide"
+value="right"
+onchange="updateOpeningReference()">
+
+<span>右側起算 →</span>
+
+</label>
+
+</div>
+
+<div class="help">
+距離是從門／窗的左端或右端牆端開始計算。填 0 代表直接貼著該側牆端。
+</div>
+
+<br>
+
+<label>
+距離牆端 mm
+</label>
+
+<input
+id="openingOffset"
+type="number"
+inputmode="numeric"
+min="0"
+placeholder="例如 0、500">
+
+<br><br>
+
+<label>
 寬度 mm
 </label>
 
@@ -785,18 +885,6 @@ value="0">
 
 <br><br>
 
-<label>
-距離牆端 mm
-</label>
-
-<input
-id="openingOffset"
-type="number"
-inputmode="numeric"
-placeholder="例如 500">
-
-<br><br>
-
 <div id="doorSwingBox"
 style="display:none;">
 
@@ -804,14 +892,20 @@ style="display:none;">
 開門方向
 </label>
 
+<div class="door-direction-info">
+「左開／右開」是看<strong>鉸鏈在哪一側</strong>。<br>
+左開＝左側鉸鏈、右側門把。<br>
+右開＝右側鉸鏈、左側門把。
+</div>
+
 <select id="doorSwing">
 
 <option value="left">
-左開
+左開｜左側鉸鏈
 </option>
 
 <option value="right">
-右開
+右開｜右側鉸鏈
 </option>
 
 </select>
@@ -1073,6 +1167,56 @@ document.getElementById("doorSwingBox").style.display="block";
 cancelWallSelection();
 
 }
+
+}
+
+
+/* =========================================================
+門窗定位方向
+========================================================= */
+
+function getOpeningReferenceSide(){
+
+const checked=
+document.querySelector(
+'input[name="openingReferenceSide"]:checked'
+);
+
+return checked?checked.value:"left";
+
+}
+
+
+function updateOpeningReference(){
+
+if(selectedWallIndex===null)
+return;
+
+const wall=walls[selectedWallIndex];
+
+if(!wall)
+return;
+
+const side=getOpeningReferenceSide();
+
+let distance=selectedTapDistance;
+
+if(side==="right"){
+
+distance=
+Math.max(
+0,
+Math.round(wall.length-selectedTapDistance)
+);
+
+}
+
+document.getElementById("openingOffset").value=distance;
+
+document.getElementById("selectedWallInfo").textContent=
+`已選第 ${selectedWallIndex+1} 面牆｜牆長 ${wall.length} mm｜${side==="left"?"左側":"右側"}起算約 ${distance} mm`;
+
+render();
 
 }
 
@@ -1376,6 +1520,10 @@ selectedBeamWallIndex=null;
 
 selectedTapDistance=0;
 
+document.querySelector(
+'input[name="openingReferenceSide"][value="left"]'
+).checked=true;
+
 updateCaseName();
 saveCase();
 render();
@@ -1506,6 +1654,43 @@ document.getElementById("caseOverlay").style.display="none";
 }
 
 
+function normalizeOpening(item){
+
+const copy={...item};
+
+if(!copy.referenceSide)
+copy.referenceSide="left";
+
+if(
+copy.referenceDistance===undefined||
+copy.referenceDistance===null||
+isNaN(Number(copy.referenceDistance))
+){
+
+if(copy.referenceSide==="right"){
+
+copy.referenceDistance=
+Math.max(
+0,
+Number(copy.wallLength||0)-
+Number(copy.offset||0)-
+Number(copy.width||0)
+);
+
+}else{
+
+copy.referenceDistance=
+Number(copy.offset||0);
+
+}
+
+}
+
+return copy;
+
+}
+
+
 function loadCase(id){
 
 const data=
@@ -1520,8 +1705,73 @@ currentCaseName=item.name;
 
 points=item.points||[{x:0,y:0}];
 walls=item.walls||[];
-windows=item.windows||[];
-doors=item.doors||[];
+
+windows=(item.windows||[]).map(function(x){
+
+const copy={...x};
+
+copy.referenceSide=
+copy.referenceSide||"left";
+
+if(
+copy.referenceDistance===undefined||
+copy.referenceDistance===null
+){
+
+copy.referenceDistance=
+copy.referenceSide==="right"
+?
+Math.max(
+0,
+Number(
+(walls[copy.wallIndex]||{}).length||0
+)-
+Number(copy.offset||0)-
+Number(copy.width||0)
+)
+:
+Number(copy.offset||0);
+
+}
+
+return copy;
+
+});
+
+doors=(item.doors||[]).map(function(x){
+
+const copy={...x};
+
+copy.referenceSide=
+copy.referenceSide||"left";
+
+if(
+copy.referenceDistance===undefined||
+copy.referenceDistance===null
+){
+
+copy.referenceDistance=
+copy.referenceSide==="right"
+?
+Math.max(
+0,
+Number(
+(walls[copy.wallIndex]||{}).length||0
+)-
+Number(copy.offset||0)-
+Number(copy.width||0)
+)
+:
+Number(copy.offset||0);
+
+}
+
+copy.swing=copy.swing||"left";
+
+return copy;
+
+});
+
 beams=item.beams||[];
 floorHeight=item.floorHeight||null;
 
@@ -1530,6 +1780,10 @@ history=[];
 selectedWallIndex=null;
 selectedBeamWallIndex=null;
 selectedTapDistance=0;
+
+document.querySelector(
+'input[name="openingReferenceSide"][value="left"]'
+).checked=true;
 
 updateCaseName();
 closeCases();
@@ -1746,16 +2000,32 @@ selectedWallIndex=bestIndex;
 selectedTapDistance=
 Math.round(walls[bestIndex].length*bestT);
 
+const side=getOpeningReferenceSide();
+
+let referenceDistance=selectedTapDistance;
+
+if(side==="right"){
+
+referenceDistance=
+Math.max(
+0,
+Math.round(
+walls[bestIndex].length-selectedTapDistance
+)
+);
+
+}
+
 document.getElementById("openingForm").style.display="block";
 
 document.getElementById("openingOffset").value=
-selectedTapDistance;
+referenceDistance;
 
 document.getElementById("selectedWallInfo").className=
 "info selected-info";
 
 document.getElementById("selectedWallInfo").textContent=
-`已選第 ${bestIndex+1} 面牆｜牆長 ${walls[bestIndex].length} mm｜點擊位置約 ${selectedTapDistance} mm`;
+`已選第 ${bestIndex+1} 面牆｜牆長 ${walls[bestIndex].length} mm｜${side==="left"?"左側":"右側"}起算約 ${referenceDistance} mm`;
 
 render();
 
@@ -1801,8 +2071,11 @@ Number(document.getElementById("openingHeight").value);
 const sill=
 Number(document.getElementById("openingSill").value);
 
-const offset=
+const referenceDistance=
 Number(document.getElementById("openingOffset").value);
+
+const referenceSide=
+getOpeningReferenceSide();
 
 if(!width||width<=0){
 
@@ -1818,7 +2091,7 @@ return;
 
 }
 
-if(offset<0){
+if(isNaN(referenceDistance)||referenceDistance<0){
 
 alert("距離牆端不能小於 0。");
 return;
@@ -1826,6 +2099,35 @@ return;
 }
 
 const wall=walls[selectedWallIndex];
+
+/*
+  將「左側／右側起算」轉換成牆的實際 offset。
+*/
+
+let offset;
+
+if(referenceSide==="left"){
+
+offset=referenceDistance;
+
+}else{
+
+offset=
+wall.length-
+referenceDistance-
+width;
+
+}
+
+if(offset<0){
+
+alert(
+`門窗超出牆面。\n\n牆長：${wall.length} mm\n定位：${referenceSide==="left"?"右側":"左側"}距離 ${referenceDistance} mm\n寬度：${width} mm`
+);
+
+return;
+
+}
 
 if(offset+width>wall.length){
 
@@ -1841,14 +2143,14 @@ const existing=[
 
 ...windows.map(x=>({
 wallIndex:x.wallIndex,
-offset:x.offset,
-width:x.width
+offset:Number(x.offset)||0,
+width:Number(x.width)||0
 })),
 
 ...doors.map(x=>({
 wallIndex:x.wallIndex,
-offset:x.offset,
-width:x.width
+offset:Number(x.offset)||0,
+width:Number(x.width)||0
 }))
 
 ];
@@ -1876,7 +2178,22 @@ if(currentTool==="window"){
 windows.push({
 
 wallIndex:selectedWallIndex,
+
+/*
+  offset 是實際從牆起點計算的位置
+*/
+
 offset:offset,
+
+/*
+  referenceSide / referenceDistance
+  用來記錄使用者是從哪一側量的
+*/
+
+referenceSide:referenceSide,
+
+referenceDistance:referenceDistance,
+
 width:width,
 height:height,
 sill:sill
@@ -1888,10 +2205,22 @@ sill:sill
 doors.push({
 
 wallIndex:selectedWallIndex,
+
 offset:offset,
+
+referenceSide:referenceSide,
+
+referenceDistance:referenceDistance,
+
 width:width,
 height:height,
 sill:sill,
+
+/*
+  left = 左側鉸鏈
+  right = 右側鉸鏈
+*/
+
 swing:document.getElementById("doorSwing").value
 
 });
@@ -2184,7 +2513,11 @@ end,
 "window-text"
 );
 
-drawOffsetDimension(group,wall,w.offset);
+drawOffsetDimension(
+group,
+wall,
+w
+);
 
 drawHeightText(
 group,
@@ -2213,6 +2546,11 @@ const end=pointAlongWall(wall,d.offset+d.width);
 
 let hinge;
 
+/*
+  左開＝左側鉸鏈
+  右開＝右側鉸鏈
+*/
+
 if(d.swing==="left")
 hinge=start;
 else
@@ -2237,6 +2575,11 @@ leaf.setAttribute("class","door-leaf");
 
 group.appendChild(leaf);
 
+
+/*
+  門開啟弧線
+*/
+
 const arc=
 document.createElementNS(
 "http://www.w3.org/2000/svg",
@@ -2260,6 +2603,43 @@ arc.setAttribute("class","door-arc");
 
 group.appendChild(arc);
 
+
+/*
+  在門上標示鉸鏈側
+*/
+
+const hingeText=
+document.createElementNS(
+"http://www.w3.org/2000/svg",
+"text"
+);
+
+hingeText.setAttribute(
+"x",
+hinge.x+g.nx*80
+);
+
+hingeText.setAttribute(
+"y",
+hinge.y+g.ny*80
+);
+
+hingeText.setAttribute(
+"class",
+"door-text"
+);
+
+hingeText.setAttribute(
+"font-size",
+"24"
+);
+
+hingeText.textContent=
+d.swing==="left"?"鉸鏈":"鉸鏈";
+
+group.appendChild(hingeText);
+
+
 drawColoredDimension(
 group,
 start,
@@ -2272,7 +2652,7 @@ end,
 drawOffsetDimension(
 group,
 wall,
-d.offset
+d
 );
 
 }
@@ -2341,19 +2721,81 @@ group.appendChild(text);
 
 
 /* =========================================================
-距離
+門窗定位尺寸
 ========================================================= */
 
-function drawOffsetDimension(group,wall,offset){
+function drawOffsetDimension(group,wall,opening){
 
-if(offset<=0)return;
+if(!opening)return;
 
 const g=wallGeometry(wall);
 
-const start=pointAlongWall(wall,0);
-const end=pointAlongWall(wall,offset);
+const side=
+opening.referenceSide||
+"left";
+
+let distance;
+
+if(
+opening.referenceDistance!==undefined&&
+opening.referenceDistance!==null&&
+!isNaN(Number(opening.referenceDistance))
+){
+
+distance=Number(opening.referenceDistance);
+
+}else if(side==="right"){
+
+distance=
+wall.length-
+Number(opening.offset||0)-
+Number(opening.width||0);
+
+}else{
+
+distance=
+Number(opening.offset||0);
+
+}
+
+distance=Math.max(0,distance);
 
 const distanceOffset=-180;
+
+let startDistance;
+let endDistance;
+
+if(side==="right"){
+
+/*
+  右側起算：
+  從牆的終點量到門窗右端
+*/
+
+startDistance=wall.length;
+endDistance=wall.length-distance;
+
+}else{
+
+/*
+  左側起算：
+  從牆的起點量到門窗左端
+*/
+
+startDistance=0;
+endDistance=distance;
+
+}
+
+const start=pointAlongWall(
+wall,
+startDistance
+);
+
+const end=pointAlongWall(
+wall,
+endDistance
+);
 
 const s={
 x:start.x+g.nx*distanceOffset,
@@ -2364,6 +2806,13 @@ const e={
 x:end.x+g.nx*distanceOffset,
 y:end.y+g.ny*distanceOffset
 };
+
+
+/*
+  0 mm 時仍然顯示定位文字
+*/
+
+if(distance>0){
 
 const line=
 document.createElementNS(
@@ -2376,8 +2825,35 @@ line.setAttribute("y1",s.y);
 line.setAttribute("x2",e.x);
 line.setAttribute("y2",e.y);
 line.setAttribute("class","dimension");
+line.setAttribute("marker-start","url(#arrow)");
+line.setAttribute("marker-end","url(#arrow)");
 
 group.appendChild(line);
+
+[start,end].forEach(function(p){
+
+const q={
+x:p.x+g.nx*distanceOffset,
+y:p.y+g.ny*distanceOffset
+};
+
+const ext=
+document.createElementNS(
+"http://www.w3.org/2000/svg",
+"line"
+);
+
+ext.setAttribute("x1",p.x);
+ext.setAttribute("y1",p.y);
+ext.setAttribute("x2",q.x);
+ext.setAttribute("y2",q.y);
+ext.setAttribute("class","dimension");
+
+group.appendChild(ext);
+
+});
+
+}
 
 const text=
 document.createElementNS(
@@ -2385,10 +2861,32 @@ document.createElementNS(
 "text"
 );
 
-text.setAttribute("x",(s.x+e.x)/2);
-text.setAttribute("y",(s.y+e.y)/2-35);
+let textX;
+let textY;
+
+if(distance>0){
+
+textX=(s.x+e.x)/2;
+textY=(s.y+e.y)/2-35;
+
+}else{
+
+const p=pointAlongWall(
+wall,
+side==="right"?wall.length:0
+);
+
+textX=p.x+g.nx*distanceOffset;
+textY=p.y+g.ny*distanceOffset-35;
+
+}
+
+text.setAttribute("x",textX);
+text.setAttribute("y",textY);
 text.setAttribute("class","offset-text");
-text.textContent=`${offset} mm`;
+
+text.textContent=
+`${side==="left"?"左側":"右側"} ${distance} mm`;
 
 group.appendChild(text);
 
@@ -2801,12 +3299,6 @@ const vb=getViewBox();
 clone.setAttribute("width",vb.width);
 clone.setAttribute("height",vb.height);
 
-
-/*
-  把 CSS 一起塞進 SVG
-  這樣 JPG / PDF 才不會遺失顏色與文字樣式
-*/
-
 const style=
 document.createElementNS(
 "http://www.w3.org/2000/svg",
@@ -2948,11 +3440,6 @@ fill:#111;
 
 `;
 
-
-/*
-  白色背景
-*/
-
 const bg=
 document.createElementNS(
 "http://www.w3.org/2000/svg",
@@ -2964,7 +3451,6 @@ bg.setAttribute("y",vb.y);
 bg.setAttribute("width",vb.width);
 bg.setAttribute("height",vb.height);
 bg.setAttribute("fill","#fff");
-
 
 clone.insertBefore(bg,clone.firstChild);
 
@@ -2994,18 +3480,12 @@ selectedWallIndex;
 const oldSelectedBeamWallIndex=
 selectedBeamWallIndex;
 
-
-/*
-  匯出前取消選取紫色線
-*/
-
 selectedWallIndex=null;
 selectedBeamWallIndex=null;
 
 render();
 
 fitView();
-
 
 const clone=createExportSvg();
 
@@ -3032,12 +3512,6 @@ try{
 
 const vb=getViewBox();
 
-
-/*
-  最大輸出尺寸
-  避免 iPhone 記憶體不足
-*/
-
 const maxWidth=3200;
 const maxHeight=2400;
 
@@ -3062,13 +3536,11 @@ Math.max(
 Math.round(vb.height*scale)
 );
 
-
 const canvas=
 document.createElement("canvas");
 
 canvas.width=width;
 canvas.height=height;
-
 
 const ctx=
 canvas.getContext("2d");
@@ -3092,11 +3564,6 @@ height
 
 URL.revokeObjectURL(url);
 
-
-/*
-  還原畫面
-*/
-
 svg.setAttribute(
 "viewBox",
 oldViewBox
@@ -3109,7 +3576,6 @@ selectedBeamWallIndex=
 oldSelectedBeamWallIndex;
 
 render();
-
 
 resolve(canvas);
 
@@ -3136,7 +3602,6 @@ reject(error);
 
 };
 
-
 img.onerror=function(){
 
 URL.revokeObjectURL(url);
@@ -3159,7 +3624,6 @@ new Error("SVG 轉圖片失敗")
 );
 
 };
-
 
 img.src=url;
 
@@ -3205,7 +3669,6 @@ try{
 const canvas=
 await createExportCanvas();
 
-
 canvas.toBlob(
 function(blob){
 
@@ -3233,7 +3696,6 @@ document.body.appendChild(a);
 a.click();
 
 a.remove();
-
 
 setTimeout(
 function(){
@@ -3289,11 +3751,9 @@ try{
 const canvas=
 await createExportCanvas();
 
-
 const {
 jsPDF
 }=window.jspdf;
-
 
 const pdf=
 new jsPDF({
@@ -3304,17 +3764,11 @@ format:"a4"
 
 });
 
-
 const pageW=
 pdf.internal.pageSize.getWidth();
 
 const pageH=
 pdf.internal.pageSize.getHeight();
-
-
-/*
-  標題
-*/
 
 pdf.setFontSize(18);
 
@@ -3326,11 +3780,6 @@ currentCaseName||"房屋丈量圖",
 15
 );
 
-
-/*
-  日期
-*/
-
 pdf.setFontSize(9);
 
 pdf.setTextColor(100,100,100);
@@ -3340,11 +3789,6 @@ pdf.text(
 15,
 22
 );
-
-
-/*
-  樓高
-*/
 
 if(floorHeight){
 
@@ -3362,11 +3806,6 @@ align:"right"
 );
 
 }
-
-
-/*
-  圖面區域
-*/
 
 const marginLeft=12;
 const marginTop=28;
@@ -3400,11 +3839,6 @@ const drawY=
 marginTop+
 (availableH-drawH)/2;
 
-
-/*
-  使用跟 JPG 完全相同的 Canvas
-*/
-
 pdf.addImage(
 canvas.toDataURL("image/jpeg",0.95),
 "JPEG",
@@ -3413,11 +3847,6 @@ drawY,
 drawW,
 drawH
 );
-
-
-/*
-  底部
-*/
 
 pdf.setFontSize(8);
 
@@ -3442,11 +3871,9 @@ align:"right"
 
 }
 
-
 pdf.save(
 `${getSafeFileName()}_丈量圖.pdf`
 );
-
 
 }catch(error){
 
@@ -3473,4 +3900,3 @@ render();
 
 </body>
 </html>
-```
