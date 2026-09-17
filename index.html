@@ -895,6 +895,13 @@ input[type="number"]{
       新增窗戶
     </button>
 
+    <button
+      class="btn-red"
+      onclick="startDeleteOpening('window')"
+    >
+      🗑 刪除窗戶
+    </button>
+
   </div>
 
 
@@ -904,7 +911,10 @@ input[type="number"]{
 
     距離＝從你指定的左側／右側牆端開始量。<br>
 
-    窗戶會顯示：
+    圖面會自動顯示：
+    <strong>左離牆 × 右離牆</strong>。<br>
+
+    窗戶本身會顯示：
     <strong>窗寬 × 窗高 × 窗離地</strong>。
 
   </div>
@@ -1055,12 +1065,24 @@ input[type="number"]{
       新增門
     </button>
 
+    <button
+      class="btn-red"
+      onclick="startDeleteOpening('door')"
+    >
+      🗑 刪除門
+    </button>
+
   </div>
 
 
   <div class="info">
 
     先按「選擇牆」，再直接點圖上的牆。<br>
+
+    距離＝從你指定的左側／右側牆端開始量。<br>
+
+    圖面會自動顯示：
+    <strong>左離牆 × 右離牆</strong>。<br>
 
     門會顯示：
     <strong>門寬 × 門高 × 門離地</strong>。
@@ -1309,6 +1331,9 @@ let floorHeight=0;
 
 let selectedWallIndex=-1;
 
+/* ★ 門窗刪除模式 */
+let deleteOpeningMode=false;
+
 let history=[];
 
 const MAX_HISTORY=50;
@@ -1385,6 +1410,8 @@ function newCase(){
   history=[];
 
   selectedWallIndex=-1;
+
+  deleteOpeningMode=false;
 
   document.getElementById(
     "caseName"
@@ -1588,6 +1615,8 @@ function loadCase(data){
 
   selectedWallIndex=-1;
 
+  deleteOpeningMode=false;
+
   render();
 
   updateUndoButton();
@@ -1781,6 +1810,9 @@ function deleteCase(id){
 function setTool(tool){
 
   currentTool=tool;
+
+  /* ★ 切換工具時關閉刪除模式 */
+  deleteOpeningMode=false;
 
   document
     .querySelectorAll(".tool-btn")
@@ -1989,6 +2021,8 @@ function undo(){
 
 
   selectedWallIndex=-1;
+
+  deleteOpeningMode=false;
 
 
   saveCase();
@@ -2802,11 +2836,362 @@ function updateSelectedWallInfo(){
 }
 
 
+/* =========================================================
+   ★ 門窗刪除：判斷點擊位置
+========================================================= */
+
+function findOpeningOnScreen(event){
+
+  let best=null;
+
+  let bestDistance=Infinity;
+
+
+  function checkOpening(
+    item,
+    type,
+    index
+  ){
+
+    const wall=
+      walls[
+        item.wallIndex
+      ];
+
+    if(!wall){
+      return;
+    }
+
+
+    const screen=
+      getWallScreenPoints(
+        wall
+      );
+
+    if(!screen){
+      return;
+    }
+
+
+    const g=
+      wallGeometry(
+        wall
+      );
+
+    if(!g.len){
+      return;
+    }
+
+
+    const offset=
+      Number(item.offset)||0;
+
+    const width=
+      Number(item.width)||0;
+
+
+    const startRatio=
+      offset/g.len;
+
+    const endRatio=
+      (offset+width)/g.len;
+
+
+    const sx=
+      screen.start.x+
+      (
+        screen.end.x-
+        screen.start.x
+      )*
+      startRatio;
+
+
+    const sy=
+      screen.start.y+
+      (
+        screen.end.y-
+        screen.start.y
+      )*
+      startRatio;
+
+
+    const ex=
+      screen.start.x+
+      (
+        screen.end.x-
+        screen.start.x
+      )*
+      endRatio;
+
+
+    const ey=
+      screen.start.y+
+      (
+        screen.end.y-
+        screen.start.y
+      )*
+      endRatio;
+
+
+    const result=
+      pointToSegment(
+
+        event.clientX,
+        event.clientY,
+
+        sx,
+        sy,
+
+        ex,
+        ey
+
+      );
+
+
+    if(
+      result.distance<
+      bestDistance
+    ){
+
+      bestDistance=
+        result.distance;
+
+      best={
+        type:type,
+        index:index
+      };
+
+    }
+
+  }
+
+
+  windows.forEach(
+    (item,index)=>{
+
+      checkOpening(
+        item,
+        "window",
+        index
+      );
+
+    }
+  );
+
+
+  doors.forEach(
+    (item,index)=>{
+
+      checkOpening(
+        item,
+        "door",
+        index
+      );
+
+    }
+  );
+
+
+  if(
+    best &&
+    bestDistance<=55
+  ){
+
+    return best;
+
+  }
+
+
+  return null;
+
+}
+
+
+/* =========================================================
+   ★ 啟動刪除模式
+========================================================= */
+
+function startDeleteOpening(type){
+
+  deleteOpeningMode=true;
+
+  selectedWallIndex=-1;
+
+
+  if(type==="window"){
+
+    setTool("window");
+
+    deleteOpeningMode=true;
+
+    document.getElementById(
+      "windowWallInfo"
+    ).textContent=
+      "請直接點擊要刪除的窗戶";
+
+  }
+
+
+  if(type==="door"){
+
+    setTool("door");
+
+    deleteOpeningMode=true;
+
+    document.getElementById(
+      "doorWallInfo"
+    ).textContent=
+      "請直接點擊要刪除的門";
+
+  }
+
+}
+
+
+/* =========================================================
+   ★ 刪除門窗
+========================================================= */
+
+function deleteOpening(
+  type,
+  index
+){
+
+  if(
+    type==="window"
+  ){
+
+    if(
+      !windows[index]
+    ){
+      return;
+    }
+
+
+    if(
+      !confirm(
+        "確定要刪除這個窗戶嗎？"
+      )
+    ){
+
+      return;
+
+    }
+
+
+    saveHistory();
+
+    windows.splice(
+      index,
+      1
+    );
+
+  }
+
+
+  if(
+    type==="door"
+  ){
+
+    if(
+      !doors[index]
+    ){
+      return;
+    }
+
+
+    if(
+      !confirm(
+        "確定要刪除這個門嗎？"
+      )
+    ){
+
+      return;
+
+    }
+
+
+    saveHistory();
+
+    doors.splice(
+      index,
+      1
+    );
+
+  }
+
+
+  deleteOpeningMode=false;
+
+  selectedWallIndex=-1;
+
+  saveCase();
+
+  render();
+
+  updateUndoButton();
+
+
+  setTimeout(
+    fitView,
+    30
+  );
+
+}
+
+
+/* =========================================================
+   ★ 點擊圖面
+========================================================= */
+
 document
   .getElementById("drawing")
   .addEventListener(
     "pointerdown",
     function(event){
+
+      /*
+        ★ 如果現在是刪除模式
+        優先判斷門窗
+      */
+
+      if(deleteOpeningMode){
+
+        event.preventDefault();
+
+        event.stopPropagation();
+
+
+        const opening=
+          findOpeningOnScreen(
+            event
+          );
+
+
+        if(!opening){
+
+          alert(
+            "請點擊要刪除的門或窗"
+          );
+
+          return;
+
+        }
+
+
+        deleteOpening(
+          opening.type,
+          opening.index
+        );
+
+        return;
+
+      }
+
+
+      /*
+        原本的選牆功能
+      */
 
       if(
         currentTool!=="window" &&
@@ -2870,6 +3255,8 @@ function startWindowSelection(){
   setTool("window");
 
   selectedWallIndex=-1;
+
+  deleteOpeningMode=false;
 
   document.getElementById(
     "windowWallInfo"
@@ -3071,6 +3458,8 @@ function startDoorSelection(){
   setTool("door");
 
   selectedWallIndex=-1;
+
+  deleteOpeningMode=false;
 
   document.getElementById(
     "doorWallInfo"
@@ -3322,6 +3711,8 @@ function startBeamSelection(){
   setTool("beam");
 
   selectedWallIndex=-1;
+
+  deleteOpeningMode=false;
 
   document.getElementById(
     "beamWallInfo"
@@ -4269,13 +4660,456 @@ function drawDoors(group){
 
 
 /* =========================================================
-   門窗距離文字
+   ★ 門窗左右離牆距離
+========================================================= */
+
+function drawOpeningSideDistance(
+  group,
+  wall,
+  opening,
+  type
+){
+
+  if(
+    !wall ||
+    !opening
+  ){
+
+    return;
+
+  }
+
+
+  const g=
+    wallGeometry(
+      wall
+    );
+
+
+  if(!g.len){
+    return;
+  }
+
+
+  const ref=
+    getWallReferenceInfo(
+      wall
+    );
+
+
+  const wallLength=
+    Number(wall.length)||
+    g.len||
+    0;
+
+
+  const offset=
+    Number(opening.offset)||0;
+
+
+  const width=
+    Number(opening.width)||0;
+
+
+  /*
+    保護
+    避免錯誤資料造成負數
+  */
+
+  const leftStart=
+    Math.max(
+      0,
+      Math.min(
+        wallLength,
+        offset
+      )
+    );
+
+
+  const openingEnd=
+    Math.max(
+      leftStart,
+      Math.min(
+        wallLength,
+        offset+width
+      )
+    );
+
+
+  const rightStart=
+    openingEnd;
+
+
+  const rightEnd=
+    wallLength;
+
+
+  let leftDistance;
+
+  let rightDistance;
+
+  let leftWallPoint;
+
+  let leftOpeningPoint;
+
+  let rightOpeningPoint;
+
+  let rightWallPoint;
+
+
+  /*
+    ★ 這裡非常重要
+
+    wall.start / wall.end
+    不一定就是使用者眼中的左 / 右。
+
+    因此使用 getWallReferenceInfo()
+    自動判斷室內側的左右。
+  */
+
+  if(
+    ref.leftAtStart
+  ){
+
+    leftDistance=
+      leftStart;
+
+    rightDistance=
+      wallLength-openingEnd;
+
+
+    leftWallPoint={
+      x:wall.start.x,
+      y:wall.start.y
+    };
+
+
+    leftOpeningPoint={
+      x:
+        wall.start.x+
+        g.ux*leftStart,
+
+      y:
+        wall.start.y+
+        g.uy*leftStart
+    };
+
+
+    rightOpeningPoint={
+      x:
+        wall.start.x+
+        g.ux*openingEnd,
+
+      y:
+        wall.start.y+
+        g.uy*openingEnd
+    };
+
+
+    rightWallPoint={
+      x:wall.end.x,
+      y:wall.end.y
+    };
+
+  }else{
+
+    leftDistance=
+      wallLength-openingEnd;
+
+    rightDistance=
+      leftStart;
+
+
+    leftWallPoint={
+      x:wall.end.x,
+      y:wall.end.y
+    };
+
+
+    leftOpeningPoint={
+      x:
+        wall.start.x+
+        g.ux*openingEnd,
+
+      y:
+        wall.start.y+
+        g.uy*openingEnd
+    };
+
+
+    rightOpeningPoint={
+      x:
+        wall.start.x+
+        g.ux*leftStart,
+
+      y:
+        wall.start.y+
+        g.uy*leftStart
+    };
+
+
+    rightWallPoint={
+      x:wall.start.x,
+      y:wall.start.y
+    };
+
+  }
+
+
+  /*
+    ★ 畫單段室內尺寸線
+  */
+
+  function drawRoomDimension(
+    p1,
+    p2,
+    distance,
+    label
+  ){
+
+    if(
+      distance<=0
+    ){
+
+      return;
+
+    }
+
+
+    const dx=
+      p2.x-p1.x;
+
+    const dy=
+      p2.y-p1.y;
+
+
+    const len=
+      Math.hypot(
+        dx,
+        dy
+      );
+
+
+    if(
+      !len
+    ){
+
+      return;
+
+    }
+
+
+    const ux=
+      dx/len;
+
+    const uy=
+      dy/len;
+
+
+    /*
+      尺寸線離牆距離
+    */
+
+    const offsetDistance=180;
+
+
+    const ax=
+      p1.x+
+      ref.roomNx*
+      offsetDistance;
+
+
+    const ay=
+      p1.y+
+      ref.roomNy*
+      offsetDistance;
+
+
+    const bx=
+      p2.x+
+      ref.roomNx*
+      offsetDistance;
+
+
+    const by=
+      p2.y+
+      ref.roomNy*
+      offsetDistance;
+
+
+    /*
+      主尺寸線
+    */
+
+    group.appendChild(
+      createSvgElement(
+        "line",
+        {
+
+          x1:ax,
+
+          y1:ay,
+
+          x2:bx,
+
+          y2:by,
+
+          class:
+            "dimension-line"
+
+        }
+      )
+    );
+
+
+    /*
+      第一個刻度
+    */
+
+    group.appendChild(
+      createSvgElement(
+        "line",
+        {
+
+          x1:
+            ax-
+            ux*22-
+            ref.roomNx*22,
+
+          y1:
+            ay-
+            uy*22-
+            ref.roomNy*22,
+
+          x2:
+            ax+
+            ux*22+
+            ref.roomNx*22,
+
+          y2:
+            ay+
+            uy*22+
+            ref.roomNy*22,
+
+          class:
+            "dimension-tick"
+
+        }
+      )
+    );
+
+
+    /*
+      第二個刻度
+    */
+
+    group.appendChild(
+      createSvgElement(
+        "line",
+        {
+
+          x1:
+            bx-
+            ux*22-
+            ref.roomNx*22,
+
+          y1:
+            by-
+            uy*22-
+            ref.roomNy*22,
+
+          x2:
+            bx+
+            ux*22+
+            ref.roomNx*22,
+
+          y2:
+            by+
+            uy*22+
+            ref.roomNy*22,
+
+          class:
+            "dimension-tick"
+
+        }
+      )
+    );
+
+
+    /*
+      文字
+    */
+
+    addText(
+
+      group,
+
+      (ax+bx)/2+
+      ref.roomNx*55,
+
+      (ay+by)/2+
+      ref.roomNy*55,
+
+      label+
+      " "+
+      Math.round(distance)+
+      " mm",
+
+      "offset-text"
+
+    );
+
+  }
+
+
+  /*
+    ★ 左側
+  */
+
+  drawRoomDimension(
+
+    leftWallPoint,
+
+    leftOpeningPoint,
+
+    leftDistance,
+
+    "左"
+
+  );
+
+
+  /*
+    ★ 右側
+  */
+
+  drawRoomDimension(
+
+    rightOpeningPoint,
+
+    rightWallPoint,
+
+    rightDistance,
+
+    "右"
+
+  );
+
+}
+
+
+/* =========================================================
+   門窗距離
 ========================================================= */
 
 function drawOpeningDistances(group){
 
+  /*
+    窗戶
+  */
+
   windows.forEach(
-    (windowItem,index)=>{
+    (windowItem)=>{
 
       const wall=
         walls[
@@ -4288,104 +5122,15 @@ function drawOpeningDistances(group){
       }
 
 
-      const distance=
-        offsetToReferenceDistance(
-
-          wall,
-
-          windowItem.side||"left",
-
-          Number(
-            windowItem.offset
-          ),
-
-          Number(
-            windowItem.width
-          )
-
-        );
-
-
-      const g=
-        wallGeometry(
-          wall
-        );
-
-
-      const ref=
-        getWallReferenceInfo(
-          wall
-        );
-
-
-      let x;
-
-      let y;
-
-
-      if(
-        (
-          windowItem.side==="left" &&
-          ref.leftAtStart
-        )
-        ||
-        (
-          windowItem.side==="right" &&
-          ref.rightAtStart
-        )
-      ){
-
-        x=
-          wall.start.x+
-          g.ux*
-          Number(
-            windowItem.offset
-          );
-
-        y=
-          wall.start.y+
-          g.uy*
-          Number(
-            windowItem.offset
-          );
-
-      }else{
-
-        x=
-          wall.end.x-
-          g.ux*
-          Number(
-            windowItem.offset
-          );
-
-        y=
-          wall.end.y-
-          g.uy*
-          Number(
-            windowItem.offset
-          );
-
-      }
-
-
-      addText(
+      drawOpeningSideDistance(
 
         group,
 
-        x+
-        ref.roomNx*
-        125,
+        wall,
 
-        y+
-        ref.roomNy*
-        125,
+        windowItem,
 
-        Math.round(
-          distance
-        )+
-        " mm",
-
-        "offset-text"
+        "window"
 
       );
 
@@ -4393,8 +5138,12 @@ function drawOpeningDistances(group){
   );
 
 
+  /*
+    門
+  */
+
   doors.forEach(
-    (door,index)=>{
+    (door)=>{
 
       const wall=
         walls[
@@ -4407,104 +5156,15 @@ function drawOpeningDistances(group){
       }
 
 
-      const distance=
-        offsetToReferenceDistance(
-
-          wall,
-
-          door.side||"left",
-
-          Number(
-            door.offset
-          ),
-
-          Number(
-            door.width
-          )
-
-        );
-
-
-      const g=
-        wallGeometry(
-          wall
-        );
-
-
-      const ref=
-        getWallReferenceInfo(
-          wall
-        );
-
-
-      let x;
-
-      let y;
-
-
-      if(
-        (
-          door.side==="left" &&
-          ref.leftAtStart
-        )
-        ||
-        (
-          door.side==="right" &&
-          ref.rightAtStart
-        )
-      ){
-
-        x=
-          wall.start.x+
-          g.ux*
-          Number(
-            door.offset
-          );
-
-        y=
-          wall.start.y+
-          g.uy*
-          Number(
-            door.offset
-          );
-
-      }else{
-
-        x=
-          wall.end.x-
-          g.ux*
-          Number(
-            door.offset
-          );
-
-        y=
-          wall.end.y-
-          g.uy*
-          Number(
-            door.offset
-          );
-
-      }
-
-
-      addText(
+      drawOpeningSideDistance(
 
         group,
 
-        x+
-        ref.roomNx*
-        135,
+        wall,
 
-        y+
-        ref.roomNy*
-        135,
+        door,
 
-        Math.round(
-          distance
-        )+
-        " mm",
-
-        "offset-text"
+        "door"
 
       );
 
@@ -5042,7 +5702,6 @@ document.addEventListener(
 
 /* =========================================================
    匯出 SVG
-   ★ 這裡是這次主要修改
 ========================================================= */
 
 function createExportSvg(){
@@ -5062,16 +5721,8 @@ function createExportSvg(){
   }
 
 
-  /*
-    先讓畫面適合圖面
-  */
-
   fitView();
 
-
-  /*
-    重新取得最新 viewBox
-  */
 
   const currentViewBox=
     original.getAttribute(
@@ -5115,12 +5766,6 @@ function createExportSvg(){
     currentViewBox
   );
 
-
-  /*
-    ★ 把 CSS 直接塞進 SVG
-    原本網頁 CSS 不會跟著 SVG 一起匯出，
-    所以 JPG / PDF 會看不到顏色和文字樣式。
-  */
 
   const style=
     document.createElementNS(
@@ -5326,10 +5971,6 @@ function createExportSvg(){
   `;
 
 
-  /*
-    ★ 白色背景
-  */
-
   const parts=
     currentViewBox
       .trim()
@@ -5398,19 +6039,11 @@ function createExportSvg(){
   );
 
 
-  /*
-    背景放最下面
-  */
-
   clone.insertBefore(
     background,
     clone.firstChild
   );
 
-
-  /*
-    CSS 放最前面
-  */
 
   clone.insertBefore(
     style,
@@ -5528,10 +6161,6 @@ function svgToCanvas(){
         }
 
 
-        /*
-          白底
-        */
-
         ctx.fillStyle="#ffffff";
 
         ctx.fillRect(
@@ -5541,10 +6170,6 @@ function svgToCanvas(){
           canvas.height
         );
 
-
-        /*
-          把 SVG 畫進 Canvas
-        */
 
         ctx.drawImage(
           img,
@@ -5693,10 +6318,6 @@ async function exportPDF(){
 
   try{
 
-    /*
-      確認 jsPDF 有載入
-    */
-
     if(
       !window.jspdf ||
       !window.jspdf.jsPDF
@@ -5710,10 +6331,6 @@ async function exportPDF(){
 
     }
 
-
-    /*
-      先把 SVG 轉成圖片
-    */
 
     const canvas=
       await svgToCanvas();
@@ -5729,10 +6346,6 @@ async function exportPDF(){
     const {jsPDF}=
       window.jspdf;
 
-
-    /*
-      A4 橫式
-    */
 
     const pdf=
       new jsPDF({
@@ -5784,11 +6397,6 @@ async function exportPDF(){
       imageRatio;
 
 
-    /*
-      如果高度超過 A4，
-      改用高度限制
-    */
-
     if(
       imageHeight>
       maxHeight
@@ -5804,10 +6412,6 @@ async function exportPDF(){
 
     }
 
-
-    /*
-      置中
-    */
 
     const x=
       (
@@ -5927,6 +6531,8 @@ function init(){
     floorHeight=0;
 
     history=[];
+
+    deleteOpeningMode=false;
 
     render();
 
