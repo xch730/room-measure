@@ -4397,24 +4397,255 @@ function fitView(){
 
 
 /* =========================================================
-   ★ 新版選牆系統
-   重點：
-   1. 依目前畫面縮放計算點選範圍
-   2. 不再固定使用 150mm
-   3. 四面牆、多面牆都可以選
-   4. 最近的牆優先
+   ★★★ 修正版選牆系統 ★★★
+
+   原本問題：
+   使用 getBoundingClientRect()
+   + viewBox.width / rect.width
+   自己換算座標。
+
+   當 SVG 使用 viewBox、
+   preserveAspectRatio、
+   適合畫面、
+   手機畫面比例不同時，
+
+   螢幕上的點不一定會正確對應
+   到 SVG 裡面的實際座標。
+
+   現在改成：
+   getScreenCTM().inverse()
+
+   直接取得真正 SVG 座標。
+
+   所有牆都會逐一檢查。
 ========================================================= */
 
-document
-  .getElementById("drawing")
-  .addEventListener(
-    "pointerdown",
-    function(evt){
+
+/* =========================================================
+   螢幕座標 → 真正 SVG 座標
+========================================================= */
+
+function getSVGPoint(evt){
+
+  const svg=
+    document.getElementById(
+      "drawing"
+    );
+
+
+  if(!svg){
+
+    return{
+      x:0,
+      y:0
+    };
+
+  }
+
+
+  const point=
+    svg.createSVGPoint();
+
+
+  point.x=
+    evt.clientX;
+
+  point.y=
+    evt.clientY;
+
+
+  const matrix=
+    svg.getScreenCTM();
+
+
+  if(!matrix){
+
+    return{
+      x:0,
+      y:0
+    };
+
+  }
+
+
+  const svgPoint=
+    point.matrixTransform(
+      matrix.inverse()
+    );
+
+
+  return{
+
+    x:svgPoint.x,
+
+    y:svgPoint.y
+
+  };
+
+}
+
+
+/* =========================================================
+   ★ 計算真正的 SVG 點選範圍
+
+   不再單純用 viewBox / rect。
+
+   直接把螢幕上的兩個點
+   轉成 SVG 座標，
+   算出 35px 在目前畫面中
+   等於多少 SVG 單位。
+
+   所以：
+   手機
+   電腦
+   不同縮放
+   不同 viewBox
+   都可以正常使用。
+========================================================= */
+
+function getWallSelectionTolerance(evt){
+
+  const svg=
+    document.getElementById(
+      "drawing"
+    );
+
+
+  if(!svg){
+
+    return 100;
+
+  }
+
+
+  const matrix=
+    svg.getScreenCTM();
+
+
+  if(!matrix){
+
+    return 100;
+
+  }
+
+
+  const point1=
+    svg.createSVGPoint();
+
+
+  point1.x=
+    evt.clientX;
+
+  point1.y=
+    evt.clientY;
+
+
+  const point2=
+    svg.createSVGPoint();
+
+
+  point2.x=
+    evt.clientX+35;
+
+  point2.y=
+    evt.clientY;
+
+
+  const p1=
+    point1.matrixTransform(
+      matrix.inverse()
+    );
+
+
+  const p2=
+    point2.matrixTransform(
+      matrix.inverse()
+    );
+
+
+  const tolerance=
+    Math.hypot(
+      p2.x-p1.x,
+      p2.y-p1.y
+    );
+
+
+  /*
+    最少保留 60 SVG 單位，
+    避免縮放後太難點。
+  */
+
+  return Math.max(
+    60,
+    tolerance
+  );
+
+}
+
+
+/* =========================================================
+   找最近的一面牆
+========================================================= */
+
+function findNearestWall(evt){
+
+  if(
+    !walls ||
+    walls.length===0
+  ){
+
+    return{
+
+      index:-1,
+
+      distance:Infinity
+
+    };
+
+  }
+
+
+  /*
+    取得真正 SVG 座標
+  */
+
+  const point=
+    getSVGPoint(evt);
+
+
+  let bestIndex=-1;
+
+  let bestDistance=Infinity;
+
+
+  /*
+    ★★★ 所有牆全部檢查 ★★★
+
+    第 1 面
+    第 2 面
+    第 3 面
+    第 4 面
+    第 5 面
+    第 6 面
+    第 7 面
+    ...
+
+    完全不限制數量。
+  */
+
+  walls.forEach(
+    (wall,index)=>{
+
+      if(!wall){
+
+        return;
+
+      }
+
 
       if(
-        currentTool!=="window" &&
-        currentTool!=="door" &&
-        currentTool!=="beam"
+        !wall.start ||
+        !wall.end
       ){
 
         return;
@@ -4422,189 +4653,269 @@ document
       }
 
 
-      evt.preventDefault();
+      const result=
+        pointToSegment(
+          point.x,
+          point.y,
 
+          wall.start.x,
+          wall.start.y,
 
-      const svg=
-        document.getElementById(
-          "drawing"
+          wall.end.x,
+          wall.end.y
         );
 
-
-      const rect=
-        svg.getBoundingClientRect();
-
-
-      const viewBox=
-        svg.viewBox.baseVal;
-
-
-      /*
-        螢幕座標 → SVG 座標
-      */
-
-      const px=
-        viewBox.x+
-        (
-          (evt.clientX-rect.left)/
-          rect.width
-        )*
-        viewBox.width;
-
-
-      const py=
-        viewBox.y+
-        (
-          (evt.clientY-rect.top)/
-          rect.height
-        )*
-        viewBox.height;
-
-
-      /*
-        手指／滑鼠的點選範圍
-        以螢幕 32px 為基準
-      */
-
-      const tolerancePx=32;
-
-
-      const scaleX=
-        viewBox.width/
-        rect.width;
-
-
-      const scaleY=
-        viewBox.height/
-        rect.height;
-
-
-      const tolerance=
-        Math.max(
-          tolerancePx*scaleX,
-          tolerancePx*scaleY
-        );
-
-
-      let bestIndex=-1;
-
-      let bestDistance=Infinity;
-
-
-      /*
-        找最近的牆
-      */
-
-      walls.forEach(
-        (wall,index)=>{
-
-          const result=
-            pointToSegment(
-              px,
-              py,
-              wall.start.x,
-              wall.start.y,
-              wall.end.x,
-              wall.end.y
-            );
-
-
-          if(
-            result.distance<
-            bestDistance
-          ){
-
-            bestDistance=
-              result.distance;
-
-            bestIndex=
-              index;
-
-          }
-
-        }
-      );
-
-
-      /*
-        選取成功
-      */
 
       if(
-        bestIndex>=0 &&
-        bestDistance<=tolerance
+        result.distance<
+        bestDistance
       ){
 
-        selectedWallIndex=
-          bestIndex;
+        bestDistance=
+          result.distance;
 
-
-        /*
-          窗戶
-        */
-
-        if(
-          currentTool==="window"
-        ){
-
-          document
-            .getElementById(
-              "windowWallInfo"
-            )
-            .textContent=
-              "已選擇第 "+
-              (bestIndex+1)+
-              " 面牆";
-
-        }
-
-
-        /*
-          門
-        */
-
-        if(
-          currentTool==="door"
-        ){
-
-          document
-            .getElementById(
-              "doorWallInfo"
-            )
-            .textContent=
-              "已選擇第 "+
-              (bestIndex+1)+
-              " 面牆";
-
-        }
-
-
-        /*
-          樑
-        */
-
-        if(
-          currentTool==="beam"
-        ){
-
-          document
-            .getElementById(
-              "beamWallInfo"
-            )
-            .textContent=
-              "已選擇第 "+
-              (bestIndex+1)+
-              " 面牆";
-
-        }
-
-
-        render();
+        bestIndex=
+          index;
 
       }
 
     }
   );
+
+
+  return{
+
+    index:
+      bestIndex,
+
+    distance:
+      bestDistance
+
+  };
+
+}
+
+
+/* =========================================================
+   顯示目前選到哪一面牆
+========================================================= */
+
+function updateSelectedWallInfo(){
+
+  if(
+    selectedWallIndex<0 ||
+    !walls[selectedWallIndex]
+  ){
+
+    return;
+
+  }
+
+
+  const wall=
+    walls[selectedWallIndex];
+
+
+  const length=
+    Math.round(
+      Number(
+        wall.length||
+        wallGeometry(wall).len||
+        0
+      )
+    );
+
+
+  /*
+    窗戶
+  */
+
+  if(
+    currentTool==="window"
+  ){
+
+    const info=
+      document.getElementById(
+        "windowWallInfo"
+      );
+
+
+    if(info){
+
+      info.textContent=
+        "已選擇第 "+
+        (selectedWallIndex+1)+
+        " 面牆｜長 "+
+        length+
+        " mm";
+
+    }
+
+  }
+
+
+  /*
+    門
+  */
+
+  if(
+    currentTool==="door"
+  ){
+
+    const info=
+      document.getElementById(
+        "doorWallInfo"
+      );
+
+
+    if(info){
+
+      info.textContent=
+        "已選擇第 "+
+        (selectedWallIndex+1)+
+        " 面牆｜長 "+
+        length+
+        " mm";
+
+    }
+
+  }
+
+
+  /*
+    樑
+  */
+
+  if(
+    currentTool==="beam"
+  ){
+
+    const info=
+      document.getElementById(
+        "beamWallInfo"
+      );
+
+
+    if(info){
+
+      info.textContent=
+        "已選擇第 "+
+        (selectedWallIndex+1)+
+        " 面牆｜長 "+
+        length+
+        " mm";
+
+    }
+
+  }
+
+}
+
+
+/* =========================================================
+   SVG 點擊／觸控選牆
+========================================================= */
+
+const drawingSVG=
+  document.getElementById(
+    "drawing"
+  );
+
+
+drawingSVG.addEventListener(
+  "pointerdown",
+  function(evt){
+
+    /*
+      只有窗戶、門、樑模式
+      才需要選牆
+    */
+
+    if(
+      currentTool!=="window" &&
+      currentTool!=="door" &&
+      currentTool!=="beam"
+    ){
+
+      return;
+
+    }
+
+
+    evt.preventDefault();
+
+    evt.stopPropagation();
+
+
+    /*
+      找最近的牆
+    */
+
+    const result=
+      findNearestWall(evt);
+
+
+    if(
+      result.index<0
+    ){
+
+      return;
+
+    }
+
+
+    /*
+      計算目前畫面下
+      真正可以接受的距離
+    */
+
+    const tolerance=
+      getWallSelectionTolerance(
+        evt
+      );
+
+
+    /*
+      點擊位置離牆太遠
+    */
+
+    if(
+      result.distance>
+      tolerance
+    ){
+
+      return;
+
+    }
+
+
+    /*
+      ★ 成功選到牆
+    */
+
+    selectedWallIndex=
+      result.index;
+
+
+    /*
+      更新 UI
+    */
+
+    updateSelectedWallInfo();
+
+
+    /*
+      重畫
+      被選到的牆會變成紫色
+    */
+
+    render();
+
+  },
+  {
+    passive:false
+  }
+);
 
 
 /* =========================================================
