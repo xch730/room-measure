@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
@@ -9,6 +10,9 @@
 >
 
 <title>房屋丈量畫圖工具</title>
+
+<!-- PDF 匯出工具 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <style>
 
@@ -286,14 +290,14 @@ input[type="number"]{
 }
 
 /* =========================
-   ★ 字體全部加大
+   字體
 ========================= */
 
 .dimension-text{
   font-size:82px;
   font-weight:bold;
   fill:#374151;
-
+  font-family:Arial,"Noto Sans TC",sans-serif;
   paint-order:stroke;
   stroke:white;
   stroke-width:20px;
@@ -304,7 +308,7 @@ input[type="number"]{
   font-size:78px;
   font-weight:bold;
   fill:#2563eb;
-
+  font-family:Arial,"Noto Sans TC",sans-serif;
   paint-order:stroke;
   stroke:white;
   stroke-width:22px;
@@ -315,7 +319,7 @@ input[type="number"]{
   font-size:64px;
   font-weight:bold;
   fill:#2563eb;
-
+  font-family:Arial,"Noto Sans TC",sans-serif;
   paint-order:stroke;
   stroke:white;
   stroke-width:20px;
@@ -326,7 +330,7 @@ input[type="number"]{
   font-size:60px;
   font-weight:bold;
   fill:#2563eb;
-
+  font-family:Arial,"Noto Sans TC",sans-serif;
   paint-order:stroke;
   stroke:white;
   stroke-width:20px;
@@ -337,7 +341,7 @@ input[type="number"]{
   font-size:78px;
   font-weight:bold;
   fill:#ea580c;
-
+  font-family:Arial,"Noto Sans TC",sans-serif;
   paint-order:stroke;
   stroke:white;
   stroke-width:22px;
@@ -348,7 +352,7 @@ input[type="number"]{
   font-size:64px;
   font-weight:bold;
   fill:#ea580c;
-
+  font-family:Arial,"Noto Sans TC",sans-serif;
   paint-order:stroke;
   stroke:white;
   stroke-width:20px;
@@ -359,7 +363,7 @@ input[type="number"]{
   font-size:60px;
   font-weight:bold;
   fill:#ea580c;
-
+  font-family:Arial,"Noto Sans TC",sans-serif;
   paint-order:stroke;
   stroke:white;
   stroke-width:20px;
@@ -370,7 +374,7 @@ input[type="number"]{
   font-size:62px;
   font-weight:bold;
   fill:#4b5563;
-
+  font-family:Arial,"Noto Sans TC",sans-serif;
   paint-order:stroke;
   stroke:white;
   stroke-width:20px;
@@ -381,7 +385,7 @@ input[type="number"]{
   font-size:90px;
   font-weight:bold;
   fill:#059669;
-
+  font-family:Arial,"Noto Sans TC",sans-serif;
   paint-order:stroke;
   stroke:white;
   stroke-width:24px;
@@ -392,7 +396,7 @@ input[type="number"]{
   font-size:76px;
   font-weight:bold;
   fill:#dc2626;
-
+  font-family:Arial,"Noto Sans TC",sans-serif;
   paint-order:stroke;
   stroke:white;
   stroke-width:22px;
@@ -403,7 +407,7 @@ input[type="number"]{
   font-size:62px;
   font-weight:bold;
   fill:#dc2626;
-
+  font-family:Arial,"Noto Sans TC",sans-serif;
   paint-order:stroke;
   stroke:white;
   stroke-width:20px;
@@ -414,7 +418,7 @@ input[type="number"]{
   font-size:40px;
   font-weight:bold;
   fill:#6b7280;
-
+  font-family:Arial,"Noto Sans TC",sans-serif;
   paint-order:stroke;
   stroke:white;
   stroke-width:18px;
@@ -537,16 +541,6 @@ input[type="number"]{
   <h1>房屋丈量畫圖工具</h1>
 
   <div class="header-buttons">
-
-    <!-- ★ 全域撤回 -->
-    <button
-      id="globalUndoButton"
-      class="btn-dark"
-      onclick="undo()"
-      disabled
-    >
-      ↩ 撤回
-    </button>
 
     <button
       class="btn-dark"
@@ -684,14 +678,16 @@ input[type="number"]{
       class="btn-blue"
       onclick="addWall()"
     >
-      新增牆
+      ＋新增牆
     </button>
 
     <button
+      id="globalUndoButton"
       class="btn-gray"
       onclick="undo()"
+      disabled
     >
-      ↩ 復原
+      ↩ 撤回
     </button>
 
     <button
@@ -1313,10 +1309,6 @@ let floorHeight=0;
 
 let selectedWallIndex=-1;
 
-/*
-  ★ 撤回紀錄
-  每一筆都是修改前的完整狀態
-*/
 let history=[];
 
 const MAX_HISTORY=50;
@@ -1337,7 +1329,7 @@ function generateId(){
 
 
 /* =========================================================
-   ★ 撤回按鈕狀態
+   撤回按鈕
 ========================================================= */
 
 function updateUndoButton(){
@@ -1592,10 +1584,6 @@ function loadCase(data){
   floorHeight=
     Number(data.floorHeight)||0;
 
-  /*
-    ★ 開啟案件後，
-    撤回紀錄重新開始
-  */
   history=[];
 
   selectedWallIndex=-1;
@@ -1921,16 +1909,10 @@ function setDirection(direction){
 
 
 /* =========================================================
-   ★ 歷史
+   歷史
 ========================================================= */
 
 function saveHistory(){
-
-  /*
-    重要：
-    使用 JSON 深拷貝，避免後面 push/splice
-    直接修改到歷史紀錄
-  */
 
   const snapshot=
     JSON.stringify({
@@ -2398,7 +2380,9 @@ function getRoomCenter(){
 function getWallReferenceInfo(wall){
 
   const g=
-    wallGeometry(wall);
+    wallGeometry(
+      wall
+    );
 
 
   if(
@@ -3709,7 +3693,7 @@ function drawWalls(group){
 
 
 /* =========================================================
-   ★ 窗戶
+   窗戶
 ========================================================= */
 
 function drawWindows(group){
@@ -3772,11 +3756,6 @@ function drawWindows(group){
         );
 
 
-      /*
-        ★ 白色底線
-        先把牆線遮掉，讓窗戶更清楚
-      */
-
       group.appendChild(
         createSvgElement(
           "line",
@@ -3801,10 +3780,6 @@ function drawWindows(group){
       );
 
 
-      /*
-        第一條窗線
-      */
-
       group.appendChild(
         createSvgElement(
           "line",
@@ -3825,10 +3800,6 @@ function drawWindows(group){
         )
       );
 
-
-      /*
-        第二條窗線
-      */
 
       const gap=34;
 
@@ -3862,11 +3833,6 @@ function drawWindows(group){
       );
 
 
-      /*
-        ★ 文字位置
-        這次直接往室內側拉開
-      */
-
       const centerX=
         (
           startX+
@@ -3895,11 +3861,6 @@ function drawWindows(group){
         ref.roomNy*
         textDistance;
 
-
-      /*
-        如果多個窗戶靠太近，
-        讓文字上下錯開
-      */
 
       if(index%2===1){
 
@@ -3979,7 +3940,7 @@ function drawWindows(group){
 
 
 /* =========================================================
-   ★ 門
+   門
 ========================================================= */
 
 function drawDoors(group){
@@ -4042,10 +4003,6 @@ function drawDoors(group){
         );
 
 
-      /*
-        ★ 白底
-      */
-
       group.appendChild(
         createSvgElement(
           "line",
@@ -4069,10 +4026,6 @@ function drawDoors(group){
         )
       );
 
-
-      /*
-        門洞
-      */
 
       group.appendChild(
         createSvgElement(
@@ -4208,10 +4161,6 @@ function drawDoors(group){
         )
       );
 
-
-      /*
-        ★ 門備註拉遠
-      */
 
       const centerX=
         (
@@ -4659,10 +4608,6 @@ function drawBeams(group){
         distance;
 
 
-      /*
-        樑線
-      */
-
       group.appendChild(
         createSvgElement(
           "line",
@@ -4703,10 +4648,6 @@ function drawBeams(group){
         )/2;
 
 
-      /*
-        ★ 樑文字離開樑線
-      */
-
       let textBaseX=
         centerX+
         ref.roomNx*
@@ -4739,11 +4680,9 @@ function drawBeams(group){
         textBaseY,
 
         "樑 "+
-
         Math.round(
           beamHeight
         )+
-
         " mm",
 
         "beam-text"
@@ -4910,11 +4849,6 @@ function fitView(){
   }
 
 
-  /*
-    ★ 因為現在字變大，
-    周圍留多一點空間
-  */
-
   const padding=450;
 
 
@@ -4984,7 +4918,7 @@ function fitView(){
 
 
 /* =========================================================
-   ★ 鍵盤
+   鍵盤
 ========================================================= */
 
 document.addEventListener(
@@ -4994,11 +4928,6 @@ document.addEventListener(
     const active=
       document.activeElement;
 
-
-    /*
-      Ctrl + Z / Command + Z
-      全工具都可以撤回
-    */
 
     if(
       (
@@ -5112,7 +5041,8 @@ document.addEventListener(
 
 
 /* =========================================================
-   Export SVG
+   匯出 SVG
+   ★ 這裡是這次主要修改
 ========================================================= */
 
 function createExportSvg(){
@@ -5121,6 +5051,33 @@ function createExportSvg(){
     document.getElementById(
       "drawing"
     );
+
+
+  if(!original){
+
+    throw new Error(
+      "找不到圖面"
+    );
+
+  }
+
+
+  /*
+    先讓畫面適合圖面
+  */
+
+  fitView();
+
+
+  /*
+    重新取得最新 viewBox
+  */
+
+  const currentViewBox=
+    original.getAttribute(
+      "viewBox"
+    )||
+    "-500 -500 1500 1500";
 
 
   const clone=
@@ -5136,6 +5093,12 @@ function createExportSvg(){
 
 
   clone.setAttribute(
+    "xmlns:xlink",
+    "http://www.w3.org/1999/xlink"
+  );
+
+
+  clone.setAttribute(
     "width",
     "2400"
   );
@@ -5147,23 +5110,324 @@ function createExportSvg(){
   );
 
 
+  clone.setAttribute(
+    "viewBox",
+    currentViewBox
+  );
+
+
+  /*
+    ★ 把 CSS 直接塞進 SVG
+    原本網頁 CSS 不會跟著 SVG 一起匯出，
+    所以 JPG / PDF 會看不到顏色和文字樣式。
+  */
+
+  const style=
+    document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "style"
+    );
+
+
+  style.textContent=`
+
+    .wall{
+      stroke:#111;
+      stroke-width:24;
+      stroke-linecap:round;
+    }
+
+    .selected-wall{
+      stroke:#9333ea;
+      stroke-width:34;
+      stroke-dasharray:20 14;
+      stroke-linecap:round;
+    }
+
+    .window-line-main{
+      stroke:#2563eb;
+      stroke-width:18;
+      stroke-linecap:round;
+    }
+
+    .window-line-inner{
+      stroke:#2563eb;
+      stroke-width:7;
+      stroke-linecap:round;
+    }
+
+    .door-line{
+      stroke:#f97316;
+      stroke-width:18;
+      stroke-linecap:round;
+    }
+
+    .door-leaf{
+      stroke:#f97316;
+      stroke-width:13;
+      stroke-linecap:round;
+    }
+
+    .door-arc{
+      fill:none;
+      stroke:#f97316;
+      stroke-width:7;
+      stroke-dasharray:16 10;
+    }
+
+    .beam-line{
+      stroke:#dc2626;
+      stroke-width:28;
+      stroke-dasharray:35 18;
+      stroke-linecap:round;
+    }
+
+    .dimension-line{
+      stroke:#6b7280;
+      stroke-width:5;
+    }
+
+    .dimension-tick{
+      stroke:#6b7280;
+      stroke-width:5;
+    }
+
+    .dimension-text{
+      font-size:82px;
+      font-weight:bold;
+      fill:#374151;
+      font-family:Arial,"Noto Sans TC",sans-serif;
+      paint-order:stroke;
+      stroke:white;
+      stroke-width:20px;
+      stroke-linejoin:round;
+    }
+
+    .window-title{
+      font-size:78px;
+      font-weight:bold;
+      fill:#2563eb;
+      font-family:Arial,"Noto Sans TC",sans-serif;
+      paint-order:stroke;
+      stroke:white;
+      stroke-width:22px;
+      stroke-linejoin:round;
+    }
+
+    .window-detail{
+      font-size:64px;
+      font-weight:bold;
+      fill:#2563eb;
+      font-family:Arial,"Noto Sans TC",sans-serif;
+      paint-order:stroke;
+      stroke:white;
+      stroke-width:20px;
+      stroke-linejoin:round;
+    }
+
+    .window-height{
+      font-size:60px;
+      font-weight:bold;
+      fill:#2563eb;
+      font-family:Arial,"Noto Sans TC",sans-serif;
+      paint-order:stroke;
+      stroke:white;
+      stroke-width:20px;
+      stroke-linejoin:round;
+    }
+
+    .door-title{
+      font-size:78px;
+      font-weight:bold;
+      fill:#ea580c;
+      font-family:Arial,"Noto Sans TC",sans-serif;
+      paint-order:stroke;
+      stroke:white;
+      stroke-width:22px;
+      stroke-linejoin:round;
+    }
+
+    .door-detail{
+      font-size:64px;
+      font-weight:bold;
+      fill:#ea580c;
+      font-family:Arial,"Noto Sans TC",sans-serif;
+      paint-order:stroke;
+      stroke:white;
+      stroke-width:20px;
+      stroke-linejoin:round;
+    }
+
+    .door-height{
+      font-size:60px;
+      font-weight:bold;
+      fill:#ea580c;
+      font-family:Arial,"Noto Sans TC",sans-serif;
+      paint-order:stroke;
+      stroke:white;
+      stroke-width:20px;
+      stroke-linejoin:round;
+    }
+
+    .offset-text{
+      font-size:62px;
+      font-weight:bold;
+      fill:#4b5563;
+      font-family:Arial,"Noto Sans TC",sans-serif;
+      paint-order:stroke;
+      stroke:white;
+      stroke-width:20px;
+      stroke-linejoin:round;
+    }
+
+    .height-text{
+      font-size:90px;
+      font-weight:bold;
+      fill:#059669;
+      font-family:Arial,"Noto Sans TC",sans-serif;
+      paint-order:stroke;
+      stroke:white;
+      stroke-width:24px;
+      stroke-linejoin:round;
+    }
+
+    .beam-text{
+      font-size:76px;
+      font-weight:bold;
+      fill:#dc2626;
+      font-family:Arial,"Noto Sans TC",sans-serif;
+      paint-order:stroke;
+      stroke:white;
+      stroke-width:22px;
+      stroke-linejoin:round;
+    }
+
+    .beam-distance-text{
+      font-size:62px;
+      font-weight:bold;
+      fill:#dc2626;
+      font-family:Arial,"Noto Sans TC",sans-serif;
+      paint-order:stroke;
+      stroke:white;
+      stroke-width:20px;
+      stroke-linejoin:round;
+    }
+
+    .center-label{
+      font-size:40px;
+      font-weight:bold;
+      fill:#6b7280;
+      font-family:Arial,"Noto Sans TC",sans-serif;
+      paint-order:stroke;
+      stroke:white;
+      stroke-width:18px;
+    }
+
+  `;
+
+
+  /*
+    ★ 白色背景
+  */
+
+  const parts=
+    currentViewBox
+      .trim()
+      .split(/\s+/)
+      .map(Number);
+
+
+  const vx=
+    Number.isFinite(parts[0])
+      ?parts[0]
+      :-500;
+
+
+  const vy=
+    Number.isFinite(parts[1])
+      ?parts[1]
+      :-500;
+
+
+  const vw=
+    Number.isFinite(parts[2])
+      ?parts[2]
+      :1500;
+
+
+  const vh=
+    Number.isFinite(parts[3])
+      ?parts[3]
+      :1500;
+
+
+  const background=
+    document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "rect"
+    );
+
+
+  background.setAttribute(
+    "x",
+    vx
+  );
+
+
+  background.setAttribute(
+    "y",
+    vy
+  );
+
+
+  background.setAttribute(
+    "width",
+    vw
+  );
+
+
+  background.setAttribute(
+    "height",
+    vh
+  );
+
+
+  background.setAttribute(
+    "fill",
+    "#ffffff"
+  );
+
+
+  /*
+    背景放最下面
+  */
+
+  clone.insertBefore(
+    background,
+    clone.firstChild
+  );
+
+
+  /*
+    CSS 放最前面
+  */
+
+  clone.insertBefore(
+    style,
+    clone.firstChild
+  );
+
+
   return clone;
 
 }
 
 
 /* =========================================================
-   Export JPG
+   SVG → Blob
 ========================================================= */
 
-function exportJPG(){
-
-  fitView();
-
-
-  const svg=
-    createExportSvg();
-
+function svgToBlob(svg){
 
   const serializer=
     new XMLSerializer();
@@ -5175,75 +5439,169 @@ function exportJPG(){
     );
 
 
-  const blob=
-    new Blob(
-      [source],
-      {
-        type:
-          "image/svg+xml;charset=utf-8"
+  return new Blob(
+    [source],
+    {
+      type:
+        "image/svg+xml;charset=utf-8"
+    }
+  );
+
+}
+
+
+/* =========================================================
+   SVG → Canvas
+========================================================= */
+
+function svgToCanvas(){
+
+  return new Promise(
+    function(resolve,reject){
+
+      let svg;
+
+      try{
+
+        svg=
+          createExportSvg();
+
+      }catch(error){
+
+        reject(error);
+
+        return;
+
       }
-    );
 
 
-  const url=
-    URL.createObjectURL(
-      blob
-    );
+      const blob=
+        svgToBlob(
+          svg
+        );
 
 
-  const img=
-    new Image();
+      const url=
+        URL.createObjectURL(
+          blob
+        );
 
 
-  img.onload=function(){
+      const img=
+        new Image();
 
-    URL.revokeObjectURL(
-      url
-    );
 
+      img.onload=function(){
+
+        URL.revokeObjectURL(
+          url
+        );
+
+
+        const canvas=
+          document.createElement(
+            "canvas"
+          );
+
+
+        canvas.width=2400;
+
+        canvas.height=1600;
+
+
+        const ctx=
+          canvas.getContext(
+            "2d"
+          );
+
+
+        if(!ctx){
+
+          reject(
+            new Error(
+              "無法建立 Canvas"
+            )
+          );
+
+          return;
+
+        }
+
+
+        /*
+          白底
+        */
+
+        ctx.fillStyle="#ffffff";
+
+        ctx.fillRect(
+          0,
+          0,
+          canvas.width,
+          canvas.height
+        );
+
+
+        /*
+          把 SVG 畫進 Canvas
+        */
+
+        ctx.drawImage(
+          img,
+          0,
+          0,
+          canvas.width,
+          canvas.height
+        );
+
+
+        resolve(
+          canvas
+        );
+
+      };
+
+
+      img.onerror=function(){
+
+        URL.revokeObjectURL(
+          url
+        );
+
+
+        reject(
+          new Error(
+            "SVG 圖片轉換失敗"
+          )
+        );
+
+      };
+
+
+      img.src=url;
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   JPG
+========================================================= */
+
+async function exportJPG(){
+
+  try{
 
     const canvas=
-      document.createElement(
-        "canvas"
-      );
-
-
-    canvas.width=2400;
-
-    canvas.height=1600;
-
-
-    const ctx=
-      canvas.getContext(
-        "2d"
-      );
-
-
-    ctx.fillStyle=
-      "#ffffff";
-
-
-    ctx.fillRect(
-      0,
-      0,
-      2400,
-      1600
-    );
-
-
-    ctx.drawImage(
-      img,
-      0,
-      0,
-      2400,
-      1600
-    );
+      await svgToCanvas();
 
 
     canvas.toBlob(
-      function(result){
+      function(blob){
 
-        if(!result){
+        if(!blob){
 
           alert(
             "JPG 匯出失敗"
@@ -5254,52 +5612,75 @@ function exportJPG(){
         }
 
 
+        const url=
+          URL.createObjectURL(
+            blob
+          );
+
+
         const a=
           document.createElement(
             "a"
           );
 
 
-        a.href=
-          URL.createObjectURL(
-            result
-          );
+        const caseName=
+          document.getElementById(
+            "caseName"
+          ).value.trim();
+
+
+        a.href=url;
 
 
         a.download=
           (
-            document.getElementById(
-              "caseName"
-            ).value||
+            caseName||
             "房屋丈量"
           )+
           ".jpg";
 
 
+        document.body.appendChild(
+          a
+        );
+
+
         a.click();
+
+
+        a.remove();
+
+
+        setTimeout(
+          function(){
+
+            URL.revokeObjectURL(
+              url
+            );
+
+          },
+          1000
+        );
 
       },
       "image/jpeg",
-      .95
+      0.95
     );
 
-  };
+  }catch(error){
 
-
-  img.onerror=function(){
-
-    URL.revokeObjectURL(
-      url
+    console.error(
+      "JPG Export Error:",
+      error
     );
+
 
     alert(
-      "圖片匯出失敗"
+      "JPG 匯出失敗，請重新整理頁面後再試一次。"
     );
 
-  };
-
-
-  img.src=url;
+  }
 
 }
 
@@ -5308,121 +5689,186 @@ function exportJPG(){
    PDF
 ========================================================= */
 
-function exportPDF(){
+async function exportPDF(){
 
-  fitView();
+  try{
+
+    /*
+      確認 jsPDF 有載入
+    */
+
+    if(
+      !window.jspdf ||
+      !window.jspdf.jsPDF
+    ){
+
+      alert(
+        "PDF 工具尚未載入，請確認網路連線後重新整理頁面。"
+      );
+
+      return;
+
+    }
 
 
-  const original=
-    document.getElementById(
-      "drawing"
-    );
+    /*
+      先把 SVG 轉成圖片
+    */
+
+    const canvas=
+      await svgToCanvas();
 
 
-  const svgData=
-    new XMLSerializer()
-      .serializeToString(
-        original
+    const imgData=
+      canvas.toDataURL(
+        "image/jpeg",
+        0.95
       );
 
 
-  const blob=
-    new Blob(
-      [svgData],
-      {
-        type:
-          "image/svg+xml;charset=utf-8"
-      }
+    const {jsPDF}=
+      window.jspdf;
+
+
+    /*
+      A4 橫式
+    */
+
+    const pdf=
+      new jsPDF({
+
+        orientation:
+          "landscape",
+
+        unit:
+          "mm",
+
+        format:
+          "a4"
+
+      });
+
+
+    const pageWidth=
+      pdf.internal.pageSize.getWidth();
+
+
+    const pageHeight=
+      pdf.internal.pageSize.getHeight();
+
+
+    const margin=8;
+
+
+    const maxWidth=
+      pageWidth-
+      margin*2;
+
+
+    const maxHeight=
+      pageHeight-
+      margin*2;
+
+
+    const imageRatio=
+      canvas.width/
+      canvas.height;
+
+
+    let imageWidth=
+      maxWidth;
+
+
+    let imageHeight=
+      imageWidth/
+      imageRatio;
+
+
+    /*
+      如果高度超過 A4，
+      改用高度限制
+    */
+
+    if(
+      imageHeight>
+      maxHeight
+    ){
+
+      imageHeight=
+        maxHeight;
+
+
+      imageWidth=
+        imageHeight*
+        imageRatio;
+
+    }
+
+
+    /*
+      置中
+    */
+
+    const x=
+      (
+        pageWidth-
+        imageWidth
+      )/2;
+
+
+    const y=
+      (
+        pageHeight-
+        imageHeight
+      )/2;
+
+
+    pdf.addImage(
+
+      imgData,
+
+      "JPEG",
+
+      x,
+
+      y,
+
+      imageWidth,
+
+      imageHeight
+
     );
 
 
-  const url=
-    URL.createObjectURL(
-      blob
+    const caseName=
+      document.getElementById(
+        "caseName"
+      ).value.trim();
+
+
+    pdf.save(
+
+      (
+        caseName||
+        "房屋丈量"
+      )+
+      ".pdf"
+
     );
 
+  }catch(error){
 
-  const win=
-    window.open(
-      "",
-      "_blank"
+    console.error(
+      "PDF Export Error:",
+      error
     );
 
-
-  if(!win){
 
     alert(
-      "請允許瀏覽器開啟新視窗"
+      "PDF 匯出失敗，請重新整理頁面後再試一次。"
     );
-
-    URL.revokeObjectURL(
-      url
-    );
-
-    return;
 
   }
-
-
-  win.document.write(`
-
-<!DOCTYPE html>
-
-<html>
-
-<head>
-
-<title>
-房屋丈量
-</title>
-
-<style>
-
-html,
-body{
-  margin:0;
-  padding:0;
-  background:white;
-}
-
-img{
-  width:100%;
-  height:auto;
-}
-
-</style>
-
-</head>
-
-<body>
-
-<img src="${url}">
-
-<script>
-
-window.onload=function(){
-
-  setTimeout(
-    function(){
-
-      window.print();
-
-    },
-    500
-  );
-
-};
-
-<\/script>
-
-</body>
-
-</html>
-
-  `);
-
-
-  win.document.close();
 
 }
 
@@ -5502,3 +5948,4 @@ init();
 
 </body>
 </html>
+```
