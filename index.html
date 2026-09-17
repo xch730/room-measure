@@ -199,6 +199,13 @@ background:#fafafa;
 font-weight:bold;
 }
 
+.export-buttons{
+display:flex;
+gap:8px;
+flex-wrap:wrap;
+margin-top:10px;
+}
+
 svg{
 width:100%;
 height:65vh;
@@ -574,7 +581,6 @@ onclick="setDirection('up')"
 
 <div class="direction-empty"></div>
 
-
 <button
 id="dir-left"
 class="btn-gray"
@@ -597,7 +603,6 @@ onclick="setDirection('right')"
 >
 →
 </button>
-
 
 <div class="direction-empty"></div>
 
@@ -624,6 +629,7 @@ onclick="setDirection('down')"
 會直接新增牆。
 
 新增牆後輸入框會自動清空，
+游標會繼續停在牆長輸入框，
 可以直接輸入下一段尺寸。
 
 </div>
@@ -696,6 +702,16 @@ type="number"
 placeholder="mm"
 >
 
+<label>
+窗高
+</label>
+
+<input
+id="windowHeight"
+type="number"
+placeholder="mm"
+>
+
 <button
 class="btn-blue"
 onclick="addWindow()"
@@ -712,7 +728,9 @@ onclick="addWindow()"
 「站在室內、面向這面牆」
 的視角判斷。
 
-距離是從門／窗靠近的那一端牆端開始計算。
+距離是從窗戶靠近的那一端牆端開始計算。
+
+窗戶高度會顯示在圖面上。
 
 </div>
 
@@ -785,6 +803,16 @@ placeholder="mm"
 >
 
 <label>
+門高
+</label>
+
+<input
+id="doorHeight"
+type="number"
+placeholder="mm"
+>
+
+<label>
 開門
 </label>
 
@@ -819,6 +847,8 @@ onclick="addDoor()"
 左側／右側以
 「站在室內、面向這面牆」
 的視角判斷。
+
+門高度會顯示在圖面上。
 
 </div>
 
@@ -959,6 +989,25 @@ xmlns="http://www.w3.org/2000/svg"
 <g id="drawingGroup"></g>
 
 </svg>
+
+
+<div class="export-buttons">
+
+<button
+class="btn-green"
+onclick="exportJPG()"
+>
+📷 匯出 JPG
+</button>
+
+<button
+class="btn-blue"
+onclick="exportPDF()"
+>
+📄 匯出 PDF
+</button>
+
+</div>
 
 </div>
 
@@ -1543,12 +1592,12 @@ saveCase();
 render();
 
 
-/* 新增牆後清空輸入框 */
+/* 新增牆後清空 */
 
 input.value="";
 
 
-/* 電腦版繼續把游標留在牆長輸入框 */
+/* 保持游標在牆長輸入框 */
 
 setTimeout(function(){
 
@@ -1757,8 +1806,6 @@ y:(minY+maxY)/2
 
 /* =========================
    左右參考
-   以站在室內、
-   面向牆面判斷
 ========================= */
 
 function getWallReferenceInfo(wall){
@@ -1958,7 +2005,7 @@ return info.rightAtStart
 
 
 /* =========================
-   窗戶選牆
+   窗戶
 ========================= */
 
 function startWindowSelection(){
@@ -2003,6 +2050,11 @@ Number(
 document.getElementById("windowWidth").value
 );
 
+const height=
+Number(
+document.getElementById("windowHeight").value
+)||0;
+
 if(!width || width<=0){
 
 alert("請輸入窗寬");
@@ -2030,7 +2082,6 @@ return;
 
 }
 
-
 const existing=[
 
 ...windows.map(x=>({
@@ -2055,7 +2106,6 @@ width:x.width
 
 ];
 
-
 const overlap=
 existing
 .filter(x=>x.wallIndex===selectedWallIndex)
@@ -2073,7 +2123,6 @@ return;
 
 }
 
-
 saveHistory();
 
 windows.push({
@@ -2082,7 +2131,9 @@ wallIndex:selectedWallIndex,
 
 offset:offset,
 
-width:width
+width:width,
+
+height:height
 
 });
 
@@ -2094,7 +2145,7 @@ render();
 
 
 /* =========================
-   門選牆
+   門
 ========================= */
 
 function startDoorSelection(){
@@ -2139,6 +2190,11 @@ Number(
 document.getElementById("doorWidth").value
 );
 
+const height=
+Number(
+document.getElementById("doorHeight").value
+)||0;
+
 const swing=
 document.getElementById("doorSwing").value;
 
@@ -2169,7 +2225,6 @@ return;
 
 }
 
-
 const existing=[
 
 ...windows.map(x=>({
@@ -2194,7 +2249,6 @@ width:x.width
 
 ];
 
-
 const overlap=
 existing
 .filter(x=>x.wallIndex===selectedWallIndex)
@@ -2212,7 +2266,6 @@ return;
 
 }
 
-
 saveHistory();
 
 doors.push({
@@ -2222,6 +2275,8 @@ wallIndex:selectedWallIndex,
 offset:offset,
 
 width:width,
+
+height:height,
 
 swing:swing
 
@@ -2339,7 +2394,7 @@ render();
 
 
 /* =========================
-   SVG 工具
+   SVG
 ========================= */
 
 function createSvgElement(
@@ -2394,7 +2449,7 @@ return el;
 
 
 /* =========================
-   尺寸線
+   尺寸
 ========================= */
 
 function drawDimension(
@@ -2493,7 +2548,7 @@ Math.round(len)+"",
 
 
 /* =========================
-   畫牆
+   牆
 ========================= */
 
 function drawWalls(group){
@@ -2519,18 +2574,13 @@ y2:wall.end.y,
 
 group.appendChild(line);
 
-const g=
-wallGeometry(wall);
-
-const dimOffset=100;
-
 drawDimension(
 group,
 wall.start.x,
 wall.start.y,
 wall.end.x,
 wall.end.y,
-dimOffset
+100
 );
 
 });
@@ -2539,12 +2589,12 @@ dimOffset
 
 
 /* =========================
-   畫窗
+   窗戶
 ========================= */
 
 function drawWindows(group){
 
-windows.forEach((win,index)=>{
+windows.forEach(win=>{
 
 const wall=
 walls[win.wallIndex];
@@ -2573,6 +2623,9 @@ g.ux*win.width;
 const ey=
 sy+
 g.uy*win.width;
+
+
+/* 窗戶 */
 
 const line1=
 createSvgElement(
@@ -2604,6 +2657,9 @@ y2:ey+g.ny*gap,
 
 group.appendChild(line2);
 
+
+/* 窗 */
+
 const cx=
 (sx+ex)/2+
 g.nx*70;
@@ -2620,21 +2676,29 @@ cy,
 "window-text"
 );
 
-const distance=
-offsetToReferenceDistance(
-wall,
-"left",
-win.offset,
-win.width
+
+/* 窗戶高度 */
+
+if(win.height>0){
+
+addText(
+group,
+cx,
+cy+75,
+"高 "+Math.round(win.height),
+"offset-text"
 );
 
+}
+
 });
+
 
 }
 
 
 /* =========================
-   畫門
+   門
 ========================= */
 
 function drawDoors(group){
@@ -2653,15 +2717,13 @@ return;
 const g=
 wallGeometry(wall);
 
-const startDistance=door.offset;
-
 const sx=
 wall.start.x+
-g.ux*startDistance;
+g.ux*door.offset;
 
 const sy=
 wall.start.y+
-g.uy*startDistance;
+g.uy*door.offset;
 
 const ex=
 sx+
@@ -2671,19 +2733,16 @@ const ey=
 sy+
 g.uy*door.width;
 
-
-/*
-  左開＝絞鍊在左側
-  右開＝絞鍊在右側
-
-  這裡先以牆段 start/end
-  作為幾何基準。
-*/
-
 let hingeX;
 let hingeY;
 let freeX;
 let freeY;
+
+
+/*
+左開＝絞鍊在左側
+右開＝絞鍊在右側
+*/
 
 if(door.swing==="left"){
 
@@ -2704,7 +2763,7 @@ freeY=sy;
 }
 
 
-/* 門洞標示 */
+/* 門洞 */
 
 const opening=
 createSvgElement(
@@ -2762,7 +2821,7 @@ ${hingeY+g.ny*door.width}`,
 group.appendChild(arc);
 
 
-/* 門文字 */
+/* 門 */
 
 const cx=
 (sx+ex)/2+
@@ -2781,15 +2840,19 @@ cy,
 );
 
 
-/* 距離 */
+/* 門高 */
 
-const distance=
-offsetToReferenceDistance(
-wall,
-"left",
-door.offset,
-door.width
+if(door.height>0){
+
+addText(
+group,
+cx,
+cy+75,
+"高 "+Math.round(door.height),
+"offset-text"
 );
+
+}
 
 });
 
@@ -2797,7 +2860,7 @@ door.width
 
 
 /* =========================
-   畫開口距離
+   開口距離
 ========================= */
 
 function drawOpeningDistances(group){
@@ -2833,10 +2896,12 @@ wall.start.y+
 g.uy*win.offset;
 
 const tx=
-sx+g.nx*115;
+sx+
+g.nx*115;
 
 const ty=
-sy+g.ny*115;
+sy+
+g.ny*115;
 
 addText(
 group,
@@ -2880,10 +2945,12 @@ wall.start.y+
 g.uy*door.offset;
 
 const tx=
-sx+g.nx*145;
+sx+
+g.nx*145;
 
 const ty=
-sy+g.ny*145;
+sy+
+g.ny*145;
 
 addText(
 group,
@@ -2978,8 +3045,6 @@ y2:ey,
 group.appendChild(line);
 
 
-/* 樑高度 */
-
 const beamHeight=
 floorHeight-
 Number(beam.bottom||0);
@@ -3000,8 +3065,6 @@ cy,
 "beam-text"
 );
 
-
-/* 離牆 */
 
 if(distance>0){
 
@@ -3036,7 +3099,6 @@ const group=
 document.getElementById("drawingGroup");
 
 group.innerHTML="";
-
 
 drawWalls(group);
 
@@ -3269,7 +3331,7 @@ render();
 
 
 /* =========================
-   鍵盤操作
+   鍵盤
 ========================= */
 
 document.addEventListener(
@@ -3303,8 +3365,6 @@ return;
 }
 
 
-/* 非牆線工具 */
-
 if(currentTool!=="wall"){
 
 return;
@@ -3334,11 +3394,6 @@ return;
 }
 
 
-/*
-  如果正在牆長輸入框：
-  方向鍵用來選方向
-*/
-
 if(
 active &&
 active.id==="wallLength"
@@ -3352,10 +3407,6 @@ return;
 
 }
 
-
-/*
-  其他輸入框不要搶方向鍵
-*/
 
 if(
 active &&
@@ -3671,11 +3722,6 @@ canvas.height
 
 URL.revokeObjectURL(url);
 
-
-/*
-  簡易 PDF
-*/
-
 const jpeg=
 canvas.toDataURL(
 "image/jpeg",
@@ -3711,7 +3757,7 @@ img.src=url;
 
 
 /* =========================
-   簡易 PDF 產生
+   PDF
 ========================= */
 
 function createSimplePDF(
@@ -3841,7 +3887,10 @@ offset+=obj.length;
 
 });
 
-let xref="xref\n0 "+(objects.length+1)+"\n";
+let xref=
+"xref\n0 "+
+(objects.length+1)+
+"\n";
 
 xref+="0000000000 65535 f \n";
 
@@ -3967,7 +4016,6 @@ render();
 ========================= */
 
 init();
-
 
 </script>
 
