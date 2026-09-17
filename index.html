@@ -330,6 +330,19 @@ font-weight:bold;
 fill:#6b7280;
 }
 
+.opening-info-text{
+font-size:46px;
+font-weight:bold;
+}
+
+.window-detail-text{
+fill:#2563eb;
+}
+
+.door-detail-text{
+fill:#ea580c;
+}
+
 .small-note{
 font-size:12px;
 color:#6b7280;
@@ -373,6 +386,25 @@ justify-content:flex-end;
 margin-top:15px;
 }
 
+.field-group{
+display:flex;
+flex-direction:column;
+gap:4px;
+}
+
+.field-group label{
+font-size:13px;
+color:#4b5563;
+font-weight:600;
+}
+
+.opening-fields{
+display:flex;
+gap:8px;
+flex-wrap:wrap;
+align-items:flex-end;
+}
+
 @media(max-width:600px){
 
 header h1{
@@ -400,6 +432,27 @@ input[type="number"]{
 width:120px;
 }
 
+.opening-fields{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+}
+
+.opening-fields .field-group{
+width:100%;
+}
+
+.opening-fields select{
+width:100%;
+}
+
+.opening-fields input{
+width:100%;
+}
+
+.opening-fields button{
+grid-column:1 / -1;
+}
+
 }
 
 </style>
@@ -407,6 +460,7 @@ width:120px;
 </head>
 
 <body>
+
 
 <header>
 
@@ -436,7 +490,7 @@ onclick="openCaseList()"
 <div class="container">
 
 
-<!-- 案件資訊 -->
+<!-- 案件 -->
 
 <div class="card">
 
@@ -638,8 +692,8 @@ onclick="setDirection('down')"
 在牆長輸入框按 Enter，
 會直接新增牆。<br>
 
-新增牆後輸入框會自動清空，
-游標會繼續停在牆長輸入框，
+新增牆後會清空尺寸，
+游標繼續停在牆長輸入框，
 可以直接輸入下一段尺寸。
 
 </div>
@@ -655,7 +709,7 @@ class="card hidden"
 >
 
 <div class="card-title">
-窗戶
+🪟 窗戶
 </div>
 
 <div class="row">
@@ -674,7 +728,9 @@ onclick="startWindowSelection()"
 </div>
 
 
-<div class="row">
+<div class="opening-fields">
+
+<div class="field-group">
 
 <label>
 左側／右側
@@ -692,15 +748,26 @@ onclick="startWindowSelection()"
 
 </select>
 
+</div>
+
+
+<div class="field-group">
+
 <label>
-距離
+離牆端距離
 </label>
 
 <input
 id="windowOffset"
 type="number"
+inputmode="numeric"
 placeholder="mm"
 >
+
+</div>
+
+
+<div class="field-group">
 
 <label>
 窗寬
@@ -709,8 +776,14 @@ placeholder="mm"
 <input
 id="windowWidth"
 type="number"
+inputmode="numeric"
 placeholder="mm"
 >
+
+</div>
+
+
+<div class="field-group">
 
 <label>
 窗高
@@ -719,8 +792,29 @@ placeholder="mm"
 <input
 id="windowHeight"
 type="number"
+inputmode="numeric"
 placeholder="mm"
 >
+
+</div>
+
+
+<div class="field-group">
+
+<label>
+窗離地
+</label>
+
+<input
+id="windowSillHeight"
+type="number"
+inputmode="numeric"
+placeholder="mm"
+value="900"
+>
+
+</div>
+
 
 <button
 class="btn-blue"
@@ -734,13 +828,13 @@ onclick="addWindow()"
 
 <div class="info">
 
-左側／右側以
-「站在室內、面向這面牆」
-的視角判斷。<br>
+左右側以「站在室內、面向這面牆」判斷。<br>
 
-距離是從窗戶靠近的那一端牆端開始計算。<br>
+離牆端距離＝從你選擇的左側／右側牆端，
+量到窗戶開始的位置。<br>
 
-窗高會顯示在圖面上。
+窗戶會記錄：
+<strong>窗寬、窗高、窗離地</strong>。
 
 </div>
 
@@ -755,7 +849,7 @@ class="card hidden"
 >
 
 <div class="card-title">
-門
+🚪 門
 </div>
 
 <div class="row">
@@ -774,7 +868,9 @@ onclick="startDoorSelection()"
 </div>
 
 
-<div class="row">
+<div class="opening-fields">
+
+<div class="field-group">
 
 <label>
 左側／右側
@@ -792,15 +888,26 @@ onclick="startDoorSelection()"
 
 </select>
 
+</div>
+
+
+<div class="field-group">
+
 <label>
-距離
+離牆端距離
 </label>
 
 <input
 id="doorOffset"
 type="number"
+inputmode="numeric"
 placeholder="mm"
 >
+
+</div>
+
+
+<div class="field-group">
 
 <label>
 門寬
@@ -809,8 +916,14 @@ placeholder="mm"
 <input
 id="doorWidth"
 type="number"
+inputmode="numeric"
 placeholder="mm"
 >
+
+</div>
+
+
+<div class="field-group">
 
 <label>
 門高
@@ -819,11 +932,34 @@ placeholder="mm"
 <input
 id="doorHeight"
 type="number"
+inputmode="numeric"
 placeholder="mm"
 >
 
+</div>
+
+
+<div class="field-group">
+
 <label>
-開門
+門離地
+</label>
+
+<input
+id="doorFloorHeight"
+type="number"
+inputmode="numeric"
+placeholder="mm"
+value="0"
+>
+
+</div>
+
+
+<div class="field-group">
+
+<label>
+開門方向
 </label>
 
 <select id="doorSwing">
@@ -838,6 +974,9 @@ placeholder="mm"
 
 </select>
 
+</div>
+
+
 <button
 class="btn-blue"
 onclick="addDoor()"
@@ -850,15 +989,14 @@ onclick="addDoor()"
 
 <div class="info">
 
-左開門＝鉸鍊在左側。<br>
+左右側以「站在室內、面向這面牆」判斷。<br>
 
-右開門＝鉸鍊在右側。<br>
+<strong>左開＝鉸鍊在左側。</strong><br>
 
-左側／右側以
-「站在室內、面向這面牆」
-的視角判斷。<br>
+<strong>右開＝鉸鍊在右側。</strong><br>
 
-門高會顯示在圖面上。
+門會記錄：
+<strong>門寬、門高、門離地</strong>。
 
 </div>
 
@@ -873,7 +1011,7 @@ class="card hidden"
 >
 
 <div class="card-title">
-樓高
+🏠 樓高
 </div>
 
 <div class="row">
@@ -885,6 +1023,7 @@ class="card hidden"
 <input
 id="floorHeight"
 type="number"
+inputmode="numeric"
 placeholder="mm"
 >
 
@@ -908,7 +1047,7 @@ class="card hidden"
 >
 
 <div class="card-title">
-樑
+▰ 樑
 </div>
 
 <div class="row">
@@ -927,7 +1066,9 @@ onclick="startBeamSelection()"
 </div>
 
 
-<div class="row">
+<div class="opening-fields">
+
+<div class="field-group">
 
 <label>
 離牆
@@ -936,8 +1077,14 @@ onclick="startBeamSelection()"
 <input
 id="beamDistance"
 type="number"
+inputmode="numeric"
 placeholder="mm"
 >
+
+</div>
+
+
+<div class="field-group">
 
 <label>
 樑底高
@@ -946,8 +1093,14 @@ placeholder="mm"
 <input
 id="beamBottom"
 type="number"
+inputmode="numeric"
 placeholder="mm"
 >
+
+</div>
+
+
+<div class="field-group">
 
 <label>
 樑深
@@ -956,8 +1109,12 @@ placeholder="mm"
 <input
 id="beamDepth"
 type="number"
+inputmode="numeric"
 placeholder="mm"
 >
+
+</div>
+
 
 <button
 class="btn-red"
@@ -971,8 +1128,8 @@ onclick="addBeam()"
 
 <div class="info">
 
-樑高會依照：<br>
-樓高 − 樑底高<br>
+樑高會依照：
+樓高 − 樑底高
 自動計算。
 
 </div>
@@ -980,7 +1137,7 @@ onclick="addBeam()"
 </div>
 
 
-<!-- 畫布 -->
+<!-- 圖面 -->
 
 <div class="card">
 
@@ -1023,7 +1180,7 @@ onclick="exportPDF()"
 </div>
 
 
-<!-- 案件清單 -->
+<!-- 案件視窗 -->
 
 <div
 id="caseModal"
@@ -1064,9 +1221,9 @@ onclick="closeCaseList()"
 <script>
 
 
-/* =========================
+/* =========================================================
    基本資料
-========================= */
+========================================================= */
 
 let currentTool="wall";
 
@@ -1093,20 +1250,22 @@ let history=[];
 let currentCaseId=null;
 
 
-/* =========================
+/* =========================================================
    案件
-========================= */
+========================================================= */
 
 function generateId(){
 
-return Date.now().toString()+Math.random().toString(16).slice(2);
+return Date.now().toString()+
+Math.random().toString(16).slice(2);
 
 }
 
 
 function newCase(){
 
-const name=prompt("請輸入案件名稱");
+const name=
+prompt("請輸入案件名稱");
 
 if(!name){
 
@@ -1114,7 +1273,8 @@ return;
 
 }
 
-currentCaseId=generateId();
+currentCaseId=
+generateId();
 
 walls=[];
 
@@ -1132,7 +1292,9 @@ floorHeight=0;
 
 history=[];
 
-document.getElementById("caseName").value=name;
+document
+.getElementById("caseName")
+.value=name;
 
 saveCase();
 
@@ -1146,7 +1308,10 @@ fitView();
 function saveCase(){
 
 const name=
-document.getElementById("caseName").value.trim();
+document
+.getElementById("caseName")
+.value
+.trim();
 
 if(!name){
 
@@ -1156,7 +1321,8 @@ return;
 
 if(!currentCaseId){
 
-currentCaseId=generateId();
+currentCaseId=
+generateId();
 
 }
 
@@ -1214,51 +1380,112 @@ function loadCase(data){
 
 currentCaseId=data.id;
 
-document.getElementById("caseName").value=data.name||"";
+document
+.getElementById("caseName")
+.value=data.name||"";
 
-walls=data.walls||[];
 
-windows=(data.windows||[]).map(x=>({
+walls=
+data.walls||[];
 
-wallIndex:Number(x.wallIndex)||0,
 
-offset:Number(x.offset)||0,
+/*
+舊案件相容：
+沒有 side 就預設 left
+沒有 height 就 0
+沒有 sillHeight 就 900
+*/
 
-width:Number(x.width)||0,
+windows=
+(data.windows||[]).map(x=>({
 
-height:Number(x.height)||0
+wallIndex:
+Number(x.wallIndex)||0,
+
+offset:
+Number(x.offset)||0,
+
+width:
+Number(x.width)||0,
+
+height:
+Number(x.height)||0,
+
+sillHeight:
+Number(
+x.sillHeight ??
+x.windowSillHeight ??
+900
+),
+
+side:
+x.side==="right"
+?"right"
+:"left"
 
 }));
 
-doors=(data.doors||[]).map(x=>({
 
-wallIndex:Number(x.wallIndex)||0,
+doors=
+(data.doors||[]).map(x=>({
 
-offset:Number(x.offset)||0,
+wallIndex:
+Number(x.wallIndex)||0,
 
-width:Number(x.width)||0,
+offset:
+Number(x.offset)||0,
 
-height:Number(x.height)||0,
+width:
+Number(x.width)||0,
 
-swing:x.swing==="right"?"right":"left"
+height:
+Number(x.height)||0,
+
+floorHeight:
+Number(
+x.floorHeight ??
+x.doorFloorHeight ??
+0
+),
+
+swing:
+x.swing==="right"
+?"right"
+:"left",
+
+side:
+x.side==="right"
+?"right"
+:"left"
 
 }));
 
-beams=(data.beams||[]).map(x=>({
 
-wallIndex:Number(x.wallIndex)||0,
+beams=
+(data.beams||[]).map(x=>({
 
-distance:Number(x.distance)||0,
+wallIndex:
+Number(x.wallIndex)||0,
 
-bottom:Number(x.bottom)||0,
+distance:
+Number(x.distance)||0,
 
-depth:Number(x.depth)||0
+bottom:
+Number(x.bottom)||0,
+
+depth:
+Number(x.depth)||0
 
 }));
 
-points=data.points||[{x:0,y:0}];
 
-floorHeight=Number(data.floorHeight)||0;
+points=
+data.points||[
+{x:0,y:0}
+];
+
+floorHeight=
+Number(data.floorHeight)||0;
 
 history=[];
 
@@ -1298,8 +1525,10 @@ list.innerHTML=
 }else{
 
 cases
-.sort((a,b)=>
-(b.updatedAt||0)-(a.updatedAt||0)
+.sort(
+(a,b)=>
+(b.updatedAt||0)-
+(a.updatedAt||0)
 )
 .forEach(data=>{
 
@@ -1308,6 +1537,7 @@ document.createElement("div");
 
 item.className="case-item";
 
+
 const name=
 document.createElement("div");
 
@@ -1315,10 +1545,12 @@ name.className="case-name";
 
 name.textContent=data.name;
 
+
 const buttons=
 document.createElement("div");
 
 buttons.className="row";
+
 
 const openBtn=
 document.createElement("button");
@@ -1335,6 +1567,7 @@ closeCaseList();
 
 };
 
+
 const deleteBtn=
 document.createElement("button");
 
@@ -1344,7 +1577,9 @@ deleteBtn.textContent="刪除";
 
 deleteBtn.onclick=function(){
 
-if(confirm("確定要刪除這個案件嗎？")){
+if(
+confirm("確定要刪除這個案件嗎？")
+){
 
 deleteCase(data.id);
 
@@ -1353,6 +1588,7 @@ openCaseList();
 }
 
 };
+
 
 buttons.appendChild(openBtn);
 
@@ -1375,7 +1611,10 @@ modal.classList.remove("hidden");
 
 function closeCaseList(event){
 
-if(event && event.target!==event.currentTarget){
+if(
+event &&
+event.target!==event.currentTarget
+){
 
 return;
 
@@ -1383,7 +1622,8 @@ return;
 
 document
 .getElementById("caseModal")
-.classList.add("hidden");
+.classList
+.add("hidden");
 
 }
 
@@ -1395,7 +1635,8 @@ JSON.parse(
 localStorage.getItem("measureCases")||"[]"
 );
 
-cases=cases.filter(
+cases=
+cases.filter(
 x=>x.id!==id
 );
 
@@ -1413,9 +1654,9 @@ currentCaseId=null;
 }
 
 
-/* =========================
-   工具切換
-========================= */
+/* =========================================================
+   工具
+========================================================= */
 
 function setTool(tool){
 
@@ -1428,7 +1669,9 @@ btn.classList.remove("active");
 });
 
 const button=
-document.getElementById("tool-"+tool);
+document.getElementById(
+"tool-"+tool
+);
 
 if(button){
 
@@ -1438,35 +1681,40 @@ button.classList.add("active");
 
 document
 .getElementById("wallPanel")
-.classList.toggle(
+.classList
+.toggle(
 "hidden",
 tool!=="wall"
 );
 
 document
 .getElementById("windowPanel")
-.classList.toggle(
+.classList
+.toggle(
 "hidden",
 tool!=="window"
 );
 
 document
 .getElementById("doorPanel")
-.classList.toggle(
+.classList
+.toggle(
 "hidden",
 tool!=="door"
 );
 
 document
 .getElementById("heightPanel")
-.classList.toggle(
+.classList
+.toggle(
 "hidden",
 tool!=="height"
 );
 
 document
 .getElementById("beamPanel")
-.classList.toggle(
+.classList
+.toggle(
 "hidden",
 tool!=="beam"
 );
@@ -1478,19 +1726,26 @@ render();
 }
 
 
-/* =========================
+/* =========================================================
    方向
-========================= */
+========================================================= */
 
 function setDirection(direction){
 
 currentDirection=direction;
 
-["up","down","left","right"]
+[
+"up",
+"down",
+"left",
+"right"
+]
 .forEach(dir=>{
 
 const btn=
-document.getElementById("dir-"+dir);
+document.getElementById(
+"dir-"+dir
+);
 
 if(btn){
 
@@ -1513,9 +1768,9 @@ dir!==direction
 setDirection("right");
 
 
-/* =========================
+/* =========================================================
    歷史
-========================= */
+========================================================= */
 
 function saveHistory(){
 
@@ -1559,17 +1814,25 @@ JSON.parse(
 history.pop()
 );
 
-walls=state.walls||[];
+walls=
+state.walls||[];
 
-windows=state.windows||[];
+windows=
+state.windows||[];
 
-doors=state.doors||[];
+doors=
+state.doors||[];
 
-beams=state.beams||[];
+beams=
+state.beams||[];
 
-points=state.points||[{x:0,y:0}];
+points=
+state.points||[
+{x:0,y:0}
+];
 
-floorHeight=state.floorHeight||0;
+floorHeight=
+state.floorHeight||0;
 
 selectedWallIndex=-1;
 
@@ -1577,23 +1840,24 @@ saveCase();
 
 render();
 
-setTimeout(function(){
-
-fitView();
-
-},30);
+setTimeout(
+fitView,
+30
+);
 
 }
 
 
-/* =========================
-   牆線
-========================= */
+/* =========================================================
+   牆
+========================================================= */
 
 function addWall(){
 
 const input=
-document.getElementById("wallLength");
+document.getElementById(
+"wallLength"
+);
 
 const length=
 Number(input.value);
@@ -1650,18 +1914,23 @@ render();
 
 input.value="";
 
-setTimeout(function(){
+setTimeout(
+function(){
 
 input.focus();
 
-},0);
+},
+0
+);
 
 }
 
 
 function clearDrawing(){
 
-if(!confirm("確定要清除目前圖面嗎？")){
+if(
+!confirm("確定要清除目前圖面嗎？")
+){
 
 return;
 
@@ -1690,9 +1959,9 @@ render();
 }
 
 
-/* =========================
+/* =========================================================
    幾何
-========================= */
+========================================================= */
 
 function wallGeometry(wall){
 
@@ -1708,29 +1977,45 @@ Math.hypot(dx,dy);
 if(!len){
 
 return{
+
 len:0,
+
 ux:0,
+
 uy:0,
+
 nx:0,
+
 ny:0
+
 };
 
 }
 
-const ux=dx/len;
+const ux=
+dx/len;
 
-const uy=dy/len;
+const uy=
+dy/len;
 
-const nx=-uy;
+const nx=
+-uy;
 
-const ny=ux;
+const ny=
+ux;
 
 return{
+
 len:len,
+
 ux:ux,
+
 uy:uy,
+
 nx:nx,
+
 ny:ny
+
 };
 
 }
@@ -1749,7 +2034,10 @@ const dx=x2-x1;
 
 const dy=y2-y1;
 
-if(dx===0 && dy===0){
+if(
+dx===0 &&
+dy===0
+){
 
 return{
 
@@ -1799,9 +2087,9 @@ t:t
 }
 
 
-/* =========================
+/* =========================================================
    室內中心
-========================= */
+========================================================= */
 
 function getRoomCenter(){
 
@@ -1818,8 +2106,11 @@ all.push(w.end);
 if(all.length===0){
 
 return{
+
 x:0,
+
 y:0
+
 };
 
 }
@@ -1834,13 +2125,29 @@ let maxY=-Infinity;
 
 all.forEach(p=>{
 
-minX=Math.min(minX,p.x);
+minX=
+Math.min(
+minX,
+p.x
+);
 
-maxX=Math.max(maxX,p.x);
+maxX=
+Math.max(
+maxX,
+p.x
+);
 
-minY=Math.min(minY,p.y);
+minY=
+Math.min(
+minY,
+p.y
+);
 
-maxY=Math.max(maxY,p.y);
+maxY=
+Math.max(
+maxY,
+p.y
+);
 
 });
 
@@ -1855,9 +2162,9 @@ y:(minY+maxY)/2
 }
 
 
-/* =========================
-   左右參考
-========================= */
+/* =========================================================
+   牆的左右
+========================================================= */
 
 function getWallReferenceInfo(wall){
 
@@ -1915,13 +2222,9 @@ const cross=
 g.ux*toCenterY-
 g.uy*toCenterX;
 
-
-/*
-cross < 0：
-室內在牆的左側
-*/
-
-if(Math.abs(cross)<0.001){
+if(
+Math.abs(cross)<0.001
+){
 
 return{
 
@@ -1967,6 +2270,10 @@ roomNy:g.ny
 
 }
 
+
+/* =========================================================
+   左右距離轉換
+========================================================= */
 
 function referenceDistanceToOffset(
 wall,
@@ -2054,36 +2361,9 @@ return wall.length-offset-width;
 }
 
 
-function tapDistanceToReference(
-wall,
-side,
-tapDistance
-){
-
-const info=
-getWallReferenceInfo(wall);
-
-tapDistance=
-Number(tapDistance)||0;
-
-if(side==="left"){
-
-return info.leftAtStart
-?tapDistance
-:wall.length-tapDistance;
-
-}
-
-return info.rightAtStart
-?tapDistance
-:wall.length-tapDistance;
-
-}
-
-
-/* =========================
+/* =========================================================
    窗戶
-========================= */
+========================================================= */
 
 function startWindowSelection(){
 
@@ -2091,7 +2371,8 @@ setTool("window");
 
 selectedWallIndex=-1;
 
-document.getElementById("windowWallInfo")
+document
+.getElementById("windowWallInfo")
 .textContent=
 "請直接點擊圖上的牆";
 
@@ -2115,22 +2396,38 @@ const wall=
 walls[selectedWallIndex];
 
 const side=
-document.getElementById("windowSide").value;
+document
+.getElementById("windowSide")
+.value;
 
 const distance=
 Number(
-document.getElementById("windowOffset").value
+document
+.getElementById("windowOffset")
+.value
 )||0;
 
 const width=
 Number(
-document.getElementById("windowWidth").value
+document
+.getElementById("windowWidth")
+.value
 );
 
 const height=
 Number(
-document.getElementById("windowHeight").value
+document
+.getElementById("windowHeight")
+.value
 )||0;
+
+const sillHeight=
+Number(
+document
+.getElementById("windowSillHeight")
+.value
+)||0;
+
 
 if(!width || width<=0){
 
@@ -2139,6 +2436,15 @@ alert("請輸入窗寬");
 return;
 
 }
+
+if(!height || height<=0){
+
+alert("請輸入窗高");
+
+return;
+
+}
+
 
 const offset=
 referenceDistanceToOffset(
@@ -2159,15 +2465,18 @@ return;
 
 }
 
+
 const existing=[
 
 ...windows.map(x=>({
 
 wallIndex:x.wallIndex,
 
-offset:Number(x.offset)||0,
+offset:
+Number(x.offset)||0,
 
-width:Number(x.width)||0
+width:
+Number(x.width)||0
 
 })),
 
@@ -2175,21 +2484,28 @@ width:Number(x.width)||0
 
 wallIndex:x.wallIndex,
 
-offset:Number(x.offset)||0,
+offset:
+Number(x.offset)||0,
 
-width:Number(x.width)||0
+width:
+Number(x.width)||0
 
 }))
 
 ];
 
+
 const overlap=
 existing
-.filter(x=>x.wallIndex===selectedWallIndex)
+.filter(
+x=>x.wallIndex===selectedWallIndex
+)
 .some(
 x=>
-offset<x.offset+x.width &&
-offset+width>x.offset
+offset<
+x.offset+x.width &&
+offset+width>
+x.offset
 );
 
 if(overlap){
@@ -2200,19 +2516,28 @@ return;
 
 }
 
+
 saveHistory();
 
 windows.push({
 
-wallIndex:selectedWallIndex,
+wallIndex:
+selectedWallIndex,
 
-offset:offset,
+offset:
+offset,
 
-width:width,
+width:
+width,
 
-height:height,
+height:
+height,
 
-side:side
+sillHeight:
+sillHeight,
+
+side:
+side
 
 });
 
@@ -2223,9 +2548,9 @@ render();
 }
 
 
-/* =========================
+/* =========================================================
    門
-========================= */
+========================================================= */
 
 function startDoorSelection(){
 
@@ -2233,7 +2558,8 @@ setTool("door");
 
 selectedWallIndex=-1;
 
-document.getElementById("doorWallInfo")
+document
+.getElementById("doorWallInfo")
 .textContent=
 "請直接點擊圖上的牆";
 
@@ -2257,25 +2583,43 @@ const wall=
 walls[selectedWallIndex];
 
 const side=
-document.getElementById("doorSide").value;
+document
+.getElementById("doorSide")
+.value;
 
 const distance=
 Number(
-document.getElementById("doorOffset").value
+document
+.getElementById("doorOffset")
+.value
 )||0;
 
 const width=
 Number(
-document.getElementById("doorWidth").value
+document
+.getElementById("doorWidth")
+.value
 );
 
 const height=
 Number(
-document.getElementById("doorHeight").value
+document
+.getElementById("doorHeight")
+.value
+)||0;
+
+const doorFloorHeight=
+Number(
+document
+.getElementById("doorFloorHeight")
+.value
 )||0;
 
 const swing=
-document.getElementById("doorSwing").value;
+document
+.getElementById("doorSwing")
+.value;
+
 
 if(!width || width<=0){
 
@@ -2284,6 +2628,15 @@ alert("請輸入門寬");
 return;
 
 }
+
+if(!height || height<=0){
+
+alert("請輸入門高");
+
+return;
+
+}
+
 
 const offset=
 referenceDistanceToOffset(
@@ -2304,15 +2657,18 @@ return;
 
 }
 
+
 const existing=[
 
 ...windows.map(x=>({
 
 wallIndex:x.wallIndex,
 
-offset:Number(x.offset)||0,
+offset:
+Number(x.offset)||0,
 
-width:Number(x.width)||0
+width:
+Number(x.width)||0
 
 })),
 
@@ -2320,21 +2676,28 @@ width:Number(x.width)||0
 
 wallIndex:x.wallIndex,
 
-offset:Number(x.offset)||0,
+offset:
+Number(x.offset)||0,
 
-width:Number(x.width)||0
+width:
+Number(x.width)||0
 
 }))
 
 ];
 
+
 const overlap=
 existing
-.filter(x=>x.wallIndex===selectedWallIndex)
+.filter(
+x=>x.wallIndex===selectedWallIndex
+)
 .some(
 x=>
-offset<x.offset+x.width &&
-offset+width>x.offset
+offset<
+x.offset+x.width &&
+offset+width>
+x.offset
 );
 
 if(overlap){
@@ -2345,21 +2708,31 @@ return;
 
 }
 
+
 saveHistory();
 
 doors.push({
 
-wallIndex:selectedWallIndex,
+wallIndex:
+selectedWallIndex,
 
-offset:offset,
+offset:
+offset,
 
-width:width,
+width:
+width,
 
-height:height,
+height:
+height,
 
-swing:swing,
+floorHeight:
+doorFloorHeight,
 
-side:side
+swing:
+swing,
+
+side:
+side
 
 });
 
@@ -2370,15 +2743,17 @@ render();
 }
 
 
-/* =========================
+/* =========================================================
    樓高
-========================= */
+========================================================= */
 
 function setFloorHeight(){
 
 const value=
 Number(
-document.getElementById("floorHeight").value
+document
+.getElementById("floorHeight")
+.value
 );
 
 if(!value || value<=0){
@@ -2400,9 +2775,9 @@ render();
 }
 
 
-/* =========================
+/* =========================================================
    樑
-========================= */
+========================================================= */
 
 function startBeamSelection(){
 
@@ -2410,7 +2785,8 @@ setTool("beam");
 
 selectedWallIndex=-1;
 
-document.getElementById("beamWallInfo")
+document
+.getElementById("beamWallInfo")
 .textContent=
 "請直接點擊圖上的牆";
 
@@ -2432,17 +2808,23 @@ return;
 
 const distance=
 Number(
-document.getElementById("beamDistance").value
+document
+.getElementById("beamDistance")
+.value
 )||0;
 
 const bottom=
 Number(
-document.getElementById("beamBottom").value
+document
+.getElementById("beamBottom")
+.value
 )||0;
 
 const depth=
 Number(
-document.getElementById("beamDepth").value
+document
+.getElementById("beamDepth")
+.value
 )||0;
 
 if(depth<=0){
@@ -2457,13 +2839,17 @@ saveHistory();
 
 beams.push({
 
-wallIndex:selectedWallIndex,
+wallIndex:
+selectedWallIndex,
 
-distance:distance,
+distance:
+distance,
 
-bottom:bottom,
+bottom:
+bottom,
 
-depth:depth
+depth:
+depth
 
 });
 
@@ -2474,9 +2860,9 @@ render();
 }
 
 
-/* =========================
+/* =========================================================
    SVG
-========================= */
+========================================================= */
 
 function createSvgElement(
 tag,
@@ -2490,9 +2876,14 @@ tag
 );
 
 Object.entries(attrs)
-.forEach(([key,value])=>{
-el.setAttribute(key,value);
-});
+.forEach(
+([key,value])=>{
+el.setAttribute(
+key,
+value
+);
+}
+);
 
 return el;
 
@@ -2512,11 +2903,17 @@ const el=
 createSvgElement(
 "text",
 {
+
 x:x,
+
 y:y,
+
 "class":className,
+
 "text-anchor":anchor,
+
 "dominant-baseline":"middle"
+
 }
 );
 
@@ -2529,9 +2926,9 @@ return el;
 }
 
 
-/* =========================
+/* =========================================================
    尺寸
-========================= */
+========================================================= */
 
 function drawDimension(
 group,
@@ -2547,7 +2944,10 @@ const dx=x2-x1;
 const dy=y2-y1;
 
 const len=
-Math.hypot(dx,dy);
+Math.hypot(
+dx,
+dy
+);
 
 if(!len){
 
@@ -2575,107 +2975,159 @@ x2+nx*offset;
 const by=
 y2+ny*offset;
 
-const line=
+
+group.appendChild(
 createSvgElement(
 "line",
 {
+
 x1:ax,
+
 y1:ay,
+
 x2:bx,
+
 y2:by,
+
 "class":"dimension-line"
+
 }
+)
 );
 
-group.appendChild(line);
 
-const tick1=
+group.appendChild(
 createSvgElement(
 "line",
 {
-x1:ax-ux*25-nx*25,
-y1:ay-uy*25-ny*25,
-x2:ax+ux*25+nx*25,
-y2:ay+uy*25+ny*25,
+
+x1:
+ax-ux*25-nx*25,
+
+y1:
+ay-uy*25-ny*25,
+
+x2:
+ax+ux*25+nx*25,
+
+y2:
+ay+uy*25+ny*25,
+
 "class":"dimension-tick"
+
 }
+)
 );
 
-const tick2=
+
+group.appendChild(
 createSvgElement(
 "line",
 {
-x1:bx-ux*25-nx*25,
-y1:by-uy*25-ny*25,
-x2:bx+ux*25+nx*25,
-y2:by+uy*25+ny*25,
+
+x1:
+bx-ux*25-nx*25,
+
+y1:
+by-uy*25-ny*25,
+
+x2:
+bx+ux*25+nx*25,
+
+y2:
+by+uy*25+ny*25,
+
 "class":"dimension-tick"
+
 }
+)
 );
 
-group.appendChild(tick1);
-
-group.appendChild(tick2);
 
 addText(
 group,
+
 (ax+bx)/2,
+
 (ay+by)/2,
+
 Math.round(len)+"",
+
 "dimension-text"
+
 );
 
 }
 
 
-/* =========================
+/* =========================================================
    牆
-========================= */
+========================================================= */
 
 function drawWalls(group){
 
-walls.forEach((wall,index)=>{
+walls.forEach(
+(wall,index)=>{
 
 const cls=
 index===selectedWallIndex
-?"selected-wall"
-:"wall";
+?
+"selected-wall"
+:
+"wall";
 
-const line=
+group.appendChild(
 createSvgElement(
 "line",
 {
-x1:wall.start.x,
-y1:wall.start.y,
-x2:wall.end.x,
-y2:wall.end.y,
-"class":cls
-}
-);
 
-group.appendChild(line);
+x1:
+wall.start.x,
+
+y1:
+wall.start.y,
+
+x2:
+wall.end.x,
+
+y2:
+wall.end.y,
+
+"class":
+cls
+
+}
+)
+);
 
 drawDimension(
 group,
+
 wall.start.x,
+
 wall.start.y,
+
 wall.end.x,
+
 wall.end.y,
+
 100
 );
 
-});
+}
+);
 
 }
 
 
-/* =========================
-   窗戶
-========================= */
+/* =========================================================
+   窗戶圖面
+========================================================= */
 
 function drawWindows(group){
 
-windows.forEach(win=>{
+windows.forEach(
+win=>{
 
 const wall=
 walls[win.wallIndex];
@@ -2706,48 +3158,63 @@ sy+
 g.uy*win.width;
 
 
-/* 窗戶 */
-
-const line1=
+group.appendChild(
 createSvgElement(
 "line",
 {
+
 x1:sx,
+
 y1:sy,
+
 x2:ex,
+
 y2:ey,
+
 "class":"window"
+
 }
+)
 );
 
-group.appendChild(line1);
 
 const gap=22;
 
-const line2=
+group.appendChild(
 createSvgElement(
 "line",
 {
-x1:sx+g.nx*gap,
-y1:sy+g.ny*gap,
-x2:ex+g.nx*gap,
-y2:ey+g.ny*gap,
+
+x1:
+sx+g.nx*gap,
+
+y1:
+sy+g.ny*gap,
+
+x2:
+ex+g.nx*gap,
+
+y2:
+ey+g.ny*gap,
+
 "class":"window-line"
+
 }
+)
 );
 
-group.appendChild(line2);
 
-
-/* 窗 */
+const ref=
+getWallReferenceInfo(wall);
 
 const cx=
 (sx+ex)/2+
-g.nx*70;
+ref.roomNx*80;
 
 const cy=
 (sy+ey)/2+
-g.ny*70;
+ref.roomNy*80;
+
 
 addText(
 group,
@@ -2758,32 +3225,46 @@ cy,
 );
 
 
-/* 窗高 */
-
-if(Number(win.height)>0){
+/*
+窗戶資料
+寬 × 高
+離地
+*/
 
 addText(
 group,
 cx,
-cy+75,
-"高 "+Math.round(win.height),
+cy+72,
+"寬 "+Math.round(win.width)+
+" × 高 "+Math.round(win.height),
+"opening-info-text window-detail-text"
+);
+
+
+addText(
+group,
+cx,
+cy+132,
+"離地 "+Math.round(
+Number(win.sillHeight)||0
+),
 "offset-text"
 );
 
 }
-
-});
+);
 
 }
 
 
-/* =========================
-   門
-========================= */
+/* =========================================================
+   門圖面
+========================================================= */
 
 function drawDoors(group){
 
-doors.forEach(door=>{
+doors.forEach(
+door=>{
 
 const wall=
 walls[door.wallIndex];
@@ -2818,39 +3299,43 @@ g.uy*door.width;
 
 
 /*
-依「站在室內面向牆」判斷
-左開＝鉸鍊在左側
-右開＝鉸鍊在右側
+依照室內看牆的左右
+判斷鉸鍊位置
 */
-
-const doorSide=
-door.side||"left";
 
 let hingeX;
+
 let hingeY;
+
 let freeX;
+
 let freeY;
 
-if(doorSide==="left"){
 
 /*
-左側參考端
+左開＝鉸鍊在左側
 */
+
+if(door.swing==="left"){
 
 if(ref.leftAtStart){
 
 hingeX=sx;
+
 hingeY=sy;
 
 freeX=ex;
+
 freeY=ey;
 
 }else{
 
 hingeX=ex;
+
 hingeY=ey;
 
 freeX=sx;
+
 freeY=sy;
 
 }
@@ -2858,23 +3343,27 @@ freeY=sy;
 }else{
 
 /*
-右側參考端
+右開＝鉸鍊在右側
 */
 
 if(ref.rightAtStart){
 
 hingeX=ex;
+
 hingeY=ey;
 
 freeX=sx;
+
 freeY=sy;
 
 }else{
 
 hingeX=sx;
+
 hingeY=sy;
 
 freeX=ex;
+
 freeY=ey;
 
 }
@@ -2882,78 +3371,92 @@ freeY=ey;
 }
 
 
-/* 門洞 */
+/*
+門洞
+*/
 
-const opening=
+group.appendChild(
 createSvgElement(
 "line",
 {
+
 x1:sx,
+
 y1:sy,
+
 x2:ex,
+
 y2:ey,
+
 "class":"door"
+
 }
+)
 );
 
-group.appendChild(opening);
 
+/*
+門扇
+*/
 
-/* 門扇 */
-
-const leaf=
-createSvgElement(
-"line",
-{
-x1:hingeX,
-y1:hingeY,
-x2:
-hingeX+
-ref.roomNx*door.width,
-y2:
-hingeY+
-ref.roomNy*door.width,
-"class":"door-leaf"
-}
-);
-
-group.appendChild(leaf);
-
-
-/* 開門弧線 */
-
-const arcEndX=
+const leafX=
 hingeX+
 ref.roomNx*door.width;
 
-const arcEndY=
+const leafY=
 hingeY+
 ref.roomNy*door.width;
 
-const arc=
+group.appendChild(
+createSvgElement(
+"line",
+{
+
+x1:hingeX,
+
+y1:hingeY,
+
+x2:leafX,
+
+y2:leafY,
+
+"class":"door-leaf"
+
+}
+)
+);
+
+
+/*
+開門弧
+*/
+
+group.appendChild(
 createSvgElement(
 "path",
 {
+
 d:
 `M ${freeX} ${freeY}
-A ${door.width} ${door.width} 0 0 1
-${arcEndX} ${arcEndY}`,
+A ${door.width} ${door.width}
+0 0 1
+${leafX} ${leafY}`,
+
 "class":"door-arc"
+
 }
+)
 );
 
-group.appendChild(arc);
-
-
-/* 門 */
 
 const cx=
 (sx+ex)/2+
-ref.roomNx*75;
+ref.roomNx*80;
 
 const cy=
 (sy+ey)/2+
-ref.roomNy*75;
+ref.roomNy*80;
+
 
 addText(
 group,
@@ -2964,32 +3467,44 @@ cy,
 );
 
 
-/* 門高 */
+addText(
+group,
+cx,
+cy+72,
+"寬 "+Math.round(door.width)+
+" × 高 "+Math.round(door.height),
+"opening-info-text door-detail-text"
+);
 
-if(Number(door.height)>0){
 
 addText(
 group,
 cx,
-cy+75,
-"高 "+Math.round(door.height),
+cy+132,
+"離地 "+Math.round(
+Number(door.floorHeight)||0
+),
 "offset-text"
 );
 
 }
-
-});
+);
 
 }
 
 
-/* =========================
+/* =========================================================
    開口距離
-========================= */
+========================================================= */
 
 function drawOpeningDistances(group){
 
-windows.forEach(win=>{
+/*
+窗
+*/
+
+windows.forEach(
+win=>{
 
 const wall=
 walls[win.wallIndex];
@@ -3021,9 +3536,13 @@ let sx;
 
 let sy;
 
+
 if(
-(side==="left" && ref.leftAtStart) ||
-(side==="right" && ref.rightAtStart)
+(side==="left" &&
+ref.leftAtStart)
+||
+(side==="right" &&
+ref.rightAtStart)
 ){
 
 sx=
@@ -3046,6 +3565,7 @@ g.uy*win.offset;
 
 }
 
+
 const tx=
 sx+
 ref.roomNx*115;
@@ -3054,18 +3574,25 @@ const ty=
 sy+
 ref.roomNy*115;
 
+
 addText(
 group,
 tx,
 ty,
-Math.round(distance)+"",
+Math.round(distance),
 "offset-text"
 );
 
-});
+}
+);
 
 
-doors.forEach(door=>{
+/*
+門
+*/
+
+doors.forEach(
+door=>{
 
 const wall=
 walls[door.wallIndex];
@@ -3097,9 +3624,13 @@ let sx;
 
 let sy;
 
+
 if(
-(side==="left" && ref.leftAtStart) ||
-(side==="right" && ref.rightAtStart)
+(side==="left" &&
+ref.leftAtStart)
+||
+(side==="right" &&
+ref.rightAtStart)
 ){
 
 sx=
@@ -3122,6 +3653,7 @@ g.uy*door.offset;
 
 }
 
+
 const tx=
 sx+
 ref.roomNx*145;
@@ -3130,22 +3662,24 @@ const ty=
 sy+
 ref.roomNy*145;
 
+
 addText(
 group,
 tx,
 ty,
-Math.round(distance)+"",
+Math.round(distance),
 "offset-text"
 );
 
-});
+}
+);
 
 }
 
 
-/* =========================
+/* =========================================================
    樓高
-========================= */
+========================================================= */
 
 function drawFloorHeight(group){
 
@@ -3169,13 +3703,14 @@ center.y,
 }
 
 
-/* =========================
+/* =========================================================
    樑
-========================= */
+========================================================= */
 
 function drawBeams(group){
 
-beams.forEach(beam=>{
+beams.forEach(
+beam=>{
 
 const wall=
 walls[beam.wallIndex];
@@ -3185,9 +3720,6 @@ if(!wall){
 return;
 
 }
-
-const g=
-wallGeometry(wall);
 
 const ref=
 getWallReferenceInfo(wall);
@@ -3211,24 +3743,31 @@ const ey=
 wall.end.y+
 ref.roomNy*distance;
 
-const line=
+
+group.appendChild(
 createSvgElement(
 "line",
 {
-x1:sx,
-y1:sy,
-x2:ex,
-y2:ey,
-"class":"beam"
-}
-);
 
-group.appendChild(line);
+x1:sx,
+
+y1:sy,
+
+x2:ex,
+
+y2:ey,
+
+"class":"beam"
+
+}
+)
+);
 
 
 const beamHeight=
 floorHeight-
 Number(beam.bottom||0);
+
 
 const cx=
 (sx+ex)/2+
@@ -3237,6 +3776,7 @@ ref.roomNx*80;
 const cy=
 (sy+ey)/2+
 ref.roomNy*80;
+
 
 addText(
 group,
@@ -3255,6 +3795,7 @@ const wx=
 const wy=
 (sy+wall.start.y)/2;
 
+
 addText(
 group,
 wx+ref.roomNx*35,
@@ -3265,19 +3806,22 @@ wy+ref.roomNy*35,
 
 }
 
-});
+}
+);
 
 }
 
 
-/* =========================
+/* =========================================================
    Render
-========================= */
+========================================================= */
 
 function render(){
 
 const group=
-document.getElementById("drawingGroup");
+document.getElementById(
+"drawingGroup"
+);
 
 group.innerHTML="";
 
@@ -3292,6 +3836,7 @@ drawOpeningDistances(group);
 drawBeams(group);
 
 drawFloorHeight(group);
+
 
 if(
 walls.length===0 &&
@@ -3311,17 +3856,21 @@ group,
 }
 
 
-/* =========================
-   適合畫面
-========================= */
+/* =========================================================
+   Fit View
+========================================================= */
 
 function fitView(){
 
 const svg=
-document.getElementById("drawing");
+document.getElementById(
+"drawing"
+);
 
 const group=
-document.getElementById("drawingGroup");
+document.getElementById(
+"drawingGroup"
+);
 
 if(!group){
 
@@ -3350,12 +3899,15 @@ let y=
 bbox.y-padding;
 
 let width=
-bbox.width+padding*2;
+bbox.width+
+padding*2;
 
 let height=
-bbox.height+padding*2;
+bbox.height+
+padding*2;
 
 const minSize=1500;
+
 
 if(width<minSize){
 
@@ -3368,6 +3920,7 @@ width=minSize;
 
 }
 
+
 if(height<minSize){
 
 const extra=
@@ -3379,6 +3932,7 @@ height=minSize;
 
 }
 
+
 svg.setAttribute(
 "viewBox",
 `${x} ${y} ${width} ${height}`
@@ -3387,14 +3941,16 @@ svg.setAttribute(
 }
 
 
-/* =========================
-   點擊選牆
-========================= */
+/* =========================================================
+   SVG 點擊選牆
+========================================================= */
 
 function getSvgPoint(evt){
 
 const svg=
-document.getElementById("drawing");
+document.getElementById(
+"drawing"
+);
 
 const pt=
 svg.createSVGPoint();
@@ -3415,9 +3971,55 @@ y:0
 
 }
 
-return pt.matrixTransform(
+return pt.transformPoint?
+pt.transformPoint(
+matrix.inverse()
+):
+pt.matrixTransform(
 matrix.inverse()
 );
+
+}
+
+
+/*
+部分瀏覽器沒有 transformPoint，
+所以另外確保相容
+*/
+
+function convertSvgPoint(evt){
+
+const svg=
+document.getElementById(
+"drawing"
+);
+
+const rect=
+svg.getBoundingClientRect();
+
+const viewBox=
+svg.viewBox.baseVal;
+
+const x=
+viewBox.x+
+(
+(evt.clientX-rect.left)/
+rect.width
+)*
+viewBox.width;
+
+const y=
+viewBox.y+
+(
+(evt.clientY-rect.top)/
+rect.height
+)*
+viewBox.height;
+
+return{
+x:x,
+y:y
+};
 
 }
 
@@ -3439,13 +4041,15 @@ return;
 }
 
 const p=
-getSvgPoint(evt);
+convertSvgPoint(evt);
 
 let bestIndex=-1;
 
 let bestDistance=Infinity;
 
-walls.forEach((wall,index)=>{
+
+walls.forEach(
+(wall,index)=>{
 
 const result=
 pointToSegment(
@@ -3461,7 +4065,8 @@ if(
 result.distance<bestDistance
 ){
 
-bestDistance=result.distance;
+bestDistance=
+result.distance;
 
 bestIndex=index;
 
@@ -3469,39 +4074,57 @@ bestIndex=index;
 
 });
 
+
 if(
 bestIndex>=0 &&
-bestDistance<120
+bestDistance<150
 ){
 
-selectedWallIndex=bestIndex;
+selectedWallIndex=
+bestIndex;
+
 
 if(currentTool==="window"){
 
 document
-.getElementById("windowWallInfo")
+.getElementById(
+"windowWallInfo"
+)
 .textContent=
-"已選擇第 "+(bestIndex+1)+" 面牆";
+"已選擇第 "+
+(bestIndex+1)+
+" 面牆";
 
 }
+
 
 if(currentTool==="door"){
 
 document
-.getElementById("doorWallInfo")
+.getElementById(
+"doorWallInfo"
+)
 .textContent=
-"已選擇第 "+(bestIndex+1)+" 面牆";
+"已選擇第 "+
+(bestIndex+1)+
+" 面牆";
 
 }
+
 
 if(currentTool==="beam"){
 
 document
-.getElementById("beamWallInfo")
+.getElementById(
+"beamWallInfo"
+)
 .textContent=
-"已選擇第 "+(bestIndex+1)+" 面牆";
+"已選擇第 "+
+(bestIndex+1)+
+" 面牆";
 
 }
+
 
 render();
 
@@ -3511,9 +4134,9 @@ render();
 );
 
 
-/* =========================
+/* =========================================================
    鍵盤
-========================= */
+========================================================= */
 
 document.addEventListener(
 "keydown",
@@ -3523,7 +4146,9 @@ const active=
 document.activeElement;
 
 
-/* Enter */
+/*
+Enter 新增牆
+*/
 
 if(evt.key==="Enter"){
 
@@ -3575,11 +4200,6 @@ return;
 }
 
 
-/*
-牆長輸入框內按方向鍵：
-不改數字，只切換牆方向
-*/
-
 if(
 active &&
 active.id==="wallLength"
@@ -3594,10 +4214,6 @@ return;
 }
 
 
-/*
-其他輸入框不攔截方向鍵
-*/
-
 if(
 active &&
 (
@@ -3611,6 +4227,7 @@ return;
 
 }
 
+
 evt.preventDefault();
 
 setDirection(direction);
@@ -3619,14 +4236,16 @@ setDirection(direction);
 );
 
 
-/* =========================
-   匯出 SVG
-========================= */
+/* =========================================================
+   Export SVG
+========================================================= */
 
 function createExportSvg(){
 
 const original=
-document.getElementById("drawing");
+document.getElementById(
+"drawing"
+);
 
 const clone=
 original.cloneNode(true);
@@ -3636,14 +4255,10 @@ clone.setAttribute(
 "http://www.w3.org/2000/svg"
 );
 
-
-/*
-把目前 viewBox 保留下來，
-讓 JPG / PDF 與畫面比例一致
-*/
-
 const viewBox=
-original.getAttribute("viewBox");
+original.getAttribute(
+"viewBox"
+);
 
 if(viewBox){
 
@@ -3654,14 +4269,19 @@ viewBox
 
 }
 
-
-/*
-使用目前 SVG 的比例
-*/
-
 clone.setAttribute(
 "preserveAspectRatio",
 "xMidYMid meet"
+);
+
+clone.setAttribute(
+"width",
+"2400"
+);
+
+clone.setAttribute(
+"height",
+"1600"
 );
 
 
@@ -3670,6 +4290,7 @@ document.createElementNS(
 "http://www.w3.org/2000/svg",
 "style"
 );
+
 
 style.textContent=`
 
@@ -3776,6 +4397,19 @@ font-weight:bold;
 fill:#6b7280;
 }
 
+.opening-info-text{
+font-size:46px;
+font-weight:bold;
+}
+
+.window-detail-text{
+fill:#2563eb;
+}
+
+.door-detail-text{
+fill:#ea580c;
+}
+
 `;
 
 clone.insertBefore(
@@ -3788,14 +4422,16 @@ return clone;
 }
 
 
-/* =========================
-   匯出前取得 SVG 尺寸
-========================= */
+/* =========================================================
+   Export Size
+========================================================= */
 
 function getExportSize(){
 
 const svg=
-document.getElementById("drawing");
+document.getElementById(
+"drawing"
+);
 
 const viewBox=
 svg.viewBox.baseVal;
@@ -3807,40 +4443,51 @@ viewBox.height
 ){
 
 const ratio=
-viewBox.width/viewBox.height;
+viewBox.width/
+viewBox.height;
 
 let width=2400;
 
 let height=
-Math.round(width/ratio);
+Math.round(
+width/ratio
+);
 
 if(height>1800){
 
 height=1800;
 
 width=
-Math.round(height*ratio);
+Math.round(
+height*ratio
+);
 
 }
 
 return{
+
 width:width,
+
 height:height
+
 };
 
 }
 
 return{
+
 width:2400,
+
 height:1600
+
 };
 
 }
 
 
-/* =========================
+/* =========================================================
    SVG → Image
-========================= */
+========================================================= */
 
 function svgToImage(callback){
 
@@ -3853,13 +4500,16 @@ const serializer=
 new XMLSerializer();
 
 const source=
-serializer.serializeToString(svg);
+serializer.serializeToString(
+svg
+);
 
 const blob=
 new Blob(
 [source],
 {
-type:"image/svg+xml;charset=utf-8"
+type:
+"image/svg+xml;charset=utf-8"
 }
 );
 
@@ -3869,6 +4519,7 @@ URL.createObjectURL(blob);
 const img=
 new Image();
 
+
 img.onload=function(){
 
 URL.revokeObjectURL(url);
@@ -3877,39 +4528,50 @@ callback(img);
 
 };
 
+
 img.onerror=function(){
 
 URL.revokeObjectURL(url);
 
-alert("匯出圖片失敗，請再試一次。");
+alert(
+"匯出圖片失敗，請再試一次。"
+);
 
 };
+
 
 img.src=url;
 
 }
 
 
-/* =========================
+/* =========================================================
    JPG
-========================= */
+========================================================= */
 
 function exportJPG(){
 
-svgToImage(function(img){
+svgToImage(
+function(img){
 
 const size=
 getExportSize();
 
 const canvas=
-document.createElement("canvas");
+document.createElement(
+"canvas"
+);
 
-canvas.width=size.width;
+canvas.width=
+size.width;
 
-canvas.height=size.height;
+canvas.height=
+size.height;
 
 const ctx=
-canvas.getContext("2d");
+canvas.getContext(
+"2d"
+);
 
 ctx.fillStyle="#ffffff";
 
@@ -3928,67 +4590,93 @@ canvas.width,
 canvas.height
 );
 
+
 canvas.toBlob(
 function(blob){
 
 if(!blob){
 
-alert("JPG 匯出失敗");
+alert(
+"JPG 匯出失敗"
+);
 
 return;
 
 }
 
 const a=
-document.createElement("a");
+document.createElement(
+"a"
+);
 
 a.href=
-URL.createObjectURL(blob);
+URL.createObjectURL(
+blob
+);
 
 a.download=
 (
-document.getElementById("caseName").value||
+document
+.getElementById(
+"caseName"
+)
+.value||
 "房屋丈量"
-)+".jpg";
+)+
+".jpg";
 
 a.click();
 
-setTimeout(function(){
 
-URL.revokeObjectURL(a.href);
+setTimeout(
+function(){
 
-},1000);
+URL.revokeObjectURL(
+a.href
+);
+
+},
+1000
+);
 
 },
 "image/jpeg",
 0.95
 );
 
-});
+}
+);
 
 }
 
 
-/* =========================
+/* =========================================================
    PDF
-========================= */
+========================================================= */
 
 function exportPDF(){
 
-svgToImage(function(img){
+svgToImage(
+function(img){
 
 const size=
 getExportSize();
 
 const canvas=
-document.createElement("canvas");
+document.createElement(
+"canvas"
+);
 
-canvas.width=size.width;
+canvas.width=
+size.width;
 
-canvas.height=size.height;
+canvas.height=
+size.height;
 
 const ctx=
-canvas.getContext("2d");
+canvas.getContext(
+"2d"
+);
 
 ctx.fillStyle="#ffffff";
 
@@ -4020,34 +4708,51 @@ canvas.width,
 canvas.height
 );
 
+
 const a=
-document.createElement("a");
+document.createElement(
+"a"
+);
 
 a.href=
-URL.createObjectURL(pdf);
+URL.createObjectURL(
+pdf
+);
 
 a.download=
 (
-document.getElementById("caseName").value||
+document
+.getElementById(
+"caseName"
+)
+.value||
 "房屋丈量"
-)+".pdf";
+)+
+".pdf";
 
 a.click();
 
-setTimeout(function(){
 
-URL.revokeObjectURL(a.href);
+setTimeout(
+function(){
 
-},1000);
+URL.revokeObjectURL(
+a.href
+);
 
-});
+},
+1000
+);
+
+}
+);
 
 }
 
 
-/* =========================
-   建立 PDF
-========================= */
+/* =========================================================
+   PDF
+========================================================= */
 
 function createSimplePDF(
 imageData,
@@ -4082,7 +4787,7 @@ new TextEncoder();
 const objects=[];
 
 
-/* 1 Catalog */
+/* 1 */
 
 objects.push(
 encoder.encode(
@@ -4093,7 +4798,7 @@ encoder.encode(
 );
 
 
-/* 2 Pages */
+/* 2 */
 
 objects.push(
 encoder.encode(
@@ -4104,13 +4809,14 @@ encoder.encode(
 );
 
 
-/* 3 Page */
+/* 3 */
 
 objects.push(
 encoder.encode(
 "3 0 obj\n"+
 "<< /Type /Page /Parent 2 0 R "+
-"/MediaBox [0 0 "+width+" "+height+"] "+
+"/MediaBox [0 0 "+
+width+" "+height+"] "+
 "/Resources << /XObject << /Im0 4 0 R >> >> "+
 "/Contents 5 0 R >>\n"+
 "endobj\n"
@@ -4118,7 +4824,7 @@ encoder.encode(
 );
 
 
-/* 4 Image */
+/* 4 */
 
 const imageHeader=
 encoder.encode(
@@ -4149,23 +4855,30 @@ imageFooter
 );
 
 
-/* 5 Content */
+/* 5 */
 
 const content=
 "q\n"+
-width+" 0 0 "+height+" 0 0 cm\n"+
+width+
+" 0 0 "+
+height+
+" 0 0 cm\n"+
 "/Im0 Do\n"+
 "Q\n";
 
 const contentBytes=
-encoder.encode(content);
+encoder.encode(
+content
+);
 
 objects.push(
 concatUint8(
 
 encoder.encode(
 "5 0 obj\n"+
-"<< /Length "+contentBytes.length+" >>\n"+
+"<< /Length "+
+contentBytes.length+
+" >>\n"+
 "stream\n"
 ),
 
@@ -4191,11 +4904,13 @@ encoder.encode(
 
 pdfParts.push(header);
 
-let offset=header.length;
+let offset=
+header.length;
 
 const offsets=[0];
 
-objects.forEach(obj=>{
+objects.forEach(
+obj=>{
 
 offsets.push(offset);
 
@@ -4211,7 +4926,9 @@ let xref=
 (objects.length+1)+
 "\n";
 
-xref+="0000000000 65535 f \n";
+xref+=
+"0000000000 65535 f \n";
+
 
 for(
 let i=1;
@@ -4226,13 +4943,16 @@ String(offsets[i])
 
 }
 
+
 const trailer=
 "trailer\n"+
-"<< /Size "+(objects.length+1)+
+"<< /Size "+
+(objects.length+1)+
 " /Root 1 0 R >>\n"+
 "startxref\n"+
 offset+
 "\n%%EOF";
+
 
 pdfParts.push(
 encoder.encode(
@@ -4240,6 +4960,7 @@ xref+
 trailer
 )
 );
+
 
 return new Blob(
 pdfParts,
@@ -4251,9 +4972,9 @@ type:"application/pdf"
 }
 
 
-/* =========================
-   Uint8Array 合併
-========================= */
+/* =========================================================
+   Uint8Array
+========================================================= */
 
 function concatUint8(
 ...arrays
@@ -4270,7 +4991,8 @@ new Uint8Array(total);
 
 let offset=0;
 
-arrays.forEach(a=>{
+arrays.forEach(
+a=>{
 
 result.set(
 a,
@@ -4286,15 +5008,17 @@ return result;
 }
 
 
-/* =========================
+/* =========================================================
    初始化
-========================= */
+========================================================= */
 
 function init(){
 
 const cases=
 JSON.parse(
-localStorage.getItem("measureCases")||"[]"
+localStorage.getItem(
+"measureCases"
+)||"[]"
 );
 
 if(cases.length>0){
@@ -4334,9 +5058,9 @@ render();
 }
 
 
-/* =========================
-   啟動
-========================= */
+/* =========================================================
+   開始
+========================================================= */
 
 init();
 
