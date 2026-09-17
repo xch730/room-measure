@@ -64,7 +64,8 @@ button:active{
 }
 
 button:disabled{
-  opacity:.6;
+  opacity:.45;
+  cursor:not-allowed;
 }
 
 .btn-dark{
@@ -219,6 +220,10 @@ input[type="number"]{
   touch-action:none;
 }
 
+/* =========================
+   圖面
+========================= */
+
 .wall{
   stroke:#111;
   stroke-width:24;
@@ -235,21 +240,25 @@ input[type="number"]{
 .window-line-main{
   stroke:#2563eb;
   stroke-width:18;
+  stroke-linecap:round;
 }
 
 .window-line-inner{
   stroke:#2563eb;
   stroke-width:7;
+  stroke-linecap:round;
 }
 
 .door-line{
   stroke:#f97316;
   stroke-width:18;
+  stroke-linecap:round;
 }
 
 .door-leaf{
   stroke:#f97316;
   stroke-width:13;
+  stroke-linecap:round;
 }
 
 .door-arc{
@@ -263,6 +272,7 @@ input[type="number"]{
   stroke:#dc2626;
   stroke-width:28;
   stroke-dasharray:35 18;
+  stroke-linecap:round;
 }
 
 .dimension-line{
@@ -275,77 +285,144 @@ input[type="number"]{
   stroke-width:5;
 }
 
+/* =========================
+   ★ 字體全部加大
+========================= */
+
 .dimension-text{
-  font-size:70px;
+  font-size:82px;
   font-weight:bold;
   fill:#374151;
+
+  paint-order:stroke;
+  stroke:white;
+  stroke-width:20px;
+  stroke-linejoin:round;
 }
 
 .window-title{
-  font-size:55px;
+  font-size:78px;
   font-weight:bold;
   fill:#2563eb;
+
+  paint-order:stroke;
+  stroke:white;
+  stroke-width:22px;
+  stroke-linejoin:round;
 }
 
 .window-detail{
-  font-size:48px;
+  font-size:64px;
   font-weight:bold;
   fill:#2563eb;
+
+  paint-order:stroke;
+  stroke:white;
+  stroke-width:20px;
+  stroke-linejoin:round;
 }
 
 .window-height{
-  font-size:45px;
+  font-size:60px;
   font-weight:bold;
   fill:#2563eb;
+
+  paint-order:stroke;
+  stroke:white;
+  stroke-width:20px;
+  stroke-linejoin:round;
 }
 
 .door-title{
-  font-size:55px;
+  font-size:78px;
   font-weight:bold;
   fill:#ea580c;
+
+  paint-order:stroke;
+  stroke:white;
+  stroke-width:22px;
+  stroke-linejoin:round;
 }
 
 .door-detail{
-  font-size:48px;
+  font-size:64px;
   font-weight:bold;
   fill:#ea580c;
+
+  paint-order:stroke;
+  stroke:white;
+  stroke-width:20px;
+  stroke-linejoin:round;
 }
 
 .door-height{
-  font-size:45px;
+  font-size:60px;
   font-weight:bold;
   fill:#ea580c;
+
+  paint-order:stroke;
+  stroke:white;
+  stroke-width:20px;
+  stroke-linejoin:round;
 }
 
 .offset-text{
-  font-size:48px;
+  font-size:62px;
   font-weight:bold;
   fill:#4b5563;
+
+  paint-order:stroke;
+  stroke:white;
+  stroke-width:20px;
+  stroke-linejoin:round;
 }
 
 .height-text{
-  font-size:78px;
+  font-size:90px;
   font-weight:bold;
   fill:#059669;
+
+  paint-order:stroke;
+  stroke:white;
+  stroke-width:24px;
+  stroke-linejoin:round;
 }
 
 .beam-text{
-  font-size:58px;
+  font-size:76px;
   font-weight:bold;
   fill:#dc2626;
+
+  paint-order:stroke;
+  stroke:white;
+  stroke-width:22px;
+  stroke-linejoin:round;
 }
 
 .beam-distance-text{
-  font-size:48px;
+  font-size:62px;
   font-weight:bold;
   fill:#dc2626;
+
+  paint-order:stroke;
+  stroke:white;
+  stroke-width:20px;
+  stroke-linejoin:round;
 }
 
 .center-label{
-  font-size:34px;
+  font-size:40px;
   font-weight:bold;
   fill:#6b7280;
+
+  paint-order:stroke;
+  stroke:white;
+  stroke-width:18px;
 }
+
+/* =========================
+   案件
+========================= */
 
 .export-buttons{
   display:flex;
@@ -460,6 +537,16 @@ input[type="number"]{
   <h1>房屋丈量畫圖工具</h1>
 
   <div class="header-buttons">
+
+    <!-- ★ 全域撤回 -->
+    <button
+      id="globalUndoButton"
+      class="btn-dark"
+      onclick="undo()"
+      disabled
+    >
+      ↩ 撤回
+    </button>
 
     <button
       class="btn-dark"
@@ -1199,7 +1286,6 @@ input[type="number"]{
 
 <script>
 
-
 /* =========================================================
    全域
 ========================================================= */
@@ -1227,7 +1313,13 @@ let floorHeight=0;
 
 let selectedWallIndex=-1;
 
+/*
+  ★ 撤回紀錄
+  每一筆都是修改前的完整狀態
+*/
 let history=[];
+
+const MAX_HISTORY=50;
 
 let currentCaseId=null;
 
@@ -1240,6 +1332,27 @@ function generateId(){
 
   return Date.now().toString()+
     Math.random().toString(16).slice(2);
+
+}
+
+
+/* =========================================================
+   ★ 撤回按鈕狀態
+========================================================= */
+
+function updateUndoButton(){
+
+  const button=
+    document.getElementById(
+      "globalUndoButton"
+    );
+
+  if(!button){
+    return;
+  }
+
+  button.disabled=
+    history.length===0;
 
 }
 
@@ -1288,6 +1401,8 @@ function newCase(){
   saveCase();
 
   render();
+
+  updateUndoButton();
 
   setTimeout(
     fitView,
@@ -1477,11 +1592,17 @@ function loadCase(data){
   floorHeight=
     Number(data.floorHeight)||0;
 
+  /*
+    ★ 開啟案件後，
+    撤回紀錄重新開始
+  */
   history=[];
 
   selectedWallIndex=-1;
 
   render();
+
+  updateUndoButton();
 
   setTimeout(
     fitView,
@@ -1800,12 +1921,18 @@ function setDirection(direction){
 
 
 /* =========================================================
-   歷史
+   ★ 歷史
 ========================================================= */
 
 function saveHistory(){
 
-  history.push(
+  /*
+    重要：
+    使用 JSON 深拷貝，避免後面 push/splice
+    直接修改到歷史紀錄
+  */
+
+  const snapshot=
     JSON.stringify({
 
       walls:walls,
@@ -1820,16 +1947,24 @@ function saveHistory(){
 
       floorHeight:floorHeight
 
-    })
+    });
+
+
+  history.push(
+    snapshot
   );
 
+
   if(
-    history.length>30
+    history.length>MAX_HISTORY
   ){
 
     history.shift();
 
   }
+
+
+  updateUndoButton();
 
 }
 
@@ -1839,13 +1974,17 @@ function undo(){
   if(
     history.length===0
   ){
+
     return;
+
   }
+
 
   const state=
     JSON.parse(
       history.pop()
     );
+
 
   walls=state.walls||[];
 
@@ -1866,11 +2005,16 @@ function undo(){
   floorHeight=
     Number(state.floorHeight)||0;
 
+
   selectedWallIndex=-1;
+
 
   saveCase();
 
   render();
+
+  updateUndoButton();
+
 
   setTimeout(
     fitView,
@@ -2255,6 +2399,7 @@ function getWallReferenceInfo(wall){
 
   const g=
     wallGeometry(wall);
+
 
   if(
     !g.len
@@ -2708,11 +2853,6 @@ document
       }
 
 
-      /*
-        手指／滑鼠距離牆
-        45px 內都算選到
-      */
-
       if(
         result.distance>45
       ){
@@ -2865,10 +3005,6 @@ function addWindow(){
   }
 
 
-  /*
-    檢查和其他門窗重疊
-  */
-
   const openings=[
 
     ...windows,
@@ -2936,6 +3072,8 @@ function addWindow(){
   saveCase();
 
   render();
+
+  updateUndoButton();
 
 }
 
@@ -3145,6 +3283,8 @@ function addDoor(){
 
   render();
 
+  updateUndoButton();
+
 }
 
 
@@ -3183,6 +3323,8 @@ function setFloorHeight(){
   saveCase();
 
   render();
+
+  updateUndoButton();
 
 }
 
@@ -3281,6 +3423,8 @@ function addBeam(){
   saveCase();
 
   render();
+
+  updateUndoButton();
 
 }
 
@@ -3566,7 +3710,6 @@ function drawWalls(group){
 
 /* =========================================================
    ★ 窗戶
-   這裡重新處理座標
 ========================================================= */
 
 function drawWindows(group){
@@ -3596,10 +3739,6 @@ function drawWindows(group){
           wall
         );
 
-
-      /*
-        窗戶起點
-      */
 
       const startX=
         wall.start.x+
@@ -3634,6 +3773,35 @@ function drawWindows(group){
 
 
       /*
+        ★ 白色底線
+        先把牆線遮掉，讓窗戶更清楚
+      */
+
+      group.appendChild(
+        createSvgElement(
+          "line",
+          {
+
+            x1:startX,
+
+            y1:startY,
+
+            x2:endX,
+
+            y2:endY,
+
+            stroke:"white",
+
+            "stroke-width":"34",
+
+            "stroke-linecap":"round"
+
+          }
+        )
+      );
+
+
+      /*
         第一條窗線
       */
 
@@ -3662,7 +3830,7 @@ function drawWindows(group){
         第二條窗線
       */
 
-      const gap=28;
+      const gap=34;
 
 
       group.appendChild(
@@ -3696,8 +3864,7 @@ function drawWindows(group){
 
       /*
         ★ 文字位置
-        不再用固定右上角
-        而是跟著窗戶中心走
+        這次直接往室內側拉開
       */
 
       const centerX=
@@ -3714,25 +3881,36 @@ function drawWindows(group){
         )/2;
 
 
-      /*
-        文字放在室內側
-      */
+      const textDistance=230;
 
-      const textBaseX=
+
+      let textBaseX=
         centerX+
         ref.roomNx*
-        110;
+        textDistance;
 
 
-      const textBaseY=
+      let textBaseY=
         centerY+
         ref.roomNy*
-        110;
+        textDistance;
 
 
       /*
-        窗
+        如果多個窗戶靠太近，
+        讓文字上下錯開
       */
+
+      if(index%2===1){
+
+        textBaseX+=
+          ref.roomNx*70;
+
+        textBaseY+=
+          ref.roomNy*70;
+
+      }
+
 
       addText(
 
@@ -3749,17 +3927,13 @@ function drawWindows(group){
       );
 
 
-      /*
-        寬 × 高
-      */
-
       addText(
 
         group,
 
         textBaseX,
 
-        textBaseY+70,
+        textBaseY+100,
 
         "寬 "+
         Math.round(
@@ -3779,17 +3953,13 @@ function drawWindows(group){
       );
 
 
-      /*
-        離地
-      */
-
       addText(
 
         group,
 
         textBaseX,
 
-        textBaseY+130,
+        textBaseY+180,
 
         "離地 "+
         Math.round(
@@ -3873,6 +4043,34 @@ function drawDoors(group){
 
 
       /*
+        ★ 白底
+      */
+
+      group.appendChild(
+        createSvgElement(
+          "line",
+          {
+
+            x1:startX,
+
+            y1:startY,
+
+            x2:endX,
+
+            y2:endY,
+
+            stroke:"white",
+
+            "stroke-width":"34",
+
+            "stroke-linecap":"round"
+
+          }
+        )
+      );
+
+
+      /*
         門洞
       */
 
@@ -3896,10 +4094,6 @@ function drawDoors(group){
         )
       );
 
-
-      /*
-        鉸鍊位置
-      */
 
       let hingeX;
 
@@ -3947,10 +4141,6 @@ function drawDoors(group){
       }
 
 
-      /*
-        門扇
-      */
-
       const leafEndX=
         hingeX+
         ref.roomNx*
@@ -3992,10 +4182,6 @@ function drawDoors(group){
       );
 
 
-      /*
-        開門弧線
-      */
-
       group.appendChild(
         createSvgElement(
           "path",
@@ -4024,7 +4210,7 @@ function drawDoors(group){
 
 
       /*
-        文字位置
+        ★ 門備註拉遠
       */
 
       const centerX=
@@ -4041,16 +4227,30 @@ function drawDoors(group){
         )/2;
 
 
-      const textBaseX=
+      const textDistance=240;
+
+
+      let textBaseX=
         centerX+
         ref.roomNx*
-        110;
+        textDistance;
 
 
-      const textBaseY=
+      let textBaseY=
         centerY+
         ref.roomNy*
-        110;
+        textDistance;
+
+
+      if(index%2===1){
+
+        textBaseX+=
+          ref.roomNx*70;
+
+        textBaseY+=
+          ref.roomNy*70;
+
+      }
 
 
       addText(
@@ -4074,7 +4274,7 @@ function drawDoors(group){
 
         textBaseX,
 
-        textBaseY+70,
+        textBaseY+100,
 
         "寬 "+
         Math.round(
@@ -4100,7 +4300,7 @@ function drawDoors(group){
 
         textBaseX,
 
-        textBaseY+130,
+        textBaseY+180,
 
         "離地 "+
         Math.round(
@@ -4126,7 +4326,7 @@ function drawDoors(group){
 function drawOpeningDistances(group){
 
   windows.forEach(
-    windowItem=>{
+    (windowItem,index)=>{
 
       const wall=
         walls[
@@ -4225,15 +4425,16 @@ function drawOpeningDistances(group){
 
         x+
         ref.roomNx*
-        70,
+        125,
 
         y+
         ref.roomNy*
-        70,
+        125,
 
         Math.round(
           distance
-        ),
+        )+
+        " mm",
 
         "offset-text"
 
@@ -4244,7 +4445,7 @@ function drawOpeningDistances(group){
 
 
   doors.forEach(
-    door=>{
+    (door,index)=>{
 
       const wall=
         walls[
@@ -4343,15 +4544,16 @@ function drawOpeningDistances(group){
 
         x+
         ref.roomNx*
-        80,
+        135,
 
         y+
         ref.roomNy*
-        80,
+        135,
 
         Math.round(
           distance
-        ),
+        )+
+        " mm",
 
         "offset-text"
 
@@ -4408,7 +4610,7 @@ function drawFloorHeight(group){
 function drawBeams(group){
 
   beams.forEach(
-    beam=>{
+    (beam,index)=>{
 
       const wall=
         walls[
@@ -4457,6 +4659,10 @@ function drawBeams(group){
         distance;
 
 
+      /*
+        樑線
+      */
+
       group.appendChild(
         createSvgElement(
           "line",
@@ -4497,23 +4703,48 @@ function drawBeams(group){
         )/2;
 
 
+      /*
+        ★ 樑文字離開樑線
+      */
+
+      let textBaseX=
+        centerX+
+        ref.roomNx*
+        230;
+
+
+      let textBaseY=
+        centerY+
+        ref.roomNy*
+        230;
+
+
+      if(index%2===1){
+
+        textBaseX+=
+          ref.roomNx*80;
+
+        textBaseY+=
+          ref.roomNy*80;
+
+      }
+
+
       addText(
 
         group,
 
-        centerX+
-        ref.roomNx*
-        80,
+        textBaseX,
 
-        centerY+
-        ref.roomNy*
-        80,
+        textBaseY,
 
         "樑 "+
+
         Math.round(
           beamHeight
         )+
-        "mm",
+
+        " mm",
 
         "beam-text"
 
@@ -4533,19 +4764,20 @@ function drawBeams(group){
             wall.start.x
           )/2+
           ref.roomNx*
-          35,
+          100,
 
           (
             startY+
             wall.start.y
           )/2+
           ref.roomNy*
-          35,
+          100,
 
           "離牆 "+
           Math.round(
             distance
-          ),
+          )+
+          " mm",
 
           "beam-distance-text"
 
@@ -4619,6 +4851,9 @@ function render(){
 
   }
 
+
+  updateUndoButton();
+
 }
 
 
@@ -4675,7 +4910,12 @@ function fitView(){
   }
 
 
-  const padding=350;
+  /*
+    ★ 因為現在字變大，
+    周圍留多一點空間
+  */
+
+  const padding=450;
 
 
   let x=
@@ -4698,7 +4938,7 @@ function fitView(){
     padding*2;
 
 
-  const minSize=1500;
+  const minSize=1700;
 
 
   if(
@@ -4744,7 +4984,7 @@ function fitView(){
 
 
 /* =========================================================
-   鍵盤
+   ★ 鍵盤
 ========================================================= */
 
 document.addEventListener(
@@ -4753,6 +4993,28 @@ document.addEventListener(
 
     const active=
       document.activeElement;
+
+
+    /*
+      Ctrl + Z / Command + Z
+      全工具都可以撤回
+    */
+
+    if(
+      (
+        event.ctrlKey ||
+        event.metaKey
+      ) &&
+      event.key.toLowerCase()==="z"
+    ){
+
+      event.preventDefault();
+
+      undo();
+
+      return;
+
+    }
 
 
     if(
@@ -5048,11 +5310,6 @@ function exportJPG(){
 
 function exportPDF(){
 
-  /*
-    使用瀏覽器列印功能
-    產生 PDF
-  */
-
   fitView();
 
 
@@ -5223,6 +5480,8 @@ function init(){
 
     floorHeight=0;
 
+    history=[];
+
     render();
 
   }
@@ -5231,6 +5490,8 @@ function init(){
   setDirection(
     "right"
   );
+
+  updateUndoButton();
 
 }
 
